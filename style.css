@@ -1,0 +1,19 @@
+h1 {
+    color: #014b80;
+    text-align: center;
+    padding: 30px;
+}
+
+footer {
+    text-align:center; 
+    font-size:12; 
+    font-family: sans-serif;   
+}
+
+/*  NAV  */
+
+#nav {
+    background-color: #ffeeb6;
+    list-style-type: disc;
+}
+
