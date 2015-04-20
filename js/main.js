@@ -11,11 +11,15 @@ var get = function (what) {
 var Game = {};
 
 Game.init = function () {
-    Game.version = 0.031;
+    Game.version = 0.035;
     document.title = "Mirrors V" + Game.version;
     get('versionNumber').innerHTML = '<a href="https://github.com/ajweeks/mirrors-js" target="_blank" style="color: inherit; text-decoration: none;">' + "V." + Game.version + '</a>';
-    Bugsnag.appVersion = Game.version;
     
+    Game.releaseStages = { DEVELEOPMENT: "development", PRODUCTION: "production" };
+    
+    Bugsnag.appVersion = Game.version;
+    Bugsnag.releaseStage = Game.releaseStages.PRODUCTION; // RELEASE make production
+    Bugsnag.notifyReleaseStages = [Game.releaseStages.PRODUCTION];
     
     Game.types = {};
     Game.types.tiles = {};
@@ -30,6 +34,7 @@ Game.init = function () {
     Game.types.colours.RED = 0;
     Game.types.colours.GREEN = 1;
     Game.types.colours.BLUE = 2;
+    Game.types.colours.WHITE = 3;
     
     Game.types.states.MAIN_MENU = "mainmenustate";
     Game.types.states.GAME = "gamestate";
@@ -56,9 +61,22 @@ Game.init = function () {
     Game.images[Game.types.tiles.POINTER].src = "res/pointer.png";
     Game.images[Game.types.tiles.POINTER].alt = "pointer";
 
-    Game.images[Game.types.tiles.RECEPTOR] = new Image();
-    Game.images[Game.types.tiles.RECEPTOR].src = "res/receptor_white.png";
-    Game.images[Game.types.tiles.RECEPTOR].alt = "receptor";
+    Game.images[Game.types.tiles.RECEPTOR] = {};
+    Game.images[Game.types.tiles.RECEPTOR][Game.types.colours.WHITE] = new Image();
+    Game.images[Game.types.tiles.RECEPTOR][Game.types.colours.WHITE].src = "res/receptor_white.png";
+    Game.images[Game.types.tiles.RECEPTOR][Game.types.colours.WHITE].alt = "receptor";
+    
+    Game.images[Game.types.tiles.RECEPTOR][Game.types.colours.RED] = new Image();
+    Game.images[Game.types.tiles.RECEPTOR][Game.types.colours.RED].src = "res/receptor_red.png";
+    Game.images[Game.types.tiles.RECEPTOR][Game.types.colours.RED].alt = "receptor";
+    
+    Game.images[Game.types.tiles.RECEPTOR][Game.types.colours.GREEN] = new Image();
+    Game.images[Game.types.tiles.RECEPTOR][Game.types.colours.GREEN].src = "res/receptor_green.png";
+    Game.images[Game.types.tiles.RECEPTOR][Game.types.colours.GREEN].alt = "receptor";
+    
+    Game.images[Game.types.tiles.RECEPTOR][Game.types.colours.BLUE] = new Image();
+    Game.images[Game.types.tiles.RECEPTOR][Game.types.colours.BLUE].src = "res/receptor_blue.png";
+    Game.images[Game.types.tiles.RECEPTOR][Game.types.colours.BLUE].alt = "receptor";
 
     Game.images.lasers[Game.types.colours.RED] = [];
     Game.images.lasers[Game.types.colours.RED] = new Image();
@@ -122,8 +140,8 @@ Game.init = function () {
     Game.prefs = [];
 
     Game.defaultPrefs = function () {
-        setDebug(false); // RELEASE make false
-        setLevelEditMode(false); // RELEASE make false
+        setDebug(Bugsnag.releaseStage === "development");
+        setLevelEditMode(false);
         Game.prefs.warn = !Game.debug;
     };
     Game.defaultPrefs();
@@ -212,7 +230,7 @@ Game.init = function () {
         this.init = function (sm) {
             this.sm = sm;
             this.type = Game.types.states.ABOUT;
-            get('aboutinfo').style.display = "block";
+            get('aboutstate').style.display = "block";
         };
 
         this.update = function () {};
@@ -220,11 +238,11 @@ Game.init = function () {
         this.render = function () {};
 
         this.restore = function () {
-            get('aboutinfo').style.display = "block";
+            get('aboutstate').style.display = "block";
         };
 
         this.destroy = function () {
-            get('aboutinfo').style.display = "none";
+            get('aboutstate').style.display = "none";
         };
         
     };
@@ -234,17 +252,16 @@ Game.init = function () {
             this.sm = sm;
             this.type = Game.types.states.GAME;
             this.board = new Game.GameState.Board(10, 8, this);
-            this.board.updateBoard();
+            this.board.createBoard();
             get('gamecanvas').style.display = "block";
 
-            var lvledittiles = '<div class="col">'+
-                '<div class="selectionTile" id="0tile" onmousedown="selectionTileClick(event, true, 0);" onmouseup="selectionTileClick(event, false, 0);"></div>' +
-                '<div class="selectionTile" id="1tile" onmousedown="selectionTileClick(event, true, 1);" onmouseup="selectionTileClick(event, false, 1);"></div>' +
-                '<div class="selectionTile" id="2tile" onmousedown="selectionTileClick(event, true, 2);" onmouseup="selectionTileClick(event, false, 2);"></div>' +
-                '<div class="selectionTile" id="3tile" onmousedown="selectionTileClick(event, true, 3);" onmouseup="selectionTileClick(event, false, 3);"></div>' +
+            var lvledittiles = '<div class="col">' +
+                '<div class="selectionTile" id="0tile" onmousedown="selectionTileClick(event, true, 0);" onmouseup="selectionTileClick(event, false, 0);" style="background-image: url(res/blank.png)"></div>' +
+                '<div class="selectionTile" id="1tile" onmousedown="selectionTileClick(event, true, 1);" onmouseup="selectionTileClick(event, false, 1);" style="background-image: url(res/mirror.png)"></div>' +
+                '<div class="selectionTile" id="2tile" onmousedown="selectionTileClick(event, true, 2);" onmouseup="selectionTileClick(event, false, 2);" style="background-image: url(res/pointer.png)"></div>' +
+                '<div class="selectionTile" id="3tile" onmousedown="selectionTileClick(event, true, 3);" onmouseup="selectionTileClick(event, false, 3);" style="background-image: url(res/receptor_white.png)"></div>' +
                 '</div>';
             get('lvledittiles').innerHTML = lvledittiles;
-            get('0tile').style.backgroundColor = "red";
             
             get('lvledittilescanvas').width = Game.tileSize;
             get('lvledittilescanvas').height = 4 * Game.tileSize;
@@ -260,18 +277,19 @@ Game.init = function () {
 
         this.render = function () {
             this.board.render();
+            var context;
             if (Game.levelEditMode) {
-                var context = get('lvledittilescanvas').getContext('2d');
-                context.fillStyle = "orange";
-                context.fillRect(0, 0, 64, 64);
-                context.fillRect(0, 64, 64, 64);
-                context.fillRect(0, 128, 64, 64);
-                context.fillRect(0, 192, 64, 64);
+                context = get('lvledittilescanvas').getContext('2d');
+                for (var i = 0; i < 4; i++) {
+                    if (Game.selectedTile === i) context.fillStyle = "#134304";
+                    else context.fillStyle = "#121212";
+                    context.fillRect(0, i * Game.tileSize, Game.tileSize, Game.tileSize);
+                }
             }
         };
 
         this.restore = function () {
-            this.board.updateBoard();
+            get('gamecanvas').style.display = "block";
             get('gamecanvas').style.display = "block";
             if (Game.levelEditMode) get('lvledittilesarea').style.display = "block";
         };
@@ -289,58 +307,50 @@ Game.init = function () {
         this.hover = function (into, x, y) {
             this.board.hover(into, x, y);
         };
-        
     }; // end Game.GameState()
 
     /* @param colours: an array of size two [single laser, corner laser]
        @param dir: direction the tile is facing */
-    Game.GameState.Laser = function (entering, exiting, image) { 
-        this.entering = entering;
-        this.exiting = exiting;
-        this.image = image;
+    Game.GameState.Laser = function (entering, exiting, image) {
+        this.entering = entering; // the side of the tile the laser is entering (GLOBALLY, not locally)
+        this.exiting = exiting; // the side of the tile the laser is exiting (GLOBALLY)
+        this.image = image || Game.images.lasers[Game.types.colours.RED];
 
-        this.render = function (x, y, dir, size) {
-//                if (this.entering !== null) Game.renderImage(context, x, y, this.image, add(dir, this.entering), size);
-//                if (this.exiting !== null) Game.renderImage(context, x, y, this.image, add(dir, this.exiting), size);
+        // @param dir: the direction the tile is facing
+        this.render = function (context, x, y, dir) {
+            if (this.entering !== null) Game.renderImage(context, x, y, this.image, add(dir, this.entering), Game.tileSize);
+            if (this.exiting !== null) Game.renderImage(context, x, y, this.image, add(dir, this.exiting), Game.tileSize);
         };
     }; // end Game.GameState.Laser()
 
     // represents an actual receptor, in a receptor tile (receptor tiles can have 0-4 of these things)
-    Game.GameState.Receptor = function (dir, col) {
-        this.dir = dir; // the dir we are facing relative to our host tile
+    Game.GameState.Receptor = function (col) {
         this.col = col;
         this.laser = null;
         this.on = false;
 
-        this.update = function (dir) {
-            if (this.dir === null) return;
+        this.update = function () {
             this.on = false;
-            if (this.laser !== null) {
-                if (this.laser.entering === add(this.dir, dir) && this.colourTurnsMeOn(this, this.laser.col)) {
-                    this.on = true;
-                }
-            }
+            if (this.laser !== null && this.colourTurnsMeOn(this, this.laser.col)) {
+                this.on = true;
+            } else this.on = false;
 
             if (!this.on) {
                 this.laser = null;
             }
         };
 
-        this.render = function(context, dir, x, y) {
-            if (this.dir === null) return;
-
+        this.render = function(context, x, y, dir) {
             if (this.on) {
                 context.fillStyle = "green";
-                context.fillRect(x, y, Game.tileSize, Game.tileSize);
+                context.fillRect(x - Game.tileSize / 2 , y - Game.tileSize / 2, Game.tileSize, Game.tileSize);
             }
             
-            Game.renderImage(context, x, y, Game.images[Game.types.tiles.RECEPTOR], add(this.dir, dir), Game.tileSize);
-            Game.renderImage(context, x, y, Game.images.lasers[col], add(this.dir, dir), Game.tileSize);
+            Game.renderImage(context, x, y, Game.images[Game.types.tiles.RECEPTOR][this.col], dir, Game.tileSize);
         };
 
         // returns whether or not the specified color turns the specified receptor on
         this.colourTurnsMeOn = function (receptor, col) {
-            if (receptor.dir === null) return false;
             return true;
             // LATER implement colour turns me on method
 //            if (col === Game.images.receptors.white) return true;
@@ -371,108 +381,124 @@ Game.init = function () {
         };
 
         // init
-        switch (this.type) {
-            case Game.types.tiles.BLANK:
-            case Game.types.tiles.MIRROR:
-                this.init = function () {};
-                break;
-            case Game.types.tiles.POINTER:
-                this.init = function () {
-                    this.on = false;
-                };
-                break;
-            case Game.types.tiles.RECEPTOR:
-                this.init = function () {
-                    this.receptors = [new Game.GameState.Receptor(Game.NORTH, Game.types.colours.RED), null, new Game.GameState.Receptor(Game.NORTH, Game.types.colours.RED), null];
-                };
-                break;
-            default:
-                this.init = function () {};
-                break;
-        }
+        this.init = function () {
+            // declare any unique variables here, it's not ideal but it'll have to do for now (pig)
+            this.on = false;
+            this.color = Game.types.colours.RED;
+            
+            switch (this.type) {
+                case Game.types.tiles.BLANK:
+                case Game.types.tiles.MIRROR:
+                    break;
+                case Game.types.tiles.POINTER:
+                    this.addLaser(new Game.GameState.Laser(null, this.dir, Game.images.lasers[this.color]));
+                    break;
+                case Game.types.tiles.RECEPTOR:
+                    this.receptors = [new Game.GameState.Receptor(Game.types.colours.BLUE), null, new Game.GameState.Receptor(Game.types.colours.GREEN), null];
+                    break;
+                default:
+                    break;
+            }
+        };
 
+        this.nextColor = function (useWhite) {
+            switch (this.color) {
+                case Game.types.colours.RED:
+                    return Game.types.colours.GREEN;
+                case Game.types.colours.GREEN:
+                    return Game.types.colours.BLUE;
+                case Game.types.colours.BLUE:
+                    if (useWhite) return Game.types.colours.WHITE;
+                    return Game.types.colours.RED;
+                case Game.types.colours.WHITE:
+                    return Game.types.colours.RED;
+            }
+            return Game.types.colours.RED;
+        };
+        
         // click
-        switch (this.type) {
-            case Game.types.tiles.BLANK:
-            case Game.types.tiles.MIRROR:
-            case Game.types.tiles.RECEPTOR:
-                this.click = function (event, down) {
+        this.click = function (event, down) {
+            switch (this.type) {
+                case Game.types.tiles.RECEPTOR:
+                    console.log("receptor! " + this.receptors[0].on);
+                case Game.types.tiles.BLANK:
+                case Game.types.tiles.MIRROR:
                     if (down === false) return; // for now we don't care about mouse releases FUTURE use mouse releases for something?
-                    if (event.which === 3 || event.button === 2) { // right click
-                        // Rotate clockwise by default on right click
+                    if (clickType(event) === "left") {
                         this.dir += 1;
                         if (this.dir > this.maxdir()) this.dir = 0;
-                    } else if (event.which === 1 || event.button === 0){ // left click
+                    } else if (clickType(event) === "right") {
                         if (Game.levelEditMode) {
-                            this.type += 1;
-                            if (this.type > Game.types.tiles.RECEPTOR) this.type = 0;
+                            this.setType(Game.selectedTile);
                         }
                     }
-                };
-                break;
-            case Game.types.tiles.POINTER:
-                this.click = function (event, down) {
-                    if (!down) return; // for now we don't care about mouse releases FUTURE use mouse releases for something?
-                    if (event.which === 3 || event.button === 2) { // right click
-                        // Rotate clockwise by default on right click
+                    break;
+                case Game.types.tiles.POINTER:
+                    if (down === false) return; 
+                    if (clickType(event) === "left") {
                         this.dir += 1;
                         if (this.dir > this.maxdir()) this.dir = 0;
-                    } else if (event.which === 1 || event.button === 0) { // left click
+                    } else if (clickType(event) === "right") {
                         this.on = !this.on;
-                        if (this.on === false) {
-                            this.removeAllLasers();
+                        if (this.on === true) {
+                            if (Game.levelEditMode) this.color = this.nextColor(false);
+                            this.addLaser(new Game.GameState.Laser(null, this.dir, Game.images.lasers[this.color]));
                         } else {
-                            if (this.lasers.length === 0) {
-                                this.lasers.push(new Game.GameState.Laser(null, Game.NORTH, Game.images.lasers[Game.types.colours.RED]));
-                            }
+                            this.removeAllLasers();
                         }
                         if (Game.levelEditMode) {
-                            this.type += 1;
-                            if (this.type > Game.types.tiles.RECEPTOR) this.type = 0;
+                            this.setType(Game.selectedTile);
                         }
+                        console.log("pointer has " + this.lasers.length + " laser(s) and is " + (this.on ? "on" : "off"));
                     }
-                };
-                break;
-            default:
-                this.click = function (event, down) {};
-                break;
-        }
+                    break;
+                default:
+                    break;
+            }
+        };
+        
+        this.setType = function (type) {
+            this.type = type;
+            this.init();
+        };
         
         // hover
-        switch (this.type) {
-            case Game.types.tiles.BLANK:
-            case Game.types.tiles.MIRROR:
-            case Game.types.tiles.RECEPTOR:
-            case Game.types.tiles.POINTER:
-                this.hover = function (into) {
-                    this.hovering = into;
-                };
-                break;
-            default:
-                this.hover = function (into) {
-                    this.hovering = into;
-                };
-                break;
-        }
+        this.hover = function (into) {
+            this.hovering = into;
+        };
 
         // update
-        switch (this.type) {
-            case Game.types.tiles.BLANK:
-            case Game.types.tiles.MIRROR:
-            case Game.types.tiles.RECEPTOR:
-                this.update = function () {};
-                break;
-            case Game.types.tiles.POINTER:
-                this.update = function (board) {
+        this.update = function (board) {
+            var i;
+            switch (this.type) {
+                case Game.types.tiles.BLANK:
+                case Game.types.tiles.MIRROR:
+                    break;
+                case Game.types.tiles.RECEPTOR:
+                    for (i = 0; i < this.lasers.length; i++) {
+                        if (this.receptors[this.lasers[i].entering + this.dir]) { // there's a laser pointing into a receptor
+                            this.receptors[this.lasers[i].entering + this.dir].laser = this.lasers[i];
+                        }
+                    }
+                    for (i = 0; i < this.receptors.length; i++) {
+                        if (this.receptors[i]) this.receptors[i].update();
+                    }
+                    break;
+                case Game.types.tiles.POINTER:
                     if (this.on === false) return;
-
-                    // Begin laser path! (iteratively, not recusively) ((cause recursion is scary))
+                    else this.addLaser(new Game.GameState.Laser(null, this.dir, Game.images.lasers[this.color]));
+                    // ^ this line ^ should always be true if this tile is "on" LATER test that
+                    
                     var checkedTiles = [this.w * this.h], // 0=not checked, 1=checked once, 2=checked twice (done)
                         nextDir = this.dir, // direction towards next tile
                         nextTile = board.getTile(this.x, this.y),
                         xx,
                         yy;
 
+                    for (i = 0; i < this.w * this.h; i++) {
+                        checkedTiles[i] = 0;
+                    }
+                    
                     do {
                         xx = nextTile.x + Game.offset[nextDir][0];
                         yy = nextTile.y + Game.offset[nextDir][1];
@@ -494,50 +520,51 @@ Game.init = function () {
                             nextDir = nextTile.lasers[nextTile.lasers.length - 1].exiting;
                         } else break; // they didn't add the laser, end the chain
                     } while (nextDir !== null);
-
-                };
-                break;
-            default:
-                this.update = function () {};
-                break;
-        }
+                    break;
+                default:
+                    break;
+            }
+        };
 
         // render
-        switch (this.type) {
-            case Game.types.tiles.BLANK:
-            case Game.types.tiles.MIRROR:
-            case Game.types.tiles.POINTER:
-                this.render = function (context, x, y) {
-                    // Default render function
-                    for (var i = 0; i < this.lasers.length; i++) {
-                        this.lasers[i].render(context, this.type === Game.types.tiles.POINTER ? this.dir : 0, x, y);
+        this.render = function (context, x, y) {
+            var i;
+            switch (this.type) {
+                case Game.types.tiles.BLANK:
+                case Game.types.tiles.MIRROR:
+                case Game.types.tiles.POINTER:
+//                    console.log(this.on + " " + this.lasers.length);
+                    for (i = 0; i < this.lasers.length; i++) {
+                        this.lasers[i].render(context, x, y, 0);
                     }
 
-                    var image = Game.images[this.type];
-
-                    Game.renderImage(context, x, y, image, this.dir, Game.tileSize);
-                };
-                break;
-            case Game.types.tiles.RECEPTOR:
-                this.render = function (context, x, y, dir) {/* render */
-                    for (var i = 0; i < this.receptors.length; i++) {
-                        if (this.receptors[i] !== null) this.receptors[i].render(context, dir, x, y);
+                    Game.renderImage(context, x, y, Game.images[this.type], this.dir, Game.tileSize);
+                    break;
+                case Game.types.tiles.RECEPTOR:
+                    for (i = 0; i < this.lasers.length; i++) {
+                        this.lasers[i].render(context, x, y, this.type === Game.types.tiles.POINTER ? this.dir : 0);
                     }
-                };
-                break;
-            default:
-                this.render = function (context, x, y) {};
-                break;
-        }
-
+                    for (i = 0; i < this.receptors.length; i++) {
+                        if (this.receptors[i] !== null) this.receptors[i].render(context, x, y, this.dir + i);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        };
+    
         this.addLaser = function (laser) {
+            // first set the laser's exiting direction (null if the laser doesn't pass through this tile)
             switch (this.type) {
                 case Game.types.tiles.BLANK:
                     laser.exiting = opposite(laser.entering);
                     break;
                 case Game.types.tiles.POINTER:
-                    return; // pointers already have their own laser!! don't add another one!
+                    if (this.lasers.length > 0) return; // we already have a laser!! Don't add another one!
+                    else laser.exiting = null;
+                    break;
                 case Game.types.tiles.RECEPTOR:
+                    laser.exiting = null;
                     break;
                 case Game.types.tiles.MIRROR:
                     // there's probably a better way to do this, this will work for now though. FUTURE - implement a cool algorithm which elegantly handles this
@@ -553,19 +580,18 @@ Game.init = function () {
                         else if (laser.entering === Game.SOUTH) laser.exiting = Game.EAST;
                     }
                     break;
-                }
-                this.lasers.push(laser);
+            }
+            // then add the laser
+            this.lasers.push(laser);
         };
 
         this.removeAllLasers = function () {
             this.lasers = [];
         };
-
-        this.init();
     }; // end Game.GameState.Tile()
 
     Game.GameState.Board = function (w, h, gs) {
-        var str, i, y, x, bgimg, type, dir;
+        var str, i, y, x, bgimg;
         this.w = w;
         this.h = h;
         this.gs = gs;
@@ -573,22 +599,26 @@ Game.init = function () {
 
         for (i = 0; i < w * h; i++) {
             this.tiles[i] =  new Game.GameState.Tile(i % w, Math.floor(i / w), Game.types.tiles.MIRROR, Game.NORTH);
+            this.tiles[53] =  new Game.GameState.Tile(53 % w, Math.floor(53 / w), Game.types.tiles.POINTER, Game.EAST);
+            this.tiles[38] =  new Game.GameState.Tile(38 % w, Math.floor(38 / w), Game.types.tiles.RECEPTOR, Game.NORTH);
             this.tiles[i].init();
         }
         
         // create div tags! (used only for handling input, all rendering is done with a canvas)
         // div tags only get created (or recreated) when loading a new level
-        this.updateBoard = function () {
+        this.createBoard = function () {
+            var type, dir;
             str = "";
             get('tiles').innerHTML = str; // clear any previous game board
             for (y = 0; y < h; y++) {
                 str += '<div class="row">';
                 for (x = 0; x < w; x++) {
-                    type = this.tiles[y * w + x].type;
-                    dir = this.tiles[y * w + x].dir;
-                    this.tiles[y * w + x] = new Game.GameState.Tile(i % w, Math.floor(i / w), type, dir);
-                    this.tiles[y * w + x].init();
-                    bgimg = Game.images[this.tiles[y * w + x].type].src || "res/blank.png";
+                    i = y * w + x;
+                    type = this.tiles[i].type;
+                    dir = this.tiles[i].dir;
+                    
+                    this.tiles[i] = new Game.GameState.Tile(x, y, type, dir);
+                    this.tiles[i].init();
                     str += '<div class="tile"' +
                         'onmousedown="boardClick(event, true, ' + y + ', ' + x + ');"' +
                         'onmouseup="boardClick(event, false, ' + y + ', ' + x + ');"' +
@@ -612,23 +642,31 @@ Game.init = function () {
             get('gamecanvas').height = h * Game.tileSize;
             
         };
-        this.updateBoard();
 
         this.update = function () {
-            // FIXME update all tiles here
-//            //remove all lasers (except for pointer tiles
-//            for (i = 0; i < this.tiles.length; i++) {
-//                if (this.tiles[i].type !== Game.types.POINTER) this.tiles[i].removeAllLasers();
-//            }
-//
-//            for (i = 0; i < w * h; i++) {
-//                this.tiles[i].update(this);
+            // remove all lasers
+            for (i = 0; i < this.tiles.length; i++) {
+                this.tiles[i].removeAllLasers();
+            }
+            // update all pointer tiles
+            for (i = 0; i < this.tiles.length; i++) {
+                if (this.tiles[i].type === Game.types.tiles.POINTER) this.tiles[i].update(this); 
+            }
+            // update all non-pointer tiles
+            for (i = 0; i < this.tiles.length; i++) {
+                if (this.tiles[i].type !== Game.types.tiles.POINTER) this.tiles[i].update();
+            }
+            
+//            if (Game.ticks % 10 === 0) {
+//                for (i = 0; i < this.tiles.length; i++) {
+//                    if (this.tiles[i].hovering === true) console.log(this.tiles[i].x + " " + this.tiles[i].y + " " + this.tiles[i].on);
+//                }
 //            }
         };
 
         this.getTile = function (x, y) {
             if (x >= 0 && x < this.w && y >= 0 && y < this.h) {
-                if (this.tiles[x * this.w + y]) {
+                if (this.tiles[x + y *  this.w]) {
                     return this.tiles[x + y * this.w];
                 }
             }
@@ -715,7 +753,11 @@ Game.init = function () {
         context.translate(x, y);
         context.rotate(dir * 90 * (Math.PI / 180));
 
-        context.drawImage(image, -size / 2, -size / 2);
+//        try {
+            context.drawImage(image, -size / 2, -size / 2);
+//        } catch (e) {
+//            throw new Error(e.message);
+//        }
 
         context.restore();
     };
@@ -758,6 +800,16 @@ Game.init = function () {
     };
     
 }; // end Game.init()
+
+function assert(condition, message) {
+    if (!condition) {
+        message = message || "Assertion failed";
+        if (typeof Error !== "undefined") {
+            throw new Error(message);
+        }
+        throw message; // Fallback
+    }
+}
 
 function selectionTileClick(event, down, type) {
     if (down) {
@@ -846,40 +898,16 @@ function opposite (dir) {
     return dir;
 }
 
-// IMPLEMENT MOUSE AND KEYBOARD INPUT LATER
-//function rightClick(event) {
-//    // prevent default context menu from appearing, the actual click is handled in boardClick()
-//    return false;
-//}
-//
-//function boardClick(event) {
-//    boardHover(event, true);
-//    if ("which" in event) { // firefox, safari, chrome, opera
-//        if (event.which === 1) Game.lmb = true;
-//        else if (event.which === 3) Game.rmb = true;
-//    } else if ("button" in event) { // IE 8+, opera
-//        if (event.button === 0) Game.lmb = true;
-//        else if (event.button === 2) Game.rmb = true;
-//    }
-//}
-//
-//function boardHover(event, inside) {
-//    if (inside) {
-//        if (event.pageX||event.pageY) {
-//            Game.mousex = event.pageX;
-//            Game.mousey = event.pageY;
-//        } else if (event.clientX||event.clientY) {
-//            Game.mousex = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-//            Game.mousey = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-//        }
-//    } else {
-//        Game.mousex = -1;
-//        Game.mousey = -1;
-//    }
-//}
-//
 function keyPressed(event, down) {
-    if(Game.keysdown) Game.keysdown[event.keyCode ? event.keyCode : event.which] = down;
+    if(Game.keysdown) {
+        var keycode = event.keyCode ? event.keyCode : event.which;
+        Game.keysdown[keycode] = down;
+        
+        if (Game.keysdown[Game.KEYBOARD.ONE]) Game.selectedTile = 0;
+        if (Game.keysdown[Game.KEYBOARD.TWO]) Game.selectedTile = 1;
+        if (Game.keysdown[Game.KEYBOARD.THREE]) Game.selectedTile = 2;
+        if (Game.keysdown[Game.KEYBOARD.FOUR]) Game.selectedTile = 3;
+    }
 }
 
 window.onkeydown = function (event) { keyPressed(event, true); };
@@ -887,10 +915,17 @@ window.onkeyup = function (event) { keyPressed(event, false); };
 
 function boardClick(event, down, y, x) {
     Game.sm.currentState().click(event, down, x, y);
+    // LATER add sounds!
 }
 
 function boardHover(into, y, x) {
     Game.sm.currentState().hover(into, x, y);
+}
+
+function clickType(event) {
+    if (event.which === 3 || event.button === 2) return "right";
+    else if (event.which === 1 || event.button === 0) return "left";
+    else if (event.which === 2 || event.button === 1) return "middle";
 }
 
 window.onbeforeunload=function(event) {
@@ -901,11 +936,12 @@ window.onbeforeunload=function(event) {
 };
 
 window.onload = function () {
-    Bugsnag.user = {
-      id: 0,
-      name: "AJ Weeks",
-      email: "ajweeks@shaw.ca"
-    };
+// RELEASE remove this
+//    Bugsnag.user = {
+//      id: 0,
+//      name: "AJ Weeks",
+//      email: "ajweeks@shaw.ca"
+//    };
     
     Game.init();
     Game.loop();
