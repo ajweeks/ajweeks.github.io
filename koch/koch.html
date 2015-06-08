@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!-- Copyright AJ Weeks 2015 -->
+<html lang="en">
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="content-type">
+    <meta name="keywords" content="aj weeks, liqwidice, game developer, koch snowflake, koch, js, javascript, renderer">
+    <meta name="description" content="A Koch Snowflake renderer made in pure JavaScript by AJ Weeks">
+    <meta name="author" content="AJ Weeks">
+    
+    <title>Koch Snowflake JS</title>
+    <style type="text/css">
+        body {
+            background-color: #111;
+        }
+        h2 {
+            text-align: center; 
+            color: white; 
+            font-family: 'Verdana';
+            font-weight: lighter;
+            padding-top: 20px;
+        }
+        #canvas {
+            position: relative;
+            left: 50%;
+            margin-left: -325px;
+        }
+        #menubar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 30px;
+            width: 100%;
+            background-image: url(http://api.thumbr.it/whitenoise-64x64.png?background=1a1a1aff&noise=292929&density=40&opacity=50);
+            font-family: 'Verdana';
+            font-size: 12px;
+            -webkit-box-shadow: inset 0px -2px 4px 0px rgba(153,153,153,0.45);
+            -moz-box-shadow: inset 0px -2px 4px 0px rgba(153,153,153,0.45);
+            box-shadow: inset 0px -2px 4px 0px rgba(153,153,153,0.45);
+        }
+        #menubar div {
+            margin: 6px 8px;
+        }
+        #menubar a {
+            color: #FFF;
+        }
+        #menubar a:hover {
+            text-shadow: 0px 0px 3px #FFF;
+        }
+    </style>
+    <script src="js/main.js"></script>
+</head>
+<body>
+    <div id="menubar">
+        <div>
+            <a href="../index.html">Home</a>
+        </div>
+    </div>
+    <h2>Koch Snowflake JS</h2>
+    <canvas id="canvas" width="650px" height="400px" oncontextmenu="return false;" onmouseup="Game.click(event);"></canvas>    
+</body>
+</html>
