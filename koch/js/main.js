@@ -1,23 +1,23 @@
-// Copyright AJ Weeks 2015 
+// Copyright AJ Weeks 2015
 /* jshint browser: true */
 /* jshint devel: true */
 
 /*
 *
 *   A simple Koch Snowflake rendering made with pure HTML5 / JS
-*   Offers two modes currently: 
+*   Offers two modes currently:
 *       0 - renders the current iteration of the snowflake (click to cycle through iterations)
 *       1 - renders the first 8 iteraions of the snowflake at once in different colours (press 'm' to cycle through modes)
 *
 */
 
-var Game = {}; 
+var Game = {};
 
 function render(index, all) {
     var context = Game.canvas.getContext('2d');
     context.fillStyle = "#2a2a4d";
     context.fillRect(0, 0, 650, 400);
-    
+
     if (all) renderAll(context);
     else renderDepth(context, index);
 
@@ -43,7 +43,7 @@ function render(index, all) {
 /* Renders a koch snowflake with the given number of iterations */
 function renderDepth(context, index) {
     context.fillStyle = "rgb(" + (150 - index * 50) + ", " + (index * 25) + ", " + (index * 60 + 50) + ")";
-    context.strokeStyle = "rgb(" + (150 - index * 50) + ", " + (index * 25) + ", " + (index * 60 + 50) + ")";    
+    context.strokeStyle = "rgb(" + (150 - index * 50) + ", " + (index * 25) + ", " + (index * 60 + 50) + ")";
     context.lineWidth = (Game.MAX_ITERATION - index) * 0.3;
     context.beginPath();
     for (var point in Game.coords[index]) {
@@ -59,7 +59,7 @@ function renderAll(context) {
     for (var coord = 0; coord <= Game.MAX_ITERATION; coord++) {
         var c = Game.MAX_ITERATION - coord;
         generateCoords(c); // ensure all coords are generated (doesn't generate coords that have already been generated)
-        
+
         context.fillStyle = "rgb(" + (c * c * 20 + 50) + ", " + (c * 35 + 65) + ", " + (65 + c * 64) + ")";
         context.strokeStyle = "rgb(" + (c * c * 20 + 50) + ", " + (c * 35 + 65) + ", " + (65 + c * 64) + ")";
         context.lineWidth = coord * 0.1;
@@ -102,21 +102,52 @@ Game.click = function(event) {
     if (Game.mode === 1) {
         return;
     }
-    
-    Game.mouseX = getRelativeCoordinates(event, Game.canvas).x;
-    Game.mouseY = getRelativeCoordinates(event, Game.canvas).y;
+
     if (clickType(event) === 'left') {
         Game.iteration++;
         if (Game.iteration > Game.MAX_ITERATION) Game.iteration = 0;
     } else if (clickType(event) === 'right') {
         Game.iteration--;
-        if (Game.iteration < 0) Game.iteration = Game.MAX_ITERATION;    
+        if (Game.iteration < 0) Game.iteration = Game.MAX_ITERATION;
     }
-    
+
     generateCoords(Game.iteration);
     render(Game.iteration, false);
 };
-    
+
+window.addEventListener("onmousewheel", onscroll, false);
+window.addEventListener("mousewheel", onscroll, false);
+window.addEventListener("DOMMouseScroll", onscroll, false);
+
+function onscroll (event) {
+    Game.iteration += (event.wheelDelta || -event.detail) > 0 ? 1 : -1;
+    if (Game.iteration > Game.MAX_ITERATION) Game.iteration = 0;
+    if (Game.iteration < 0) Game.iteration = Game.MAX_ITERATION;
+
+    generateCoords(Game.iteration);
+    render(Game.iteration, false);
+}
+
+window.onkeypress = function (event) {
+    if (event.keyCode === 109 || event.key === 'm') {
+        Game.mode++;
+        Game.mode &= 1;
+
+        render(Game.iteration, Game.mode === 1);
+    } else if (event.keyCode=== 32 || event.key === ' ') {
+        Game.shift += 1;
+        Game.shift &= 1;
+
+        render(Game.iteration, Game.mode === 1);
+    }
+};
+
+function clickType(event) {
+    if (event.which === 3 || event.button === 2) return "right";
+    else if (event.which === 1 || event.button === 0) return "left";
+    else if (event.which === 2 || event.button === 1) return "middle";
+}
+
 Game.Point = function(x, y) {
     this.x = x;
     this.y = y;
@@ -131,89 +162,8 @@ window.onload = function (event) {
     Game.mode = 0; // mode 0 = render one snowflake, mode 1 = render all mode (press 'm' to cycle through modes)
     Game.shift = 0;
     Game.coords = [];
-    
+
     generateCoords(Game.iteration);
-    
+
     render(Game.iteration, false);
 };
-
-window.onkeypress = function (event) {
-    if (event.key === 'm') {
-        Game.mode++;
-        Game.mode &= 1;
-        
-        render(Game.iteration, Game.mode === 1);
-    } else if (event.key === ' ') {
-        Game.shift += 1;
-        Game.shift &= 1;
-        
-        render(Game.iteration, Game.mode === 1);
-    }
-};
-
-function clickType(event) {
-    if (event.which === 3 || event.button === 2) return "right";
-    else if (event.which === 1 || event.button === 0) return "left";
-    else if (event.which === 2 || event.button === 1) return "middle";
-}
-
-/** The following two functions were taken from Acko.net */
-function getRelativeCoordinates(event, reference) {
-    var x, y, e, el, pos, offset;
-    event = event || window.event;
-    el = event.target || event.srcElement;
-
-    if (!window.opera && typeof event.offsetX != 'undefined') {
-      // Use offset coordinates and find common offsetParent
-      pos = { x: event.offsetX, y: event.offsetY };
-
-      // Send the coordinates upwards through the offsetParent chain.
-      e = el;
-      while (e) {
-        e.mouseX = pos.x;
-        e.mouseY = pos.y;
-        pos.x += e.offsetLeft;
-        pos.y += e.offsetTop;
-        e = e.offsetParent;
-      }
-
-      // Look for the coordinates starting from the reference element.
-      e = reference;
-      offset = { x: 0, y: 0 };
-      while (e) {
-        if (typeof e.mouseX != 'undefined') {
-          x = e.mouseX - offset.x;
-          y = e.mouseY - offset.y;
-          break;
-        }
-        offset.x += e.offsetLeft;
-        offset.y += e.offsetTop;
-        e = e.offsetParent;
-      }
-
-      // Reset stored coordinates
-      e = el;
-      while (e) {
-        e.mouseX = undefined;
-        e.mouseY = undefined;
-        e = e.offsetParent;
-      }
-    } else {
-      // Use absolute coordinates
-      pos = getAbsolutePosition(reference);
-      x = event.pageX  - pos.x;
-      y = event.pageY - pos.y;
-    }
-    // Subtract distance to middle
-    return { x: x, y: y };
-}
-
-function getAbsolutePosition(element) {
-    var r = { x: element.offsetLeft, y: element.offsetTop };
-    if (element.offsetParent) {
-      var tmp = getAbsolutePosition(element.offsetParent);
-      r.x += tmp.x;
-      r.y += tmp.y;
-    }
-    return r;
-}
