@@ -124,7 +124,7 @@ var Game = (function () {
         get('darken').style.display = "initial";
         get('popup').style.cssText = styles;
         get('popup').style.display = "initial";
-        get('popup').innerHTML = '<a id="popupClose" onclick="Game.clearPopup();">x</a>' + str;
+        get('popup').innerHTML = '<a id="popupClose" onclick="if (clickType(event)===\'left\') { Sound.play(Sound.select); Game.clearPopup(); }">x</a>' + str;
         Game.popupUp = true;
     };
     Game.clearPopup = function () {
@@ -137,6 +137,7 @@ var Game = (function () {
         Game.ticks += 1;
         if (Game.keysdown[Game.KEYBOARD.ESC]) {
             if (Game.popupUp === true) {
+                Sound.play(Sound.select);
                 Game.clearPopup();
             }
             else {
@@ -166,7 +167,7 @@ var Game = (function () {
         Game.stats.end();
         window.setTimeout(Game.loop, 1000 / Game.fps);
     };
-    Game.version = 0.041;
+    Game.version = 0.043;
     Game.releaseStages = { DEVELOPMENT: "development", PRODUCTION: "production" };
     Game.releaseStage = Game.releaseStages.PRODUCTION;
     Game.images = [];
@@ -176,14 +177,21 @@ var Game = (function () {
     Game.popupUp = false;
     Game.defaultLevels = [
         [9, 9, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [2, 1, 1, 1], 0, 0, 0, 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [3, 0, 'XXGX'], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [1, 1], 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-        [9, 9, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [2, 1, 1, 0], 0, 0, 0, 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [3, 1, 'GXXX'], 0, 0, 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, [3, 3, 'RXXX'], 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, [2, 0, 1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-        [9, 9, [0, 0, 1, 0, 1, 0, 0, 0, 0, 0, [2, 1, 1, 2], 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, [3, 1, 'BXXR'], 0, 1, 1, 0, 0, [2, 3, 1, 0], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [1, 1], 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-        [9, 9, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [2, 1, 1, 1], 0, [1, 1], 0, [2, 3, 1, 2], 0, 0, 0, [2, 2, 1, 2], 0, 0, 0, 0, 0, [2, 2, 1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, [3, 2, 'RWRW'], 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, [2, 1, 1, 0], 0, [1, 1], 0, [2, 3, 1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
+        [9, 9, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [2, 1, 1, 2], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [3, 0, 'XXBX'], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
+        [9, 9, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, [2, 2, 1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [3, 3, 'RXGX'], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
+        [9, 9, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, [3, 1, 'WWWX'], 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [1, 1], [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, [2, 0, 1, 1], 0, [2, 0, 1, 2], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
         [9, 9, [0, 0, 0, 0, 0, 0, 0, 0, 0, [1, 1], 0, 1, 0, 1, 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [1, 1], 0, [3, 3, 'RXBX'], 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, [2, 3, 1, 2], 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
+        [9, 9, [0, 0, 1, 0, 1, 0, 0, 0, 0, 0, [2, 1, 1, 2], 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, [3, 1, 'BXXR'], 0, 1, 1, 0, 0, [2, 3, 1, 0], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [1, 1], 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
+        [9, 9, [[2, 1, 1, 0], 0, 0, 1, 0, 0, 0, 0, 0, [1, 1], 0, 0, 0, 0, 0, 1, 0, 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, [2, 2, 1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [2, 0, 1, 1], 0, 0, 0, 0, 0, 0, 0, [1, 1], [1, 1], 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, [3, 1, 'GRGX'], 0, [1, 1], 1, 0, 0, 0, 0, 0, 1, 0, 0]],
+        [9, 9, [0, [2, 1, 1, 2], 0, 1, [1, 1], 0, 0, 0, 0, 0, 0, 1, 0, [1, 1], 0, 0, 0, 1, 0, 0, [3, 2, 'XXRX'], 0, 0, 0, 0, 0, 1, [1, 1], 0, 0, 0, [3, 3, 'GXBX'], 0, 0, 0, [1, 1], 0, 0, [2, 1, 1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, [1, 1], 0, 0, 0, 0, 0, 0, 0, [1, 1], 1, 0, 0, [2, 3, 1, 0], 0, 0, 0, 0, 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, [1, 1]]],
         [9, 9, [[2, 2, 1, 1], 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, [1, 1], 0, 0, 1, 0, 1, 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, [2, 3, 1, 2], 0, 0, 0, 0, 0, 0, 0, 0, 0, [3, 2, 'BXWX'], 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0]],
-        [9, 9, [0, [1, 1], 0, 0, 0, 0, 0, [2, 2, 1, 2], 0, [2, 1, 1, 0], 0, 0, 0, 0, 0, 1, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, [1, 1], [3, 1, 'RXBG'], 0, [1, 1], 0, 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, [1, 1], 1, 0, 0, 0, 0, 0, 0, 0, [2, 3, 1, 2], 1, 0, 0, 0, 0, 0, 0, [3, 2, 'XXBX'], 0, 0, [2, 0, 1, 1], 0, 0, 1, 0, 0, 0, 0]],
+        [9, 9, [0, [1, 1], 0, 0, 0, 0, 0, [2, 2, 1, 2], 0, [2, 1, 1, 0], 0, 0, 0, 0, 0, 1, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, [1, 1], [3, 1, 'RXBG'], 0, 1, 0, 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, [1, 1], 1, 0, 0, 0, 0, 0, 0, 0, [2, 3, 1, 2], 1, 0, 0, 0, 0, 0, 0, [3, 3, 'XXBX'], 0, 0, [2, 0, 1, 1], 0, 0, 1, 0, 0, 0, 0]],
+        [9, 9, [0, [1, 1], 0, [1, 1], [2, 3, 1, 1], 1, 1, 1, [1, 1], [2, 2, 1, 2], 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, [1, 1], [1, 1], 0, 1, 2, 0, 0, 0, 0, 0, [3, 0, 'RXXX'], [1, 1], 0, 1, 0, 0, 1, 0, 0, 0, [3, 2, 'GXGX'], 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, [3, 2, 'WXBX'], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [1, 1], 0, 0, 0, [1, 1], 0, 0, [2, 3, 1, 0], [2, 0, 1, 1], 0, [1, 1], 0, 0, 0, 0, [1, 1], 0]],
         [9, 9, [0, 0, [2, 1, 1, 1], 1, 0, [1, 1], 1, 1, 0, 0, [2, 1, 1, 0], 0, [1, 1], 0, 1, 0, [3, 0, 'RGRG'], 1, 0, 0, 0, 0, 1, 0, [1, 1], 0, 0, 0, [1, 1], 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, [1, 1], 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, [2, 0, 1, 1], 0, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-        [9, 9, [0, [1, 1], 0, 0, [1, 1], 1, 1, [1, 1], 1, [1, 1], 0, [1, 1], [2, 1, 1, 2], 0, 0, 1, [1, 1], 0, 0, 0, 0, 1, 1, 0, 1, 2, 0, [2, 1, 1, 1], 0, [3, 0, 'BRXG'], [1, 1], [3, 0, 'XGBR'], 0, [1, 1], 1, 0, [2, 1, 1, 2], [1, 1], 0, 0, 0, 0, 0, [2, 0, 1, 1], 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, [2, 1, 1, 0], 1, [1, 1], 0, 0, [1, 1], 1, 1, 0, 0, 0, [1, 1], 0, 0, [1, 1]]]
+        [9, 9, [0, [1, 1], 0, 0, [1, 1], 1, [1, 1], [1, 1], 1, [1, 1], 0, [1, 1], [2, 1, 1, 2], 0, 0, [1, 1], [1, 1], 0, 0, 0, 0, 1, 1, 0, 1, 2, 0, [2, 0, 1, 1], 0, [3, 0, 'BRXG'], [1, 1], [3, 0, 'XGBR'], 0, [1, 1], 1, 0, [2, 1, 1, 2], 1, 0, 0, 0, 0, 0, [2, 0, 1, 1], 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [2, 1, 1, 0], 0, 0, 0, 0, 1, 0, 0, 0, [2, 1, 1, 0], 1, [1, 1], 0, 0, [1, 1], 1, [1, 1], 0, 0, 0, 1, 0, 0, 1]],
+        [9, 9, [[2, 1, 1, 1], 0, 1, 0, 0, 0, [1, 1], 0, [2, 3, 1, 1], 0, [1, 1], [1, 1], 0, 0, 0, [1, 1], 1, 0, 0, 0, 0, [1, 1], [3, 1, 'WXWX'], [1, 1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, [1, 1], [3, 0, 'WXWX'], [1, 1], 0, 0, [1, 1], 0, [2, 1, 1, 0], 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, [1, 1], 0, 1, [1, 1], 0, 0]],
+        [9, 9, [0, 0, 0, 0, [2, 3, 1, 2], [2, 2, 1, 2], [2, 2, 1, 2], [2, 1, 1, 2], 0, [1, 1], 0, 0, 1, 0, 0, 0, 0, 0, [3, 3, 'XXBX'], 0, [1, 1], [3, 2, 'RXBX'], 1, 1, 0, 0, 0, 0, [1, 1], 1, [1, 1], [3, 0, 'RXBX'], [1, 1], 0, 0, 0, 0, 0, [1, 1], 0, [1, 1], [3, 0, 'RXBX'], [1, 1], [1, 1], 0, 0, 0, 0, 1, [1, 1], 1, [3, 3, 'RXBX'], 1, 0, 0, 0, 0, 0, [1, 1], 0, 1, [2, 3, 1, 2], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [2, 3, 1, 0], 2, 2, [2, 1, 1, 0], 0, 0, 0, 0]],
+        [9, 9, [[1, 1], 0, 1, 0, 0, 0, [1, 1], 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, [1, 1], 0, 0, 0, [3, 2, 'XXRX'], [3, 1, 'XXGX'], [3, 3, 'BXXX'], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, [1, 1], 0, 0, 0, 0, [1, 1], 0, 0, [1, 1], 0, 2, [2, 0, 1, 1], [2, 1, 1, 2], 0, 0, [1, 1], 1, 0, 1]]
     ];
     Game.keysdown = [];
     Game.offset = [[0, -1], [1, 0], [0, 1], [-1, 0]];
@@ -251,11 +259,11 @@ var OptionState = (function (_super) {
         _super.call(this, STATE.OPTION, sm);
         get('optionstate').style.display = "initial";
     }
-    OptionState.prototype.setResetLevelPopup = function () {
+    OptionState.prototype.setResetAllLevelsPopup = function () {
         Game.setPopup('<h3>Clear level data</h3>' +
             '<p>Are you sure? This will erase all of your saved data!<br />This can not be undone!</p>' +
-            '<div class="popupButton button" id="yesButton" onclick="if (clickType(event)===\'left\') { Level.resetAll(); Game.clearPopup(); }">Reset</div>' +
-            '<div class="popupButton button" id="cancelButton" onclick="if (clickType(event)===\'left\') { Game.clearPopup(); }">Cancel</div>', 'margin-left: -170px;');
+            '<div class="popupButton button" id="yesButton" onclick="if (clickType(event)===\'left\') { Sound.play(Sound.wizzle); Level.resetAll(); Game.clearPopup(); }">Reset</div>' +
+            '<div class="popupButton button" id="cancelButton" onclick="if (clickType(event)===\'left\') { Sound.play(Sound.select); Game.clearPopup(); }">Cancel</div>', 'margin-left: -170px;');
     };
     OptionState.prototype.restore = function () {
         get('optionstate').style.display = "initial";
@@ -282,7 +290,7 @@ var LevelSelectState = (function (_super) {
                 var enabled = Game.defaultLevels[index] !== undefined;
                 str += '<div class="button lvlselect' + (enabled ? ' enabled' : '') + '" id="' + index + 'lvlselectButton" ' +
                     (enabled ? 'onclick="if (clickType(event)===\'left\') Game.sm.enterState(\'game\', ' + index + ');"' : '') +
-                    '>' + decimalToHex(index) + '</div>';
+                    '>' + index + '</div>';
             }
             str += '</div>';
         }
@@ -304,7 +312,6 @@ var LevelSelectState = (function (_super) {
         }
         highest %= 8;
         highest += 8;
-        console.log(highest);
     };
     LevelSelectState.updateButtonBgs = function () {
         if (get('levelselectstate').innerHTML === '')
@@ -386,7 +393,7 @@ var GameState = (function (_super) {
         else {
             get('lvledittilesarea').style.display = "none";
         }
-        get('levelNumHeading').innerHTML = 'Level ' + decimalToHex(this.levelNum);
+        get('levelNumHeading').innerHTML = 'Level ' + this.levelNum;
     }
     GameState.prototype.update = function () {
     };
@@ -424,6 +431,12 @@ var GameState = (function (_super) {
     GameState.prototype.hover = function (event, into) {
         this.level.hover(event, into);
     };
+    GameState.prototype.setResetLevelPopup = function () {
+        Game.setPopup('<h3>Reset level</h3>' +
+            '<p>Are you sure you want to reset?</p>' +
+            '<div class="popupButton button" id="yesButton" onclick="if (clickType(event)===\'left\') { Sound.play(Sound.wizzle); Game.sm.currentState().level.reset(); Game.clearPopup(); }">Reset</div>' +
+            '<div class="popupButton button" id="cancelButton" onclick="if (clickType(event)===\'left\') { Sound.play(Sound.select); Game.clearPopup(); }">Cancel</div>', 'margin-left: -146px;');
+    };
     return GameState;
 })(BasicState);
 var StateManager = (function () {
@@ -442,6 +455,7 @@ var StateManager = (function () {
         }
     };
     StateManager.prototype.enterState = function (state, levelNum) {
+        Sound.play(Sound.select);
         this.currentState().hide();
         if (state === "game")
             this.states.push(this.getState(state, levelNum || 0));
@@ -467,6 +481,7 @@ var StateManager = (function () {
         // TODO figure out why this line was here... pretty sure it just messes other things up now..
         // if (this.states[this.states.length - 1].id === STATE.GAME) (<GameState>this.states[this.states.length - 1]).level.checkCompleted();
         if (this.states.length > 1) {
+            Sound.play(Sound.select);
             this.currentState().destroy();
             this.states.pop();
             this.currentState().restore();
@@ -502,9 +517,14 @@ var Receptor = (function () {
         this.on = false;
     }
     Receptor.prototype.update = function () {
+        var wasOn = this.on;
         this.on = (this.laser !== null && Receptor.colourTurnsMeOn(this.laser.colour, this.colour));
         if (this.on === false) {
             this.laser = null;
+        }
+        else {
+            if (wasOn === false)
+                Sound.play(Sound.blip);
         }
     };
     Receptor.prototype.render = function (context, x, y, dir) {
@@ -907,6 +927,7 @@ var Level = (function () {
         }
         if (on) {
             Level.removeFromMemory(this.levelNum);
+            Sound.play(Sound.win);
             if (Game.completedLevels[this.levelNum] !== true) {
                 Game.completedLevels[this.levelNum] = true;
                 Level.saveCompletedLevelsToMemory();
@@ -1026,6 +1047,10 @@ var Level = (function () {
         window.localStorage.setItem(Game.saveLocation + ' lvl: ' + this.levelNum, encodeURI(str));
     };
     Level.saveCompletedLevelsToMemory = function () {
+        if (typeof (Storage) === "undefined") {
+            console.error("Failed to save data. Please update your browser.");
+            return;
+        }
         var str = '';
         for (var i = 0; i < Game.completedLevels.length; i++) {
             if (Game.completedLevels[i] === true)
@@ -1040,6 +1065,10 @@ var Level = (function () {
             window.localStorage.setItem(Game.saveLocation + ' cl: ', str);
     };
     Level.loadCompletedLevelsFromMemory = function () {
+        if (typeof (Storage) === "undefined") {
+            console.error("Failed to save data. Please update your browser.");
+            return;
+        }
         if (window.localStorage.getItem(Game.saveLocation + ' cl: ') === null)
             return;
         var str = window.localStorage.getItem(Game.saveLocation + ' cl: ').split(',');
@@ -1136,6 +1165,26 @@ var Level = (function () {
         return new Level(this.levelNum, this.w, this.h, this.tiles);
     };
     return Level;
+})();
+var Sound = (function () {
+    function Sound() {
+    }
+    Sound.toggleMute = function () {
+        Sound.muted = !Sound.muted;
+    };
+    Sound.play = function (sound) {
+        if (Sound.muted)
+            return;
+        get(sound).currentTime = 0;
+        get(sound).play();
+    };
+    Sound.blip = 'blipSound';
+    Sound.win = 'winSound';
+    Sound.select = 'selectSound';
+    Sound.select3 = 'selectSound3';
+    Sound.wizzle = 'wizzleSound';
+    Sound.muted = false;
+    return Sound;
 })();
 var Colour = (function () {
     function Colour() {
