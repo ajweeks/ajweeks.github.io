@@ -1,0 +1,162 @@
+html {
+    background-color: #202021;
+    background-image: url('../res/bg-noise.png');
+
+    font-family: 'Arial';
+    color: #FEFEEE;
+}
+
+body {
+    margin: 0;
+}
+
+a {
+    color: #5691C0;
+    text-decoration: none;
+    font-style: italic;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+header {
+    background: rgb(39,38,66); /* Old browsers */
+    background: -moz-linear-gradient(left, rgba(39,38,66,1) 0%, rgba(82,80,94,1) 50%, rgba(39,38,66,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(39,38,66,1)), color-stop(50%,rgba(82,80,94,1)), color-stop(100%,rgba(39,38,66,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left, rgba(39,38,66,1) 0%,rgba(82,80,94,1) 50%,rgba(39,38,66,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left, rgba(39,38,66,1) 0%,rgba(82,80,94,1) 50%,rgba(39,38,66,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left, rgba(39,38,66,1) 0%,rgba(82,80,94,1) 50%,rgba(39,38,66,1) 100%); /* IE10+ */
+    background: linear-gradient(to right, rgba(39,38,66,1) 0%,rgba(82,80,94,1) 50%,rgba(39,38,66,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#272642', endColorstr='#272642',GradientType=1 ); /* IE6-9 */
+    position: fixed;
+    transition: all 0.5s;
+    text-align: center;
+    width: 100%;
+    font-size: 36px;
+}
+
+header h1 {
+    position: absolute;
+    padding: 0 12px;
+    transition: all 0.5s;
+}
+
+#header-large h1 {
+    display: block;
+    width: 400px;
+    left: 50%;
+    margin-left: -200px;
+    margin-top: 50px;
+    margin-bottom: 5px;
+}
+
+#header-small h1 {
+    left: 0;
+    font-size: 24px;
+    margin-top: 20px;
+    margin-bottom: 0;
+    margin-right: 90%;
+}
+
+header a {
+    color: #FEFEEE;
+    font-style: normal;
+    text-transform: uppercase;
+}
+
+header h3 {
+    margin-top: 5px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    font-size: 24px;
+    color: #DEDEFF;
+}
+
+nav {
+    transition: all 0.5s;
+    width: 100%;
+    /*margin-top: 14px;*/
+    display: inline-block;
+    padding: 8px 10px 0 10px;
+    border-bottom: 15px solid;
+    border-bottom-color: aliceblue;
+}
+
+#header-small nav {
+    margin-top: 14px;
+}
+
+#header-large nav {
+    margin-top: 137px;
+}
+
+nav + #navShadow {
+    width: 100%;
+    position: fixed;
+    height: 32px;
+    background: -moz-linear-gradient(top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.65)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav li {
+    display: inline-block;
+}
+
+nav a {
+    text-transform: uppercase;
+    color: #EEF;
+    display: block;
+    padding: 4px;
+    font-size: 22px;
+    font-style: normal;
+    width: 120px;
+    transition: all 0.3s;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+nav a:hover {
+    text-decoration: none;
+    background-color: aliceblue;
+    color: #222;
+}
+
+#home .home, #games .games, #about .about {
+    background-color: aliceblue;
+    color: #222;
+}
+
+main {
+    min-height: 300px;
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: aliceblue;
+    box-shadow: 0 0 50px rgb(39,38,66);
+    padding: 220px 10px 10px 10px;
+}
+
+main h2 {
+    color: black;
+    text-align: center;
+}
+
+main p {
+    color: black;
+}
+
+footer {
+    text-align: center;
+    padding: 50px 10px 20px 10px;
+}

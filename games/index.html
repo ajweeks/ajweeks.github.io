@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/main.css">
+    <style type="text/css">
+        .gameBlock {
+            height: 128px;
+            line-height: 128px;
+            display: block;
+            display: block;
+            background-color: grey;
+        }
+    </style>
+</head>
+<body id="games">
+
+    <header id="header-large">
+        <h1><a href="/">aj weeks</a></h1>
+
+        <nav>
+          <ul>
+            <li><a class="home" href="/">Home</a></li>
+            <li><a class="games" href="#">Games</a></li>
+            <li><a class="about" href="/about">About</a></li>
+          </ul>
+        </nav>
+        <div id="navShadow"></div>
+    </header>
+
+    <main>
+        <a href="/mirrors" class="gameBlock">
+            <h2>Mirrors (Beta)</h2>
+            <img src="/res/mirrors_screenshot.png"></img>
+        </a>
+        <a href="/tictactoe" class="gameBlock">
+            <h2>Ultimate Tic Tac Toe</h2>
+            <img src="/res/tictactoe_screenshot.png"></img>
+        </a>
+        <a href="/koch/koch.html" class="gameBlock">
+            <h2>View an interactive Koch Snowflake here!</h2>
+            <img src="/res/koch_screenshot.png"></img>
+        </a>
+    </main>
+
+    <footer>
+        <span>&copy; AJ Weeks 2015</span>
+    </footer>
+</body>
+</html>
