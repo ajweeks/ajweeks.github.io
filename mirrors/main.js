@@ -58,7 +58,7 @@ var Game = (function () {
     }
     Game.init = function () {
         document.title = "Mirrors V" + Game.version;
-        get('versionNumber').innerHTML = '<a href="https://github.com/ajweeks/mirrors-ts" target="_blank" style="color: inherit; text-decoration: none;">' + "V." + Game.version + '</a>';
+        get('versionNumber').innerHTML = '<a href="https://github.com/ajweeks/mirrors-ts" target="_blank" style="color: inherit; text-decoration: none;">' + "V." + Game.version + ' <span style="font-size: 14px">(beta)</span></a>';
         Game.images[IMAGE.BLANK] = new Image();
         Game.images[IMAGE.BLANK].src = "res/blank.png";
         Game.images[IMAGE.BLANK].alt = "blank";
