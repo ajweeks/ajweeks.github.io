@@ -1,14 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="../stylesheets/main.css">
+    <title>Games</title>
+    <script type="text/javascript">
+    window.addEventListener("onscroll", onscroll, false);
+    window.addEventListener("scroll", onscroll, false);
+
+    function onscroll () {
+        if (window.scrollY > 80) {
+            if (document.getElementById('header-large')) document.getElementById('header-large').id = 'header-small';
+        } else {
+            if (document.getElementById('header-small')) document.getElementById('header-small').id = 'header-large';
+        }
+    }
+    </script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
     <style type="text/css">
         .gameBlock {
-            height: 128px;
-            line-height: 128px;
+            height: 150px;
+            line-height: 150px;
             display: block;
-            display: block;
-            background-color: grey;
+            background-color: #FFF;
+            padding: 5px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        .gameBlock:hover {
+            box-shadow: 0 0 15px #CCC;
+        }
+        .gameBlock h2 {
+            display: inline-block;
+            margin: 0;
+            margin-right: 20px
+        }
+        .gameBlock img {
+            float: right;
         }
     </style>
 </head>
@@ -36,9 +62,13 @@
             <h2>Ultimate Tic Tac Toe</h2>
             <img src="/res/tictactoe_screenshot.png"></img>
         </a>
-        <a href="/koch/koch.html" class="gameBlock">
-            <h2>View an interactive Koch Snowflake here!</h2>
+        <a href="/koch" class="gameBlock">
+            <h2>Koch Snowflake</h2>
             <img src="/res/koch_screenshot.png"></img>
+        </a>
+        <a href="/gameoflife" class="gameBlock">
+            <h2>Game of Life</h2>
+            <img src="/res/gameoflife_screenshot.png"></img>
         </a>
     </main>
 

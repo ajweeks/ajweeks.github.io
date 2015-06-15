@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AJ Weeks</title>
+    <script type="text/javascript">
+    window.addEventListener("onscroll", onscroll, false);
+    window.addEventListener("scroll", onscroll, false);
+
+    function onscroll () {
+        if (window.scrollY > 80) {
+            if (document.getElementById('header-large')) document.getElementById('header-large').id = 'header-small';
+        } else {
+            if (document.getElementById('header-small')) document.getElementById('header-small').id = 'header-large';
+        }
+    }
+    </script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
+    <style type="text/css">
+        main {
+            text-align: center;
+            font-size: 22px;
+        }
+    </style>
+</head>
+<body id="about">
+
+    <header id="header-large">
+        <h1><a href="/">aj weeks</a></h1>
+
+        <nav>
+          <ul>
+            <li><a class="home" href="/">Home</a></li>
+            <li><a class="games" href="/games">Games</a></li>
+            <li><a class="about" href="#">About</a></li>
+          </ul>
+        </nav>
+        <div id="navShadow"></div>
+    </header>
+
+    <main>
+        <p>Hi! I&#8217;m AJ Weeks, the founder of Liqwidice Games, a one man game development studio based in Calgary, Canada.</p>
+        <p>I can be reached at <a href="http://github.com/ajweeks/" target="_blank">GitHub</a> &#8901;<a href="http://twitter.com/liqwidice">Twitter</a></p>
+        <p>If you enjoy any of my (free) games and are feeling generous, I would greatly appreaciate any donations.</p>
+        <br />
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+        <input type="hidden" name="cmd" value="_s-xclick">
+        <input type="hidden" name="hosted_button_id" value="2PJLJXJ9U63KU">
+        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+        <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+        </form>
+        <br />
+        <p>Thanks so much</p>
+        <p>-AJ</p>
+    </main>
+
+    <footer>
+        <span>&copy; AJ Weeks 2015</span>
+    </footer>
+</body>
+</html>

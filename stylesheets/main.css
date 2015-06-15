@@ -1,7 +1,7 @@
 html {
     background-color: #202021;
     background-image: url('../res/bg-noise.png');
-
+    min-width: 740px;
     font-family: 'Arial';
     color: #FEFEEE;
 }
@@ -30,7 +30,6 @@ header {
     background: linear-gradient(to right, rgba(39,38,66,1) 0%,rgba(82,80,94,1) 50%,rgba(39,38,66,1) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#272642', endColorstr='#272642',GradientType=1 ); /* IE6-9 */
     position: fixed;
-    transition: all 0.5s;
     text-align: center;
     width: 100%;
     font-size: 36px;
@@ -53,10 +52,9 @@ header h1 {
 
 #header-small h1 {
     left: 0;
+    min-width: 250px;
     font-size: 24px;
-    margin-top: 20px;
-    margin-bottom: 0;
-    margin-right: 90%;
+    margin: 20px 90% 0 -40px;
 }
 
 header a {
@@ -80,7 +78,7 @@ nav {
     display: inline-block;
     padding: 8px 10px 0 10px;
     border-bottom: 15px solid;
-    border-bottom-color: aliceblue;
+    border-bottom-color: #CACEDB;
 }
 
 #header-small nav {
@@ -129,12 +127,12 @@ nav a {
 
 nav a:hover {
     text-decoration: none;
-    background-color: aliceblue;
+    background-color: #CACEDB;
     color: #222;
 }
 
 #home .home, #games .games, #about .about {
-    background-color: aliceblue;
+    background-color: #CACEDB;
     color: #222;
 }
 
@@ -142,8 +140,7 @@ main {
     min-height: 300px;
     max-width: 900px;
     margin: 0 auto;
-    background-color: aliceblue;
-    box-shadow: 0 0 50px rgb(39,38,66);
+    background-color: #CACEDB;
     padding: 220px 10px 10px 10px;
 }
 

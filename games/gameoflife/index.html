@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Game of Life</title>
+    <script type="text/javascript">
+    window.addEventListener("onscroll", onscroll, false);
+    window.addEventListener("scroll", onscroll, false);
+
+    function onscroll () {
+        if (window.scrollY > 80) {
+            if (document.getElementById('header-large')) document.getElementById('header-large').id = 'header-small';
+        } else {
+            if (document.getElementById('header-small')) document.getElementById('header-small').id = 'header-large';
+        }
+    }
+    </script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
+    <style type="text/css">
+        main {
+            font-size: 22px;
+            text-align: justify;
+        }
+        img {
+            margin: 0 auto 20px auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header id="header-large">
+        <h1><a href="/">aj weeks</a></h1>
+
+        <nav>
+          <ul>
+            <li><a class="home" href="/">Home</a></li>
+            <li><a class="games" href="/games">Games</a></li>
+            <li><a class="about" href="/about">About</a></li>
+          </ul>
+        </nav>
+        <div id="navShadow"></div>
+    </header>
+
+    <main>
+        <p>This is a simple electronic circuit simulator that I made in pure Java from scratch.</p>
+
+        <p>The simulator features only three types of components: wires, inverters, and power sources. Wires and power sources connect to any neighbor that they can, while inverters only connect to their neighbors which are directly in front and behind them.</p>
+
+        <p>I&#8217;ve implemented saving and loading of the grid, various keyboard shortcuts, and a helpful debug mode. I wanted to avoid using swing at all, for various reasons, and therefore implemented the buttons completely from scratch, rendering everything using the java.awt package.</p>
+
+        <p>This was a school project for Computer Science 20 and took around one month of in-school work.</p>
+
+        <img src="/res/gameoflife_screenshot.png" width="740" height="586"></img>
+        <img src="/res/gameoflife_screenshot2.png" width="740" height="632"></img>
+
+        <p>You can download the game <a href="http://www.dropbox.com/s/61pos37tckfumoc/circuit.zip?dl=0" target="_blank">here</a> (.jar download)</p>
+
+        <p>The source code can be found on <a href="http://github.com/ajweeks/circuit" target="_blank">GitHub</a>.</p>
+    </main>
+
+    <footer>
+        <span>&copy; AJ Weeks 2015</span>
+    </footer>
+</body>
+</html>
