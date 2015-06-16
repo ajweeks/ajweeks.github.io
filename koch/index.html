@@ -6,15 +6,21 @@
     <meta name="keywords" content="aj weeks, liqwidice, game developer, koch snowflake, koch, js, javascript, renderer">
     <meta name="description" content="A Koch Snowflake renderer made in pure JavaScript by AJ Weeks">
     <meta name="author" content="AJ Weeks">
-    
+
     <title>Koch Snowflake JS</title>
     <style type="text/css">
         body {
             background-color: #111;
+
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
         h2 {
-            text-align: center; 
-            color: white; 
+            text-align: center;
+            color: white;
             font-family: 'Verdana';
             font-weight: lighter;
             padding-top: 20px;
@@ -52,10 +58,10 @@
 <body>
     <div id="menubar">
         <div>
-            <a href="../index.html">Home</a>
+            <a href="/">Home</a>
         </div>
     </div>
     <h2>Koch Snowflake JS</h2>
-    <canvas id="canvas" width="650px" height="400px" oncontextmenu="return false;" onmouseup="Game.click(event);"></canvas>    
+    <canvas id="canvas" width="650px" height="400px" oncontextmenu="return false;" onmouseup="Game.click(event);"></canvas>
 </body>
 </html>
