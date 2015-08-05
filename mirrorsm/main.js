@@ -56,8 +56,8 @@ var Game = (function () {
     function Game() {
     }
     Game.init = function () {
-        document.title = "Mirrors V" + Game.version;
-        get('versionNumber').innerHTML = '<a href="https://github.com/ajweeks/mirrors-ts" target="_blank" style="color: inherit; text-decoration: none;">' + "V." + Game.version + ' <span style="font-size: 14px">(beta)</span></a>';
+        document.title = "Mirrors V" + Game.version + " Mobile";
+        get('versionNumber').innerHTML = '<span style="color: inherit; text-decoration: none;">' + "V." + Game.version + ' <span style="font-size: 14px">(beta)</span></span>';
         Game.images[IMAGE.BLANK] = new Image();
         Game.images[IMAGE.BLANK].src = "res/blank.png";
         Game.images[IMAGE.BLANK].alt = "blank";
@@ -90,16 +90,9 @@ var Game = (function () {
         Game.images[IMAGE.LASER][COLOUR.BLUE] = new Image();
         Game.images[IMAGE.LASER][COLOUR.BLUE].src = "res/laser_blue.png";
         Game.images[IMAGE.LASER][COLOUR.BLUE].alt = "blue laser";
-        Game.stats = Stats();
-        Game.stats.setMode(0);
-        Game.stats.domElement.style.position = 'absolute';
-        Game.stats.domElement.style.left = '0px';
-        Game.stats.domElement.style.top = '0px';
-        document.body.appendChild(Game.stats.domElement);
         Game.sm = new StateManager();
         Game.completedLevels = new Array(Game.defaultLevels.length);
         Level.loadCompletedLevelsFromMemory();
-        Game.setDefaultPrefs();
     };
     Game.renderImage = function (context, x, y, image, dir, size) {
         context.save();
@@ -113,17 +106,12 @@ var Game = (function () {
         }
         context.restore();
     };
-    Game.setDefaultPrefs = function () {
-        setDebug(Game.releaseStage === Game.releaseStages.DEVELOPMENT);
-        setLevelEditMode(Game.debug);
-        Game.preferences.warn = !Game.debug;
-    };
     Game.setPopup = function (str, styles) {
         if (styles === void 0) { styles = ''; }
         get('darken').className = "";
         get('popup').className = "";
         get('popup').style.cssText = styles;
-        get('popup').innerHTML = '<a id="popupClose" onclick="if (clickType(event)===\'left\') { Sound.play(Sound.select); Game.clearPopup(); }">x</a>' + str;
+        get('popup').innerHTML = '<a id="popupClose" ontouchstart="Sound.play(Sound.select); Game.clearPopup(); return false;">x</a>' + str;
         Game.popupUp = true;
     };
     Game.clearPopup = function () {
@@ -134,43 +122,20 @@ var Game = (function () {
     };
     Game.update = function () {
         Game.ticks += 1;
-        if (Game.keysdown[Game.KEYBOARD.ESC]) {
-            if (Game.popupUp === true) {
-                Sound.play(Sound.select);
-                Game.clearPopup();
-            }
-            else {
-                this.sm.enterPreviousState();
-            }
-        }
-        else if (Game.keysdown[Game.KEYBOARD.ZERO]) {
-            toggleLevelEditMode();
-        }
-        else if (Game.keysdown[Game.KEYBOARD.NINE]) {
-            toggleDebug();
-        }
         Game.sm.update();
-        for (var i = 0; i < Game.keysdown.length; i++) {
-            Game.keysdown[i] = false;
-        }
     };
     Game.render = function () {
         Game.sm.render();
     };
     Game.loop = function () {
-        Game.stats.begin();
         Game.update();
         if (document.hasFocus() || Game.ticks % 5 === 0) {
             Game.render();
         }
-        Game.stats.end();
         window.setTimeout(Game.loop, 1000 / Game.fps);
     };
     Game.version = 0.100;
-    Game.releaseStages = { DEVELOPMENT: "development", PRODUCTION: "production" };
-    Game.releaseStage = Game.releaseStages.PRODUCTION;
     Game.images = [];
-    Game.preferences = { 'warn': Game.debug };
     Game.selectedTileID = ID.BLANK;
     Game.saveLocation = "Mirrors";
     Game.popupUp = false;
@@ -195,15 +160,11 @@ var Game = (function () {
         [9, 9, [0, 0, 0, 0, [2, 3, 1, 2], [2, 2, 1, 2], [2, 2, 1, 2], [2, 1, 1, 2], 0, [1, 1], 0, 0, 1, 0, 0, 0, 0, 0, [3, 3, 'XXBX'], 0, [1, 1], [3, 2, 'RXBX'], 1, 1, 0, 0, 0, 0, [1, 1], 1, [1, 1], [3, 0, 'RXBX'], [1, 1], 0, 0, 0, 0, 0, [1, 1], 0, [1, 1], [3, 0, 'RXBX'], [1, 1], [1, 1], 0, 0, 0, 0, 1, [1, 1], 1, [3, 3, 'RXBX'], 1, 0, 0, 0, 0, 0, [1, 1], 0, 1, [2, 3, 1, 2], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [2, 3, 1, 0], 2, 2, [2, 1, 1, 0], 0, 0, 0, 0]],
         [9, 9, [[1, 1], 0, 1, 0, 0, 0, [1, 1], 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, [1, 1], 0, 0, 0, 0, 0, 0, 0, [1, 1], 0, 0, 0, [3, 2, 'XXRX'], [3, 1, 'XXGX'], [3, 3, 'BXXX'], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, [1, 1], 0, 0, 0, 0, [1, 1], 0, 0, [1, 1], 0, 2, [2, 0, 1, 1], [2, 1, 1, 2], 0, 0, [1, 1], 1, 0, 1]]
     ];
-    Game.keysdown = [];
     Game.offset = [[0, -1], [1, 0], [0, 1], [-1, 0]];
     Game.ticks = 0;
     Game.fps = 60;
     Game.lvlselectButtonSpeed = 6;
     Game.lvlselectButtonDirection = 0;
-    Game.KEYBOARD = {
-        BACKSPACE: 8, TAB: 9, RETURN: 13, ESC: 27, SPACE: 32, PAGEUP: 33, PAGEDOWN: 34, END: 35, HOME: 36, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, INSERT: 45, DELETE: 46, ZERO: 48, ONE: 49, TWO: 50, THREE: 51, FOUR: 52, FIVE: 53, SIX: 54, SEVEN: 55, EIGHT: 56, NINE: 57, A: 65, B: 66, C: 67, D: 68, E: 69, F: 70, G: 71, H: 72, I: 73, J: 74, K: 75, L: 76, M: 77, N: 78, O: 79, P: 80, Q: 81, R: 82, S: 83, T: 84, U: 85, V: 86, W: 87, X: 88, Y: 89, Z: 90, TILDE: 192, SHIFT: 999
-    };
     return Game;
 })();
 var BasicState = (function () {
@@ -264,8 +225,8 @@ var OptionState = (function (_super) {
     OptionState.prototype.setResetAllLevelsPopup = function () {
         Game.setPopup('<h3>Clear level data</h3>' +
             '<p>Are you sure? This will erase all of your saved data!<br />This can not be undone!</p>' +
-            '<div class="popupButton button" id="yesButton" onclick="if (clickType(event)===\'left\') { Sound.play(Sound.wizzle); Level.resetAll(); Game.clearPopup(); }">Reset</div>' +
-            '<div class="popupButton button" id="cancelButton" onclick="if (clickType(event)===\'left\') { Sound.play(Sound.select); Game.clearPopup(); }">Cancel</div>', 'margin-left: -170px;');
+            '<div class="popupButton button" id="yesButton" ontouchstart="Sound.play(Sound.wizzle); Level.resetAll(); Game.clearPopup(); return false;">Reset</div>' +
+            '<div class="popupButton button" id="cancelButton" ontouchstart="Sound.play(Sound.select); Game.clearPopup(); return false;">Cancel</div>', 'margin-left: -170px;');
     };
     OptionState.prototype.restore = function () {
         get('optionstate').style.display = "initial";
@@ -281,8 +242,9 @@ var LevelSelectState = (function (_super) {
         _super.call(this, STATE.LEVEL_SELECT, sm);
         this.height = 8;
         this.numOfLevels = 64;
-        this.offset = 150;
-        this.maxOffset = -(Math.ceil(this.numOfLevels / this.height) * 250 - window.innerWidth + 150);
+        this.offset = 65;
+        this.minOffset = 65;
+        this.maxOffset = -230 * (this.numOfLevels / this.height - 1) + this.offset;
         get('levelselectstate').style.display = "block";
         var x, y, str = '', index;
         for (x = 0; x < Math.ceil(this.numOfLevels / this.height); x++) {
@@ -291,20 +253,23 @@ var LevelSelectState = (function (_super) {
                 index = x * this.height + y;
                 var enabled = Game.defaultLevels[index] !== undefined;
                 str += '<div class="button lvlselect' + (enabled ? ' enabled' : '') + '" id="' + index + 'lvlselectButton" ' +
-                    (enabled ? 'onclick="if (clickType(event)===\'left\') Game.sm.enterState(\'game\', ' + index + ');"' : '') +
+                    (enabled ? 'ontouchstart="Game.sm.enterState(\'game\', ' + index + '); return false;"' : '') +
                     '>' + index + '</div>';
             }
             str += '</div>';
         }
-        str += '<div id="backarrow" onmouseover="Game.lvlselectButtonDirection=1;" onmouseout="Game.lvlselectButtonDirection=0;" onclick="Game.lvlselectButtonDirection=1000" style="visibility: hidden"><p>&#9664;</p></div>';
-        str += '<div id="forwardarrow" onmouseover="Game.lvlselectButtonDirection=-1" onmouseout="Game.lvlselectButtonDirection=0;" onclick="Game.lvlselectButtonDirection=-1000"><p>&#9654;</p></div>';
-        str += '<div class="button" onclick="if (clickType(event)===\'left\') Game.sm.enterPreviousState();" style="margin-left: -90px; margin-top: -490px;">Back</div>';
+        str += '<div id="backarrow" style="visibility: hidden" ontouchstart="Game.sm.currentState().scroll(\'L\'); return false;"><p>&#9664;</p></div>';
+        str += '<div id="forwardarrow" ontouchstart="Game.sm.currentState().scroll(\'R\'); return false;"><p>&#9654;</p></div>';
+        str += '<div class="button" ontouchstart="Game.sm.enterPreviousState(); return false;" style="margin-left: 0; margin-top: -480px;">Back</div>';
         get('levelselectstate').style.width = 250 * Math.ceil(this.numOfLevels / this.height) + 'px';
-        get('levelselectstate').style.marginLeft = '150px';
+        get('levelselectstate').style.marginLeft = this.offset + 'px';
         get('levelselectstate').style.marginTop = '80px';
         get('levelselectstate').innerHTML = str;
         LevelSelectState.updateButtonBgs();
     }
+    LevelSelectState.prototype.scroll = function (dir) {
+        this.offset += dir === 'R' ? -230 : 230;
+    };
     LevelSelectState.prototype.highestLevelUnlocked = function () {
         var highest = 0;
         for (var i = 0; i < this.numOfLevels; i++) {
@@ -328,9 +293,8 @@ var LevelSelectState = (function (_super) {
         }
     };
     LevelSelectState.prototype.update = function () {
-        this.offset += Game.lvlselectButtonSpeed * Game.lvlselectButtonDirection;
-        if (this.offset >= 150) {
-            this.offset = 150;
+        if (this.offset >= this.minOffset) {
+            this.offset = this.minOffset;
             get('backarrow').style.visibility = "hidden";
         }
         else if (this.offset <= this.maxOffset) {
@@ -361,11 +325,6 @@ var GameState = (function (_super) {
     function GameState(sm, levelNum) {
         _super.call(this, STATE.GAME, sm);
         this.levelNum = levelNum;
-        GameState.levelEditTiles = [
-            Level.getNewDefaultTile(ID.BLANK, 0, 0),
-            Level.getNewDefaultTile(ID.MIRROR, 0, 0),
-            Level.getNewDefaultTile(ID.POINTER, 0, 0),
-            Level.getNewDefaultTile(ID.RECEPTOR, 0, 0)];
         this.level = new Level(this.levelNum);
         get('gameboard').style.display = "initial";
         get('gameboard').style.left = "50%";
@@ -374,70 +333,28 @@ var GameState = (function (_super) {
         get('gameboard').style.height = this.level.h * Tile.size + "px";
         get('gamecanvas').width = this.level.w * Tile.size;
         get('gamecanvas').height = this.level.h * Tile.size;
-        get('lvledittiles').innerHTML = '<div>' +
-            '<div class="selectionTile" id="0tile" onclick="selectionTileClick(event, true, 0);" onmouseup="selectionTileClick(event, false, 0);" ' +
-            'onmouseover="get(\'0tilep\').style.visibility=\'visible\'" onmouseout="get(\'0tilep\').style.visibility=\'hidden\'"><p id="0tilep" style="visibility: hidden">blank</p></div>' +
-            '<div class="selectionTile" id="1tile" onclick="selectionTileClick(event, true, 1);" onmouseup="selectionTileClick(event, false, 1);" ' +
-            'onmouseover="get(\'1tilep\').style.visibility=\'visible\'" onmouseout="get(\'1tilep\').style.visibility=\'hidden\'"><p id="1tilep" style="visibility: hidden">mirror</p></div>' +
-            '<div class="selectionTile" id="2tile" onclick="selectionTileClick(event, true, 2);" onmouseup="selectionTileClick(event, false, 2);" ' +
-            'onmouseover="get(\'2tilep\').style.visibility=\'visible\'" onmouseout="get(\'2tilep\').style.visibility=\'hidden\'"><p id="2tilep" style="visibility: hidden">pointer</p></div>' +
-            '<div class="selectionTile" id="3tile" onclick="selectionTileClick(event, true, 3);" onmouseup="selectionTileClick(event, false, 3);" ' +
-            'onmouseover="get(\'3tilep\').style.visibility=\'visible\'" onmouseout="get(\'3tilep\').style.visibility=\'hidden\'"><p id="3tilep" style="visibility: hidden">receptor</p></div>' +
-            '<div class="selectionTile" id="printButton" onclick="selectionTileClick(event, true, 888)"><p>print</p></div>' +
-            '<div class="selectionTile" id="clearButton" onclick="selectionTileClick(event, true, 887)"><p>clear</p></div>' +
-            '<div class="selectionTile" id="helpButton" onclick="selectionTileClick(event, true, 886)"><p>help</p></div>' +
-            '</div>';
-        get('lvledittilescanvas').width = Tile.size;
-        get('lvledittilescanvas').height = 7 * Tile.size;
-        if (GameState.levelEditMode) {
-            get('lvledittilesarea').style.display = "initial";
-        }
-        else {
-            get('lvledittilesarea').style.display = "none";
-        }
         get('levelNumHeading').innerHTML = 'Level ' + this.levelNum;
     }
     GameState.prototype.update = function () {
     };
     GameState.prototype.render = function () {
         this.level.render();
-        if (GameState.levelEditMode) {
-            var context = get('lvledittilescanvas').getContext('2d');
-            for (var i = 0; i < 7; i++) {
-                if (Game.selectedTileID === i)
-                    context.fillStyle = Colour.GREEN;
-                else
-                    context.fillStyle = Colour.DARK_GRAY;
-                context.fillRect(0, i * Tile.size, Tile.size, Tile.size);
-                if (i < GameState.levelEditTiles.length)
-                    GameState.levelEditTiles[i].render(context, Tile.size / 2, i * Tile.size + Tile.size / 2);
-                context.strokeStyle = Colour.LIGHT_GRAY;
-                context.lineWidth = 1;
-                context.strokeRect(0, i * Tile.size, Tile.size, Tile.size);
-            }
-        }
     };
     GameState.prototype.restore = function () {
         get('gameboard').style.display = "initial";
-        if (GameState.levelEditMode)
-            get('lvledittilesarea').style.display = "initial";
     };
     GameState.prototype.destroy = function () {
         get('gameboard').style.display = "none";
-        get('lvledittilesarea').style.display = "none";
     };
     GameState.prototype.click = function (event, down) {
         this.level.click(event, down);
         this.level.saveToMemory();
     };
-    GameState.prototype.hover = function (event, into) {
-        this.level.hover(event, into);
-    };
     GameState.prototype.setResetLevelPopup = function () {
         Game.setPopup('<h3>Reset level</h3>' +
             '<p>Are you sure you want to reset?</p>' +
-            '<div class="popupButton button" id="yesButton" onclick="if (clickType(event)===\'left\') { Sound.play(Sound.wizzle); Game.sm.currentState().level.reset(); Game.clearPopup(); }">Reset</div>' +
-            '<div class="popupButton button" id="cancelButton" onclick="if (clickType(event)===\'left\') { Sound.play(Sound.select); Game.clearPopup(); }">Cancel</div>', 'margin-left: -146px;');
+            '<div class="popupButton button" id="yesButton" ontouchstart="Sound.play(Sound.wizzle); Game.sm.currentState().level.reset(); Game.clearPopup(); return false;">Reset</div>' +
+            '<div class="popupButton button" id="cancelButton" ontouchstart="Sound.play(Sound.select); Game.clearPopup(); return false;">Cancel</div>', 'margin-left: -140px;');
     };
     return GameState;
 })(BasicState);
@@ -566,18 +483,9 @@ var Tile = (function () {
     Tile.prototype.click = function (event, down) {
         if (down === false)
             return;
-        if (clickType(event) === "left") {
-            if (event.shiftKey) {
-                this.dir -= 1;
-                if (this.dir < 0)
-                    this.dir = this.maxdir();
-            }
-            else {
-                this.dir += 1;
-                if (this.dir > this.maxdir())
-                    this.dir = 0;
-            }
-        }
+        this.dir += 1;
+        if (this.dir > this.maxdir())
+            this.dir = 0;
     };
     Tile.prototype.hover = function (into) {
         this.hovering = into;
@@ -600,7 +508,7 @@ var Tile = (function () {
     Tile.prototype.getNextType = function () {
         return (this.id + 1) % ID.RECEPTOR;
     };
-    Tile.size = 64;
+    Tile.size = 32;
     return Tile;
 })();
 var BlankTile = (function (_super) {
@@ -657,21 +565,7 @@ var PointerTile = (function (_super) {
     PointerTile.prototype.click = function (event, down) {
         if (down === false)
             return;
-        if (clickType(event) === "left") {
-            _super.prototype.click.call(this, event, down);
-        }
-        else if (clickType(event) === "right") {
-            if (GameState.levelEditMode) {
-                this.on = !this.on;
-                if (this.on) {
-                    this.colour = Colour.nextColor(this.colour, false);
-                    this.addLaser(new Laser(null, this.dir, this.colour));
-                }
-                else {
-                    this.removeAllLasers();
-                }
-            }
-        }
+        _super.prototype.click.call(this, event, down);
     };
     PointerTile.prototype.update = function (level) {
         if (this.on === false)
@@ -740,40 +634,7 @@ var ReceptorTile = (function (_super) {
     ReceptorTile.prototype.click = function (event, down) {
         if (down === false)
             return;
-        if (clickType(event) === "left") {
-            _super.prototype.click.call(this, event, down);
-        }
-        else if (clickType(event) === "right") {
-            if (GameState.levelEditMode) {
-                if (Game.selectedTileID === this.id) {
-                    var xx = getRelativeCoordinates(event, get('gamecanvas')).x % Tile.size, yy = getRelativeCoordinates(event, get('gamecanvas')).y % Tile.size, index;
-                    if (xx + yy <= Tile.size) {
-                        if (xx >= yy) {
-                            index = Direction.sub(DIRECTION.NORTH, this.dir);
-                        }
-                        else {
-                            index = Direction.sub(DIRECTION.WEST, this.dir);
-                        }
-                    }
-                    else {
-                        if (xx >= yy) {
-                            index = Direction.sub(DIRECTION.EAST, this.dir);
-                        }
-                        else {
-                            index = Direction.sub(DIRECTION.SOUTH, this.dir);
-                        }
-                    }
-                    if (this.receptors[index] === null) {
-                        this.receptors[index] = new Receptor(COLOUR.RED);
-                    }
-                    else {
-                        this.receptors[index].colour = Colour.nextColor(this.receptors[index].colour, true);
-                        if (this.numOfReceptors(this.receptors) > 1 && this.receptors[index].colour === COLOUR.RED)
-                            this.receptors[index] = null;
-                    }
-                }
-            }
-        }
+        _super.prototype.click.call(this, event, down);
     };
     ReceptorTile.prototype.update = function (board) {
         for (var i = 0; i < this.receptors.length; i++) {
@@ -893,29 +754,16 @@ var Level = (function () {
         context.fillStyle = Colour.GRAY;
         context.fillRect(0, 0, this.w * Tile.size, this.h * Tile.size);
         for (var i = 0; i < this.w * this.h; i++) {
-            if (Game.debug === true) {
-                context.strokeStyle = '#444';
-                context.lineWidth = 1;
-                context.strokeRect((i % this.w) * Tile.size, Math.floor(i / this.w) * Tile.size, Tile.size, Tile.size);
-            }
             this.tiles[i].render(context, (i % this.w) * Tile.size + Tile.size / 2, Math.floor(i / this.w) * Tile.size + Tile.size / 2);
         }
     };
     Level.prototype.click = function (event, down) {
-        var x = Math.floor(getRelativeCoordinates(event, get('gamecanvas')).x / Tile.size);
-        var y = Math.floor(getRelativeCoordinates(event, get('gamecanvas')).y / Tile.size);
+        var x = Math.floor((event.changedTouches[0].clientX - 36) / Tile.size);
+        var y = Math.floor((event.changedTouches[0].clientY - 101) / Tile.size);
         this.tiles[y * this.w + x].click(event, down);
-        if (GameState.levelEditMode && event.ctrlKey === false) {
-            if (clickType(event) === "left")
-                this.tiles[y * this.w + x] = Level.getNewDefaultTile(Game.selectedTileID, x, y);
-            else if (clickType(event) === "right")
-                this.tiles[y * this.w + x] = Level.getNewDefaultTile(ID.BLANK, x, y);
-        }
         this.update();
     };
     Level.prototype.checkCompleted = function () {
-        if (GameState.levelEditMode)
-            return;
         var on = true;
         for (var i = 0; i < this.tiles.length; i++) {
             if (this.tiles[i].id === ID.RECEPTOR) {
@@ -935,20 +783,15 @@ var Level = (function () {
         }
         if (on && Game.popupUp === false) {
             var str = '<div id="popupContent">' +
-                '<h3>Level complete!</h3> <p>Good job!</p>' +
-                '<div class="popupButton button" id="returnButton" onclick="if (clickType(event)===\'left\') { Game.sm.enterPreviousState(); Game.clearPopup(); }">Return</div>' +
-                '<div class="popupButton button" id="nextButton" onclick="if (clickType(event)===\'left\') { Game.sm.enterPreviousState(); Game.clearPopup(); if (' + (this.levelNum + 1) + ' < Game.defaultLevels.length) { Game.sm.enterState(\'game\', ' + (this.levelNum + 1) + '); } }">Next Level!</div>' +
+                '<h3>Level complete!</h3> <p>' + getMessage('win') + '!</p>' +
+                '<div class="popupButton button" id="returnButton" ontouchstart="Game.sm.enterPreviousState(); Game.clearPopup(); return false;">Return</div>' +
+                '<div class="popupButton button" id="nextButton" ontouchstart="Game.sm.enterPreviousState(); Game.clearPopup(); if (' + (this.levelNum + 1) + ' < Game.defaultLevels.length) { Game.sm.enterState(\'game\', ' + (this.levelNum + 1) + '); } return false;">Next Level!</div>' +
                 '</div>';
             Game.setPopup(str);
         }
         else {
             Game.clearPopup();
         }
-    };
-    Level.prototype.hover = function (event, into) {
-        var x = Math.floor(getRelativeCoordinates(event, get('gamecanvas')).x / Tile.size);
-        var y = Math.floor(getRelativeCoordinates(event, get('gamecanvas')).y / Tile.size);
-        this.tiles[y * this.w + x].hover(into);
     };
     Level.prototype.loadLevelFromMemory = function () {
         var data, storage, tiles, i, w, h;
@@ -1189,21 +1032,6 @@ var Sound = (function () {
 var Colour = (function () {
     function Colour() {
     }
-    Colour.nextColor = function (colour, useWhite) {
-        switch (colour) {
-            case COLOUR.RED:
-                return COLOUR.GREEN;
-            case COLOUR.GREEN:
-                return COLOUR.BLUE;
-            case COLOUR.BLUE:
-                if (useWhite)
-                    return COLOUR.WHITE;
-                return COLOUR.RED;
-            case COLOUR.WHITE:
-                return COLOUR.RED;
-        }
-        return COLOUR.RED;
-    };
     Colour.PURPLE = '#3B154B';
     Colour.GREEN = '#004500';
     Colour.GRAY = '#0A0A0A';
@@ -1211,6 +1039,27 @@ var Colour = (function () {
     Colour.LIGHT_GRAY = '#555';
     return Colour;
 })();
+function getMessage(type) {
+    var num = Math.floor(Math.random() * 6);
+    switch (type) {
+        case 'win':
+            switch (num) {
+                case 0:
+                    return 'Good Job';
+                case 1:
+                    return 'Sweet';
+                case 2:
+                    return 'Excellent';
+                case 3:
+                    return 'Nice';
+                case 4:
+                    return 'Awesome';
+                case 5:
+                    return 'Congrats';
+            }
+    }
+    return 'Good Job';
+}
 function getBoolShorthand(bool) {
     return bool === true || bool === 1 || bool === "1" ? 1 : 0;
 }
@@ -1266,63 +1115,6 @@ function assert(condition, message) {
         throw message;
     }
 }
-function selectionTileClick(event, down, id) {
-    if (clickType(event) !== 'left')
-        return;
-    if (id === 888) {
-        var msg = "<h3>Level " + Game.sm.currentState().level.levelNum + " save</h3><p>Copy and paste into Game.defaultLevels!</p><textarea id='levelSave' readonly>" + Game.sm.currentState().level.getLevelString() + "</textarea>";
-        Game.setPopup(msg, 'max-width: 320px; margin-left: -172px');
-        get('levelSave').select();
-    }
-    else if (id === 887) {
-        Game.sm.currentState().level.clear();
-    }
-    else if (id === 886) {
-        var msg = "<h3>Level editor help</h3><p>Hello curious player! You are currently in Mirror's level editor. Here you can create your own levels! The print button will export the save as a string." +
-            " As of this update, the only way to using these strings is by pasting it in the Game.defaultLevels array.</p><p>Tip: hold crtl to edit receptor tiles</p>";
-        Game.setPopup(msg, 'max-width: 320px; margin-left: -172px');
-    }
-    else if (down) {
-        Game.selectedTileID = id;
-    }
-}
-function toggleLevelEditMode() {
-    setLevelEditMode(!GameState.levelEditMode);
-}
-function setLevelEditMode(levelEditMode) {
-    GameState.levelEditMode = levelEditMode;
-    if (GameState.levelEditMode) {
-        setDebug(true);
-        get('lvlEditInfo').style.backgroundColor = Colour.GREEN;
-        if (Game.sm.currentState().id === STATE.GAME) {
-            get('lvledittilesarea').style.display = "initial";
-        }
-    }
-    else {
-        get('lvlEditInfo').style.backgroundColor = "initial";
-        get('lvledittilesarea').style.display = "none";
-    }
-}
-function toggleDebug() {
-    setDebug(!Game.debug);
-}
-function setDebug(debug) {
-    Game.debug = debug;
-    if (Game.debug === false)
-        setLevelEditMode(false);
-    if (Game.debug)
-        Game.stats.domElement.style.display = "initial";
-    else
-        Game.stats.domElement.style.display = "none";
-    if (Game.debug) {
-        get('infoarea').style.display = "initial";
-        get('debugInfo').style.backgroundColor = Colour.GREEN;
-    }
-    else {
-        get('infoarea').style.display = "none";
-        get('debugInfo').style.backgroundColor = "initial";
-    }
-}
 var Direction = (function () {
     function Direction() {
     }
@@ -1373,55 +1165,12 @@ var Direction = (function () {
     };
     return Direction;
 })();
-function keyPressed(event, down) {
-    if (Game.keysdown) {
-        var keycode = event.keyCode ? event.keyCode : event.which;
-        Game.keysdown[keycode] = down;
-        if (Game.keysdown[Game.KEYBOARD.ONE])
-            Game.selectedTileID = 0;
-        if (Game.keysdown[Game.KEYBOARD.TWO])
-            Game.selectedTileID = 1;
-        if (Game.keysdown[Game.KEYBOARD.THREE])
-            Game.selectedTileID = 2;
-        if (Game.keysdown[Game.KEYBOARD.FOUR])
-            Game.selectedTileID = 3;
-    }
-}
-window.onkeydown = function (event) {
-    keyPressed(event, true);
-};
-window.onkeyup = function (event) {
-    keyPressed(event, false);
+window.ontouchmove = function (event) {
+    event.preventDefault();
 };
 function boardClick(event, down) {
     if (Game.sm.currentState().id === STATE.GAME)
         Game.sm.currentState().click(event, down);
-}
-function clickType(event) {
-    if (event.which === 3 || event.button === 2)
-        return "right";
-    else if (event.which === 1 || event.button === 0)
-        return "left";
-    else if (event.which === 2 || event.button === 1)
-        return "middle";
-}
-function getRelativeCoordinates(event, reference) {
-    var x, y, e, el, pos, offset;
-    event = event || window.event;
-    el = event.target || event.srcElement;
-    pos = getAbsolutePosition(reference);
-    x = event.pageX - pos.x;
-    y = event.pageY - pos.y;
-    return { x: x, y: y };
-}
-function getAbsolutePosition(element) {
-    var r = { x: element.offsetLeft, y: element.offsetTop };
-    if (element.offsetParent) {
-        var tmp = getAbsolutePosition(element.offsetParent);
-        r.x += tmp.x;
-        r.y += tmp.y;
-    }
-    return r;
 }
 function mobileCheck() {
     var check = false;
@@ -1430,8 +1179,8 @@ function mobileCheck() {
     return check;
 }
 window.onload = function () {
-    if (mobileCheck()) {
-        window.location.href = 'http://ajweeks.github.io/mirrorsm';
+    if (mobileCheck() === false) {
+        window.location.href = 'http://ajweeks.github.io/mirrors';
     }
     Game.init();
     Game.loop();
