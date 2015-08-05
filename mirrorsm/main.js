@@ -240,13 +240,15 @@ var LevelSelectState = (function (_super) {
     __extends(LevelSelectState, _super);
     function LevelSelectState(sm) {
         _super.call(this, STATE.LEVEL_SELECT, sm);
-        this.height = 8;
-        this.numOfLevels = 64;
-        this.offset = 65;
-        this.minOffset = 65;
-        this.maxOffset = -230 * (this.numOfLevels / this.height - 1) + this.offset;
+        this.numOfLevels = Game.defaultLevels.length;
+        this.height = Math.floor(window.innerHeight / 51 - 4);
+        this.colWidth = 230;
+        this.offset = window.innerWidth / 2 - this.colWidth / 2;
+        this.page = 0;
+        this.maxPages = -Math.floor((this.numOfLevels - 1) / this.height);
         get('levelselectstate').style.display = "block";
-        var x, y, str = '', index;
+        var i, x, y, str = '', index;
+        str += '<div class="button" ontouchstart="Game.sm.enterPreviousState(); return false;" style="margin: 0; left: 10px; top: 75px; position: absolute">Back</div>';
         for (x = 0; x < Math.ceil(this.numOfLevels / this.height); x++) {
             str += '<div class="col">';
             for (y = 0; y < this.height; y++) {
@@ -254,21 +256,25 @@ var LevelSelectState = (function (_super) {
                 var enabled = Game.defaultLevels[index] !== undefined;
                 str += '<div class="button lvlselect' + (enabled ? ' enabled' : '') + '" id="' + index + 'lvlselectButton" ' +
                     (enabled ? 'ontouchstart="Game.sm.enterState(\'game\', ' + index + '); return false;"' : '') +
-                    '>' + index + '</div>';
+                    (index >= this.numOfLevels ? 'style="visibility: hidden"' : '') + '>' + index + '</div>';
             }
             str += '</div>';
         }
         str += '<div id="backarrow" style="visibility: hidden" ontouchstart="Game.sm.currentState().scroll(\'L\'); return false;"><p>&#9664;</p></div>';
         str += '<div id="forwardarrow" ontouchstart="Game.sm.currentState().scroll(\'R\'); return false;"><p>&#9654;</p></div>';
-        str += '<div class="button" ontouchstart="Game.sm.enterPreviousState(); return false;" style="margin-left: 0; margin-top: -480px;">Back</div>';
         get('levelselectstate').style.width = 250 * Math.ceil(this.numOfLevels / this.height) + 'px';
         get('levelselectstate').style.marginLeft = this.offset + 'px';
-        get('levelselectstate').style.marginTop = '80px';
+        get('levelselectstate').style.marginTop = '65px';
         get('levelselectstate').innerHTML = str;
         LevelSelectState.updateButtonBgs();
     }
     LevelSelectState.prototype.scroll = function (dir) {
-        this.offset += dir === 'R' ? -230 : 230;
+        this.page += (dir === 'R' ? -1 : 1);
+        console.log(this.page);
+        if (this.page > 0)
+            this.page = 0;
+        if (this.page < this.maxPages)
+            this.page = this.maxPages;
     };
     LevelSelectState.prototype.highestLevelUnlocked = function () {
         var highest = 0;
@@ -293,12 +299,10 @@ var LevelSelectState = (function (_super) {
         }
     };
     LevelSelectState.prototype.update = function () {
-        if (this.offset >= this.minOffset) {
-            this.offset = this.minOffset;
+        if (this.page === 0) {
             get('backarrow').style.visibility = "hidden";
         }
-        else if (this.offset <= this.maxOffset) {
-            this.offset = this.maxOffset;
+        else if (this.page === this.maxPages) {
             get('forwardarrow').style.visibility = "hidden";
         }
         else {
@@ -306,7 +310,7 @@ var LevelSelectState = (function (_super) {
             get('forwardarrow').style.visibility = "visible";
             get('backarrow').style.visibility = "visible";
         }
-        get('levelselectstate').style.marginLeft = this.offset + 'px';
+        get('levelselectstate').style.marginLeft = (this.offset + this.page * this.colWidth) + 'px';
     };
     LevelSelectState.prototype.hide = function () {
         get('levelselectstate').style.display = "none";
