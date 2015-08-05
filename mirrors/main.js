@@ -935,7 +935,7 @@ var Level = (function () {
         }
         if (on && Game.popupUp === false) {
             var str = '<div id="popupContent">' +
-                '<h3>Level complete!</h3> <p>' + getMessage('win') + '</p>' +
+                '<h3>Level complete!</h3> <p>' + getMessage('win') + '!</p>' +
                 '<div class="popupButton button" id="returnButton" onclick="if (clickType(event)===\'left\') { Game.sm.enterPreviousState(); Game.clearPopup(); }">Return</div>' +
                 '<div class="popupButton button" id="nextButton" onclick="if (clickType(event)===\'left\') { Game.sm.enterPreviousState(); Game.clearPopup(); if (' + (this.levelNum + 1) + ' < Game.defaultLevels.length) { Game.sm.enterState(\'game\', ' + (this.levelNum + 1) + '); } }">Next Level!</div>' +
                 '</div>';
