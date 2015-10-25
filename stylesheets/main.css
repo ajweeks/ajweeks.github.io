@@ -21,14 +21,14 @@ a:hover {
 }
 
 header {
-    background: rgb(39,38,66); /* Old browsers */
-    background: -moz-linear-gradient(left, rgba(39,38,66,1) 0%, rgba(82,80,94,1) 50%, rgba(39,38,66,1) 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(39,38,66,1)), color-stop(50%,rgba(82,80,94,1)), color-stop(100%,rgba(39,38,66,1))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(left, rgba(39,38,66,1) 0%,rgba(82,80,94,1) 50%,rgba(39,38,66,1) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(left, rgba(39,38,66,1) 0%,rgba(82,80,94,1) 50%,rgba(39,38,66,1) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(left, rgba(39,38,66,1) 0%,rgba(82,80,94,1) 50%,rgba(39,38,66,1) 100%); /* IE10+ */
-    background: linear-gradient(to right, rgba(39,38,66,1) 0%,rgba(82,80,94,1) 50%,rgba(39,38,66,1) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#272642', endColorstr='#272642',GradientType=1 ); /* IE6-9 */
+    background: rgba(57,80,52,1);
+    background: -moz-linear-gradient(left, rgba(57,80,52,1) 0%, rgba(54,119,50,1) 50%, rgba(54,78,50,1) 100%);
+    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(57,80,52,1)), color-stop(50%, rgba(54,119,50,1)), color-stop(100%, rgba(54,78,50,1)));
+    background: -webkit-linear-gradient(left, rgba(57,80,52,1) 0%, rgba(54,119,50,1) 50%, rgba(54,78,50,1) 100%);
+    background: -o-linear-gradient(left, rgba(57,80,52,1) 0%, rgba(54,119,50,1) 50%, rgba(54,78,50,1) 100%);
+    background: -ms-linear-gradient(left, rgba(57,80,52,1) 0%, rgba(54,119,50,1) 50%, rgba(54,78,50,1) 100%);
+    background: linear-gradient(to right, rgba(57,80,52,1) 0%, rgba(54,119,50,1) 50%, rgba(54,78,50,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#395034', endColorstr='#364e32', GradientType=1 );
     position: fixed;
     text-align: center;
     width: 100%;
@@ -43,18 +43,16 @@ header h1 {
 
 #header-large h1 {
     display: block;
-    width: 400px;
+    width: 377px;
     left: 50%;
     margin-left: -200px;
-    margin-top: 50px;
-    margin-bottom: 5px;
 }
 
 #header-small h1 {
     left: 0;
     min-width: 250px;
     font-size: 24px;
-    margin: 20px 90% 0 -40px;
+    margin: 14px 0 0 -40px;
 }
 
 header a {
@@ -77,16 +75,16 @@ nav {
     /*margin-top: 14px;*/
     display: inline-block;
     padding: 8px 10px 0 10px;
-    border-bottom: 15px solid;
-    border-bottom-color: #CACEDB;
+    border-bottom: 7px solid;
+    border-bottom-color: #266323;
 }
 
 #header-small nav {
-    margin-top: 14px;
+    margin-top: 0;
 }
 
 #header-large nav {
-    margin-top: 137px;
+    margin-top: 130px;
 }
 
 nav + #navShadow {
@@ -127,12 +125,12 @@ nav a {
 
 nav a:hover {
     text-decoration: none;
-    background-color: #CACEDB;
+    background-color: #266323;
     color: #222;
 }
 
 #home .home, #games .games, #threed .threed, #about .about {
-    background-color: #CACEDB;
+    background-color: #266323;
     color: #222;
 }
 
@@ -140,7 +138,7 @@ main {
     min-height: 300px;
     max-width: 900px;
     margin: 0 auto;
-    background-color: #CACEDB;
+    background-color: #4D6D4B;
     padding: 220px 10px 10px 10px;
 }
 

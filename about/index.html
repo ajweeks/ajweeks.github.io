@@ -2,6 +2,17 @@
 <html>
 <head>
     <title>AJ Weeks</title>
+    <script>
+    // LATER fix theme loading (jQuery?)
+    function init() {
+        var sheet = document.createElement('style');
+        sheet.id = "theme_id";
+        sheet.innerHTML = ".light_theme {display: none;}";
+        document.body.appendChild(sheet);
+    }
+    init();
+    </script>
+    <script src="../js/main.js"></script>
     <script type="text/javascript">
     window.addEventListener("onscroll", onscroll, false);
     window.addEventListener("scroll", onscroll, false);
@@ -40,8 +51,26 @@
 
     <main>
         <p>Hi! I&#8217;m AJ Weeks, a game development student studying in Kortrijk, Belgium.</p>
-        <p>I put things I'm proud of and want to share on this website, if you have any feedback I can be reached at
-          <a href="http://github.com/ajweeks/" target="_blank">GitHub</a> &#8901;<a href="http://twitter.com/liqwidice" target="_blank">Twitter</a></p>
+        <p>I put things I'm proud of and want to share on this website, if you have any feedback I can be reached here:</p>
+        <div class="dark_theme">
+            <a href="http://github.com/ajweeks" target="_blank"><img src="res/github-dark.png" width="64" height="64"></a>
+            <a href="http://twitter.com/liqwidice" target="_blank"><img src="res/twitter-dark.png" width="64" height="64"></a>
+            <a href="http://liqwidice.itch.io" target="_blank"><img src="res/itchio.png" width="64" height="64"></a>
+            <a href="http://www.onegameamonth.com/liqwidice" target="_blank"><img src="res/ogam.png" width="256" height="64"></a>
+            <a href="https://ajweeks.wordpress.com" target="_blank"><img src="res/wordpress-dark.png" width="64" height="64"></a>
+            <a href="https://twitch.tv/liqwidice" target="_blank"><img src="res/twitch-dark.png" width="64" height="64"></a>
+            <a href="http://gamejolt.com/profile/aj-weeks/535107" target="_blank"><img src="res/gamejolt.png" width="64" height="64"></a>
+        </div>
+        <div class="light_theme">
+            <a href="http://github.com/ajweeks" target="_blank"><img src="res/github-light.png" width="64" height="64"></a>
+            <a href="http://twitter.com/liqwidice" target="_blank"><img src="res/twitter-light.png" width="64" height="64"></a>
+            <a href="http://liqwidice.itch.io" target="_blank"><img src="res/itchio.png" width="64" height="64"></a>
+            <a href="http://www.onegameamonth.com/liqwidice" target="_blank"><img src="res/ogam.png" width="256" height="64"></a>
+            <a href="https://ajweeks.wordpress.com" target="_blank"><img src="res/wordpress-light.png" width="64" height="64"></a>
+            <a href="https://twitch.tv/liqwidice" target="_blank"><img src="res/twitch-light.png" width="64" height="64"></a>
+            <a href="http://gamejolt.com/profile/aj-weeks/535107" target="_blank"><img src="res/gamejolt.png" width="64" height="64"></a>
+        </div>
+
         <p>If you enjoy any of my (free) games and are feeling generous, I would greatly appreaciate any donations.</p>
         <br />
         <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
@@ -53,6 +82,16 @@
         <br />
         <p>Thanks so much</p>
         <p>-AJ</p>
+
+        <div onmousedown="toggleTheme()" style="cursor: pointer; width: 200px; height: 60px; line-height: 60px; background-color: #456; margin: 0 auto">
+            Toggle themes!
+        </div>
+
+        <!-- Twitter Feed LATER - decide on keeping this -->
+        <!-- <a class="twitter-timeline" href="https://twitter.com/liqwidice" data-widget-id="368766546379677696">Tweets by @liqwidice</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+        if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script> -->
     </main>
 
     <footer>
