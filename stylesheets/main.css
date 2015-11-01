@@ -3,7 +3,7 @@ html {
     background-image: url('../res/bg-noise.png');
     min-width: 740px;
     font-family: 'Arial';
-    color: #FEFEEE;
+    color: #EEE;
 }
 
 body {
@@ -11,7 +11,7 @@ body {
 }
 
 a {
-    color: #5691C0;
+    color: #72AFE0;
     text-decoration: none;
     font-style: italic;
 }
@@ -112,7 +112,7 @@ nav li {
 
 nav a {
     text-transform: uppercase;
-    color: #EEF;
+    color: #CCC;
     display: block;
     padding: 4px;
     font-size: 22px;
@@ -126,12 +126,12 @@ nav a {
 nav a:hover {
     text-decoration: none;
     background-color: #266323;
-    color: #222;
+    color: #EEF;
 }
 
 #home .home, #games .games, #threed .threed, #about .about {
     background-color: #266323;
-    color: #222;
+    color: #EEF;
 }
 
 main {
@@ -140,15 +140,11 @@ main {
     margin: 0 auto;
     background-color: #4D6D4B;
     padding: 220px 10px 10px 10px;
+    border-radius: 8px;
 }
 
 main h2 {
-    color: black;
     text-align: center;
-}
-
-main p {
-    color: black;
 }
 
 footer {
