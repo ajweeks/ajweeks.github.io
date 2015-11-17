@@ -18,12 +18,19 @@ function render(index, all) {
     context.fillStyle = "#2a2a4d";
     context.fillRect(0, 0, 650, 400);
 
-    if (all) renderAll(context);
-    else renderDepth(context, index);
+    if (all) {
+        renderAll(context);
+    } else {
+        renderDepth(context, index);
+    }
 
     context.fillStyle = "#fff";
     context.font = "16px Verdana";
-    context.fillText("iteration " + Game.iteration, 555, 25);
+    if (!all) {
+        context.fillText("iteration " + Game.iteration, 555, 25);
+    } else {
+        context.fillText("iterations 0-" + Game.MAX_ITERATION, 528, 25);
+    }
     var len = Game.coords[index].length;
     if (Game.mode === 1) {
         len = 0;
@@ -35,7 +42,7 @@ function render(index, all) {
     if (len >= 1000) slen = (len / 1000).toString().split('.')[0] + '.' + (len / 1000).toString().split('.')[1].substr(0, 1) + 'k';
     context.fillText("# of coordinates: " + slen, 493 - (slen.length * 9.5), 50);
     context.fillText("Click to change the current iteration", 10, 25);
-    context.fillText("'M' cycles through modes", 10, 50);
+    context.fillText("'m' cycles through modes", 10, 50);
     context.fillText("'space' toggles wireframe", 10, 75);
     context.fillText("current mode: " + Game.mode, 507, 75);
 }
@@ -49,6 +56,8 @@ function renderDepth(context, index) {
     for (var point in Game.coords[index]) {
         context.lineTo(Game.coords[index][point].x * 110 + 165, Game.coords[index][point].y * 110 + 295);
     }
+    // draw final line, back to first point
+    context.lineTo(Game.coords[index][0].x * 110 + 165, Game.coords[index][0].y * 110 + 295);
     context.closePath();
     if (Game.shift) context.stroke();
     else context.fill();
@@ -67,6 +76,8 @@ function renderAll(context) {
         for (var point in Game.coords[c]) {
             context.lineTo(Game.coords[c][point].x * 110 + 165, Game.coords[c][point].y * 110 + 295);
         }
+        // draw final line, back to first point
+        context.lineTo(Game.coords[0][0].x * 110 + 165, Game.coords[0][0].y * 110 + 295);
         context.closePath();
         if (Game.shift) context.stroke();
         else context.fill();
@@ -80,9 +91,11 @@ function generateCoords(depth) {
     }
     Game.coords[depth] = [];
     Game.coords[depth].push(new Game.Point(0, 0));
-    nextLevel(depth, depth, 3.0, -Math.PI / 3);
-    nextLevel(depth, depth, 3.0, Math.PI / 3);
-    nextLevel(depth, depth, 3.0, Math.PI);
+    // Three original lines (which make just a triangle with depth=0)
+    nextLevel(depth, depth, 3.0, -Math.PI / 3); // -60
+    nextLevel(depth, depth, 3.0, Math.PI / 3);  // +60
+    nextLevel(depth, depth, 3.0, Math.PI);      // 180
+    Game.coords[depth].pop(); // Remove the last point, which is the same as the first
 }
 
 function nextLevel(index, depth, size, heading) {
@@ -91,6 +104,7 @@ function nextLevel(index, depth, size, heading) {
         Game.coords[index].push(new Game.Point(lastPoint.x + Math.cos(heading) * size, lastPoint.y + Math.sin(heading) * size));
         return;
     } else {
+        // Split the line into four smaller lines (i.e.  ____  ->  _/\_ )
         nextLevel(index, depth - 1, size / 3, heading);
         nextLevel(index, depth - 1, size / 3, heading - Math.PI / 3); // -60
         nextLevel(index, depth - 1, size / 3, heading + Math.PI / 3); // +60
@@ -99,9 +113,7 @@ function nextLevel(index, depth, size, heading) {
 }
 
 Game.click = function(event) {
-    if (Game.mode === 1) {
-        return;
-    }
+    Game.mode = 0;
 
     if (clickType(event) === 'left') {
         Game.iteration++;
@@ -120,6 +132,8 @@ window.addEventListener("mousewheel", onscroll, false);
 window.addEventListener("DOMMouseScroll", onscroll, false);
 
 function onscroll (event) {
+    Game.mode = 0;
+
     Game.iteration += (event.wheelDelta || -event.detail) > 0 ? 1 : -1;
     if (Game.iteration > Game.MAX_ITERATION) Game.iteration = 0;
     if (Game.iteration < 0) Game.iteration = Game.MAX_ITERATION;
