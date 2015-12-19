@@ -1,4 +1,3 @@
-// Copyright AJ Weeks 2015
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -12,10 +11,9 @@ var Main = (function () {
     }
     Main.prototype.init = function () {
         console.log("TM495 v" + Main.VERSION + " by AJ Weeks");
-        Main.canvas = get('gameCanvas');
-        Main.context = Main.canvas.getContext('2d');
         Resource.loadAll();
         Main.sm = new StateManager();
+        Main.renderer = new Renderer();
         Main.lastDate = Date.now();
         Main.loop();
     };
@@ -32,20 +30,42 @@ var Main = (function () {
             Main.fps = Main.frames;
             Main.frames = 0;
         }
-        Main.context.fillStyle = "#284B32";
-        Main.context.fillRect(0, 0, Main.canvas.width, Main.canvas.height);
         Main.sm.update(deltaTime);
         Main.sm.render();
-        Main.context.fillStyle = "#000";
-        Main.context.fillText("FPS: " + Main.fps, 10, 18);
     };
-    Main.VERSION = "0.012";
+    Main.VERSION = "0.015";
     Main.elapsed = 0.0;
     Main.lastDate = 0.0;
     Main.frames = 0;
     Main.fps = 0;
     Main.f = 0;
     return Main;
+})();
+var Renderer = (function () {
+    function Renderer() {
+        this.previousTime = 0.0;
+        this.elapsed = 0.0;
+        this.width = 780;
+        this.height = 480;
+        this.renderer = new THREE.WebGLRenderer({ alpha: true });
+        this.renderer.setSize(this.width, this.height);
+        this.renderer.setClearColor(0x07141b, 1);
+        this.renderer.domElement.textContent = "Your browser doesn't appear to support the <code>&lt;canvas&gt;</code> element.";
+        get('gameContent').appendChild(this.renderer.domElement);
+        this.camera = new THREE.PerspectiveCamera(70, this.width / this.height, 0.1, 1000);
+        this.camera.position = new THREE.Vector3(0, -6, 20);
+        this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+        this.previousTime = new Date().getTime();
+    }
+    Renderer.prototype.render = function (scene) {
+        var now = new Date().getTime();
+        this.elapsed += (this.previousTime - now);
+        this.renderer.render(scene, this.camera);
+        this.previousTime = now;
+    };
+    Renderer.prototype.update = function () {
+    };
+    return Renderer;
 })();
 var StateManager = (function () {
     function StateManager() {
@@ -147,9 +167,10 @@ var GameState = (function (_super) {
         this.x = 0;
         this.y = 0;
         get('gameState').style.display = "initial";
-        this.level = new Level(Main.canvas.width, Main.canvas.height * 2);
-        this.player = new Player(this.level);
-        this.camera = new Camera(this.player);
+        this.scene = new THREE.Scene();
+        this.scene.add(new THREE.AmbientLight(new THREE.Color(0.8, 0.8, 0.9).getHex()));
+        this.level = new Level(45, 100, this.scene);
+        this.player = new Player(this.level, this.scene);
     }
     GameState.prototype.hide = function () {
         get('gameState').style.display = "none";
@@ -158,122 +179,174 @@ var GameState = (function (_super) {
         get('gameState').style.display = "initial";
     };
     GameState.prototype.destroy = function () {
+        for (var i = this.scene.children.length - 1; i >= 0; --i) {
+            this.scene.remove(this.scene.children[i]);
+        }
         get('gameState').style.display = "none";
     };
     GameState.prototype.update = function (deltaTime) {
         this.player.update(deltaTime);
-        this.camera.update();
+        Main.renderer.camera.position.x = this.player.pivot.position.x;
+        Main.renderer.camera.position.y = this.player.pivot.position.y - 5;
     };
     GameState.prototype.render = function () {
-        this.level.render();
-        this.player.render();
+        Main.renderer.render(this.scene);
     };
     return GameState;
 })(BasicState);
 var Player = (function () {
-    function Player(level) {
-        this.a = 4;
-        this.friction = 0.66;
+    function Player(level, scene) {
         this.level = level;
-        this.width = 64;
-        this.height = 128;
-        this.pos = new Vec2();
-        this.pos.x = Main.canvas.width / 2;
-        this.pos.y = 100;
-        this.vel = new Vec2(0, 0);
+        this.width = 2.5;
+        this.height = 5;
+        this.pivot = new THREE.Object3D();
+        this.pivot.position = new THREE.Vector3(0, this.height, 0);
+        this.pivot.rotateX(Math.PI / 6.0);
+        var planeGeometry = new THREE.PlaneGeometry(this.width, this.height);
+        var planeMaterial = new THREE.MeshPhongMaterial({
+            map: THREE.ImageUtils.loadTexture("res/player1.png"),
+            transparent: true,
+            shininess: 0.0
+        });
+        var mesh = new THREE.Mesh(planeGeometry, planeMaterial);
+        mesh.position = new THREE.Vector3(0, 0, 2.5);
+        this.pivot.add(mesh);
+        scene.add(this.pivot);
         this.maxVel = Player.MAX_V_WALK;
     }
     Player.prototype.update = function (deltaTime) {
         if (Keyboard.keysDown.length > 0) {
-            if (Keyboard.contains(Keyboard.KEYS.W)) {
-                this.vel.y += this.a;
-            }
-            if (Keyboard.contains(Keyboard.KEYS.A)) {
-                this.vel.x -= this.a;
-            }
-            if (Keyboard.contains(Keyboard.KEYS.S)) {
-                this.vel.y -= this.a;
-            }
-            if (Keyboard.contains(Keyboard.KEYS.D)) {
-                this.vel.x += this.a;
-            }
             if (Keyboard.contains(Keyboard.KEYS.SHIFT)) {
                 this.maxVel = Player.MAX_V_RUN;
             }
             else {
                 this.maxVel = Player.MAX_V_WALK;
             }
-        }
-        this.vel.x *= this.friction;
-        this.vel.y *= this.friction;
-        if (this.vel.x > this.maxVel) {
-            this.vel.x = this.maxVel;
-        }
-        else if (this.vel.x < -this.maxVel) {
-            this.vel.x = -this.maxVel;
-        }
-        if (this.vel.y > this.maxVel) {
-            this.vel.y = this.maxVel;
-        }
-        else if (this.vel.y < -this.maxVel) {
-            this.vel.y = -this.maxVel;
-        }
-        this.pos.x += this.vel.x;
-        this.pos.y += this.vel.y;
-        if (this.pos.x < 0) {
-            this.pos.x = 0;
-        }
-        else if (this.pos.x + this.width > this.level.pixelWidth) {
-            this.pos.x = this.level.pixelWidth - this.width;
-        }
-        if (this.pos.y < this.height) {
-            this.pos.y = this.height;
-        }
-        else if (this.pos.y > this.level.pixelHeight) {
-            this.pos.y = this.level.pixelHeight;
+            var px = this.pivot.position.x;
+            var py = this.pivot.position.y;
+            if (Keyboard.contains(Keyboard.KEYS.W) || Keyboard.contains(Keyboard.KEYS.UP)) {
+                this.pivot.position.y += this.maxVel * deltaTime;
+            }
+            else if (Keyboard.contains(Keyboard.KEYS.S) || Keyboard.contains(Keyboard.KEYS.DOWN)) {
+                this.pivot.position.y -= this.maxVel * deltaTime;
+            }
+            if (Keyboard.contains(Keyboard.KEYS.A) || Keyboard.contains(Keyboard.KEYS.LEFT)) {
+                this.pivot.position.x -= this.maxVel * deltaTime;
+            }
+            else if (Keyboard.contains(Keyboard.KEYS.D) || Keyboard.contains(Keyboard.KEYS.RIGHT)) {
+                this.pivot.position.x += this.maxVel * deltaTime;
+            }
+            for (var i = 0; i < this.level.trees.length; ++i) {
+                var tree = this.level.trees[i];
+                var heightRadiusSizeThing = 3;
+                if (this.pivot.position.x - this.width / 2 > tree.pivot.position.x - 0.5 - tree.width / 2 &&
+                    this.pivot.position.x + this.width / 2 < tree.pivot.position.x + 0.5 + tree.width / 2 &&
+                    this.pivot.position.y > tree.pivot.position.y - heightRadiusSizeThing &&
+                    this.pivot.position.y < tree.pivot.position.y + heightRadiusSizeThing) {
+                    this.pivot.position.x = px;
+                    this.pivot.position.y = py;
+                }
+            }
+            if (this.pivot.position.x - this.width / 2 < -this.level.width / 2) {
+                this.pivot.position.x = -this.level.width / 2 + this.width / 2;
+            }
+            if (this.pivot.position.x + this.width / 2 > this.level.width / 2) {
+                this.pivot.position.x = this.level.width / 2 - this.width / 2;
+            }
+            if (this.pivot.position.y - this.height / 2 > this.level.height) {
+                this.pivot.position.y = this.level.height + this.height / 2;
+            }
+            if (this.pivot.position.y - this.height < 0) {
+                this.pivot.position.y = this.height;
+            }
+            if (Keyboard.contains(Keyboard.KEYS.C)) {
+                var closest = -1;
+                var closestDist = 5;
+                for (var t in this.level.trees) {
+                    var diff = new THREE.Vector3();
+                    diff.subVectors(this.level.trees[t].pivot.position, this.pivot.position);
+                    var dist = diff.length();
+                    if (dist < closestDist) {
+                        closestDist = dist;
+                        closest = t;
+                    }
+                }
+                if (closest != -1 && this.level.trees[closest].chopped == false) {
+                    this.level.trees[closest].chopped = true;
+                    this.level.trees[closest].pivot.children[0].material = new THREE.MeshPhongMaterial({
+                        map: THREE.ImageUtils.loadTexture("res/trunk.png"),
+                        transparent: true
+                    });
+                }
+            }
         }
     };
-    Player.prototype.render = function () {
-        Resource.player.render(this.pos.x, this.pos.y, this.vel.y < -Math.abs(this.vel.x) ? 2 : this.vel.x > 0 ? 0 : 1, this.width, this.height);
-    };
-    Player.MAX_V_WALK = 6;
-    Player.MAX_V_RUN = 16;
+    Player.MAX_V_WALK = 0.015;
+    Player.MAX_V_RUN = 0.025;
     return Player;
 })();
 var Level = (function () {
-    function Level(width, height) {
-        this.pixelWidth = width;
-        this.pixelHeight = height;
-        this.trunks = new Array(50);
-        for (var i = 0; i < this.trunks.length; ++i) {
+    function Level(width, height, scene) {
+        this.width = width;
+        this.height = height;
+        var planeGeometry = new THREE.PlaneGeometry(width, height);
+        var grassTexture = THREE.ImageUtils.loadTexture("res/grass_diffuse.jpg");
+        grassTexture.wrapS = grassTexture.wrapT = THREE.RepeatWrapping;
+        grassTexture.repeat.set(3, 6);
+        var planeMaterial = new THREE.MeshPhongMaterial({
+            map: grassTexture
+        });
+        this.mesh = new THREE.Mesh(planeGeometry, planeMaterial);
+        this.mesh.position = new THREE.Vector3(0, this.height / 2, 0);
+        scene.add(this.mesh);
+        this.trees = new Array(50);
+        for (var i = 0; i < this.trees.length; ++i) {
             var pos;
             do {
-                pos = new Vec2(Math.random() * (Main.canvas.width - 32), Math.random() * (this.pixelHeight - 140) + 140);
-            } while (Level.overlaps(pos, this.trunks, new Vec2(32, 32)));
-            this.trunks[i] = pos;
+            } while (false);
+            pos = new Vec2(Math.random() * width - width / 2, Math.random() * height + 5);
+            this.trees[i] = new Tree(pos.x, pos.y, new Vec2(48, 48), scene);
         }
     }
-    Level.overlaps = function (pos, trunks, size) {
-        for (var i = 0; i < trunks.length; ++i) {
-            if (!trunks[i])
+    Level.overlaps = function (pos, trees, width, height) {
+        for (var i = 0; i < trees.length; ++i) {
+            if (!trees[i])
                 continue;
-            if (pos.x + size.x >= trunks[i].x &&
-                pos.x <= trunks[i].x + size.x &&
-                pos.y + size.y >= trunks[i].y &&
-                pos.y <= trunks[i].y + size.y) {
+            if (pos.x + width >= trees[i].pivot.position.x &&
+                pos.x <= trees[i].pivot.position.x + width &&
+                pos.y + height >= trees[i].pivot.position.y &&
+                pos.y <= trees[i].pivot.position.y + height) {
                 return true;
             }
         }
         return false;
     };
-    Level.prototype.render = function () {
-        Main.context.fillStyle = "#CCB595";
-        Camera.fillRect(0, 110, Main.canvas.width, 100);
-        for (var i in this.trunks) {
-            Camera.drawImage(Resource.trunk, this.trunks[i].x, this.trunks[i].y, 32, 32);
-        }
-    };
     return Level;
+})();
+var Tree = (function () {
+    function Tree(x, y, size, scene) {
+        this.pivot = new THREE.Object3D();
+        this.pivot.position = new THREE.Vector3(x, y, 0);
+        this.pivot.rotateX(Math.PI / 6.0);
+        this.width = 3;
+        this.height = 6;
+        var planeGeometry = new THREE.PlaneGeometry(this.width, this.height);
+        var planeMaterial = new THREE.MeshPhongMaterial({
+            map: THREE.ImageUtils.loadTexture("res/tree.png"),
+            transparent: true,
+            shininess: 0.0
+        });
+        var mesh = new THREE.Mesh(planeGeometry, planeMaterial);
+        mesh.position.z = 1.85;
+        this.pivot.add(mesh);
+        scene.add(this.pivot);
+        this.size = size;
+        this.chopped = false;
+    }
+    Tree.prototype.chop = function () {
+        this.chopped = true;
+    };
+    return Tree;
 })();
 var Vec2 = (function () {
     function Vec2(x, y) {
@@ -291,6 +364,8 @@ var Resource = (function () {
         Resource.player = new SpriteSheet("res/player.png", 64, 128);
         Resource.trunk = new Image();
         Resource.trunk.src = "res/trunk.png";
+        Resource.tree = new Image();
+        Resource.tree.src = "res/tree.png";
         Resource.deciduous_sapling = new Image();
         Resource.deciduous_sapling.src = "res/deciduous_sapling.png";
         Resource.coninferous_sapling = new Image();
@@ -305,34 +380,7 @@ var SpriteSheet = (function () {
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
     }
-    SpriteSheet.prototype.render = function (x, y, frameNumber, width, height) {
-        var sx = (frameNumber % this.image.width) * this.frameWidth;
-        var sy = Math.floor(frameNumber / this.image.width) * this.frameHeight;
-        Main.context.drawImage(this.image, sx, sy, this.frameWidth, this.frameHeight, x, Main.canvas.height - y + Camera.yo, width, height);
-    };
     return SpriteSheet;
-})();
-var Camera = (function () {
-    function Camera(player) {
-        this.player = player;
-    }
-    Camera.prototype.update = function () {
-        Camera.yo = this.player.pos.y - this.player.height / 2 - Main.canvas.height / 2;
-        if (Camera.yo < 0) {
-            Camera.yo = 0;
-        }
-        else if (Camera.yo > this.player.level.pixelHeight - Main.canvas.height) {
-            Camera.yo = this.player.level.pixelHeight - Main.canvas.height;
-        }
-    };
-    Camera.fillRect = function (x, y, width, height) {
-        Main.context.fillRect(x, Main.canvas.height - y + Camera.yo, width, height);
-    };
-    Camera.drawImage = function (image, x, y, width, height) {
-        Main.context.drawImage(image, x, Main.canvas.height - y + Camera.yo, width, height);
-    };
-    Camera.yo = 0;
-    return Camera;
 })();
 var ClickType;
 (function (ClickType) {
@@ -377,6 +425,12 @@ var Keyboard = (function () {
         if (!Keyboard.contains(event.keyCode)) {
             Keyboard.keysDown.push(event.keyCode);
         }
+        for (var k in Keyboard.KEYS) {
+            if (event.keyCode == Keyboard.KEYS[k]) {
+                return false;
+            }
+        }
+        return true;
     };
     Keyboard.contains = function (keyCode) {
         for (var i in Keyboard.keysDown) {
@@ -387,8 +441,6 @@ var Keyboard = (function () {
         return false;
     };
     Keyboard.onKeyUp = function (event) {
-        if (event.altKey)
-            return;
         for (var i in Keyboard.keysDown) {
             if (Keyboard.keysDown[i] === event.keyCode) {
                 Keyboard.keysDown.splice(i, 1);
@@ -419,9 +471,9 @@ function enterState(state) {
 window.onkeydown = Keyboard.onKeyDown;
 window.onkeyup = Keyboard.onKeyUp;
 window.onload = function () {
-    get('gameCanvas').oncontextmenu = function () { return false; };
-    get('gameCanvas').onmousedown = function (event) { Mouse.click(event, true); };
-    get('gameCanvas').onmouseup = function (event) { Mouse.click(event, false); };
-    get('gameCanvas').onmousemove = Mouse.move;
+    get('gameContent').oncontextmenu = function () { return false; };
+    get('gameContent').onmousedown = function (event) { Mouse.click(event, true); };
+    get('gameContent').onmouseup = function (event) { Mouse.click(event, false); };
+    get('gameContent').onmousemove = Mouse.move;
     new Main().init();
 };
