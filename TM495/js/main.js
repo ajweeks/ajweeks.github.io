@@ -238,12 +238,6 @@ var Player = (function () {
         this.pivot.add(playerMesh);
         scene.add(this.pivot);
         this.maxVel = Player.MAX_V_WALK;
-        var object = THREE.SceneUtils.createMultiMaterialObject(new THREE.PlaneGeometry(200, 50, 4, 4), [material]);
-        var parent = new THREE.Object3D();
-        object.applyMatrix(new THREE.Matrix4().makeTranslation(0, 25, 0));
-        parent.add(object);
-        parent.rotation.x = 1;
-        scene.add(parent);
     }
     Player.prototype.update = function (deltaTime) {
         this.animator.update(deltaTime);
