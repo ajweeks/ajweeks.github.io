@@ -12,6 +12,7 @@ var Main = (function () {
     Main.prototype.init = function () {
         console.log("TM495 v" + Main.VERSION + " by AJ Weeks");
         Resource.loadAll();
+        Sound.init();
         Main.sm = new StateManager();
         Main.renderer = new Renderer();
         Main.lastDate = Date.now();
@@ -33,7 +34,7 @@ var Main = (function () {
         Main.sm.update(deltaTime);
         Main.sm.render();
     };
-    Main.VERSION = "0.015";
+    Main.VERSION = "0.017";
     Main.elapsed = 0.0;
     Main.lastDate = 0.0;
     Main.frames = 0;
@@ -51,6 +52,7 @@ var Renderer = (function () {
         this.renderer.setSize(this.width, this.height);
         this.renderer.setClearColor(0x07141b, 1);
         this.renderer.domElement.textContent = "Your browser doesn't appear to support the <code>&lt;canvas&gt;</code> element.";
+        this.renderer.domElement.id = "gameCanvas";
         get('gameContent').appendChild(this.renderer.domElement);
         this.camera = new THREE.PerspectiveCamera(70, this.width / this.height, 0.1, 1000);
         this.camera.position = new THREE.Vector3(0, -6, 20);
@@ -62,8 +64,6 @@ var Renderer = (function () {
         this.elapsed += (this.previousTime - now);
         this.renderer.render(scene, this.camera);
         this.previousTime = now;
-    };
-    Renderer.prototype.update = function () {
     };
     return Renderer;
 })();
@@ -164,13 +164,15 @@ var GameState = (function (_super) {
     __extends(GameState, _super);
     function GameState(sm) {
         _super.call(this, STATE_TYPE.GAME, sm);
-        this.x = 0;
-        this.y = 0;
         get('gameState').style.display = "initial";
         this.scene = new THREE.Scene();
         this.scene.add(new THREE.AmbientLight(new THREE.Color(0.8, 0.8, 0.9).getHex()));
-        this.level = new Level(45, 100, this.scene);
-        this.player = new Player(this.level, this.scene);
+        this.entityManager = new EntityManager(this.scene);
+        this.level = new Level(45, 450, this.scene);
+        this.player = new Player(this.level, this.scene, this);
+        this.cameraAcceleration = new THREE.Vector2(0, 0.022);
+        Main.renderer.camera.position.x = this.player.pivot.position.x;
+        Main.renderer.camera.position.y = this.player.pivot.position.y - this.player.height;
     }
     GameState.prototype.hide = function () {
         get('gameState').style.display = "none";
@@ -186,93 +188,233 @@ var GameState = (function (_super) {
     };
     GameState.prototype.update = function (deltaTime) {
         this.player.update(deltaTime);
-        Main.renderer.camera.position.x = this.player.pivot.position.x;
-        Main.renderer.camera.position.y = this.player.pivot.position.y - 5;
+        this.updateCamera(deltaTime);
+        this.entityManager.update(deltaTime);
+    };
+    GameState.prototype.updateCamera = function (deltaTime) {
+        var playerX = this.player.pivot.position.x;
+        var playerY = this.player.pivot.position.y;
+        var deltaY = playerY - Main.renderer.camera.position.y - 7;
+        var speedY = (deltaY / 3 * this.cameraAcceleration.y) * deltaTime;
+        Main.renderer.camera.position.y += speedY;
     };
     GameState.prototype.render = function () {
         Main.renderer.render(this.scene);
     };
     return GameState;
 })(BasicState);
+var AXE;
+(function (AXE) {
+    AXE[AXE["STEEL"] = 0] = "STEEL";
+    AXE[AXE["GOLD"] = 1] = "GOLD";
+})(AXE || (AXE = {}));
 var Player = (function () {
-    function Player(level, scene) {
+    function Player(level, scene, gameState) {
+        this.axe = AXE.STEEL;
+        this.choppingTime = -1;
         this.level = level;
+        this.gameState = gameState;
         this.width = 2.5;
         this.height = 5;
+        this.wood = 0;
+        get('woodInfoTab').innerHTML = "Wood: " + this.wood;
         this.pivot = new THREE.Object3D();
         this.pivot.position = new THREE.Vector3(0, this.height, 0);
         this.pivot.rotateX(Math.PI / 6.0);
-        var planeGeometry = new THREE.PlaneGeometry(this.width, this.height);
-        var planeMaterial = new THREE.MeshPhongMaterial({
-            map: THREE.ImageUtils.loadTexture("res/player1.png"),
-            transparent: true,
-            shininess: 0.0
-        });
-        var mesh = new THREE.Mesh(planeGeometry, planeMaterial);
-        mesh.position = new THREE.Vector3(0, 0, 2.5);
-        this.pivot.add(mesh);
+        var textureAnimators = new Array();
+        textureAnimators.push(new TextureAnimator(Resource.playerIdleTexture, 2, 1, 2, 480));
+        textureAnimators.push(new TextureAnimator(Resource.playerWalkingTexture, 4, 1, 4, 160));
+        textureAnimators.push(new TextureAnimator(Resource.playerRunningTexture, 4, 1, 4, 130));
+        this.material = new THREE.MeshBasicMaterial({ map: textureAnimators[Player.IDLE_ANIM].texture, transparent: true });
+        this.animator = new SpriteAnimator(textureAnimators, this.material);
+        var playerGeometry = new THREE.PlaneGeometry(this.width, this.height, 1, 1);
+        var playerMesh = new THREE.Mesh(playerGeometry, this.material);
+        playerMesh.position = new THREE.Vector3(0, 0, 2.5);
+        this.weaponMaterial = new THREE.MeshBasicMaterial({ map: Resource.steelAxeTexture, transparent: true });
+        var weaponGeometry = new THREE.PlaneGeometry(2.5, 2.5);
+        var weaponMesh = new THREE.Mesh(weaponGeometry, this.weaponMaterial);
+        weaponMesh.position = new THREE.Vector3(0.85, 0.0, 2.9);
+        this.pivot.add(weaponMesh);
+        this.pivot.add(playerMesh);
         scene.add(this.pivot);
         this.maxVel = Player.MAX_V_WALK;
+        var object = THREE.SceneUtils.createMultiMaterialObject(new THREE.PlaneGeometry(200, 50, 4, 4), [material]);
+        var parent = new THREE.Object3D();
+        object.applyMatrix(new THREE.Matrix4().makeTranslation(0, 25, 0));
+        parent.add(object);
+        parent.rotation.x = 1;
+        scene.add(parent);
     }
     Player.prototype.update = function (deltaTime) {
+        this.animator.update(deltaTime);
+        if (this.choppingTime >= 0) {
+            --this.choppingTime;
+        }
         if (Keyboard.keysDown.length > 0) {
-            if (Keyboard.contains(Keyboard.KEYS.SHIFT)) {
-                this.maxVel = Player.MAX_V_RUN;
+            this.updatePosition(deltaTime);
+            if (Keyboard.contains(Keyboard.KEYS.SPACE)) {
+                this.swingAxe(deltaTime);
             }
-            else {
-                this.maxVel = Player.MAX_V_WALK;
-            }
-            var px = this.pivot.position.x;
-            var py = this.pivot.position.y;
-            if (Keyboard.contains(Keyboard.KEYS.W) || Keyboard.contains(Keyboard.KEYS.UP)) {
-                this.pivot.position.y += this.maxVel * deltaTime;
-            }
-            else if (Keyboard.contains(Keyboard.KEYS.S) || Keyboard.contains(Keyboard.KEYS.DOWN)) {
-                this.pivot.position.y -= this.maxVel * deltaTime;
-            }
-            if (Keyboard.contains(Keyboard.KEYS.A) || Keyboard.contains(Keyboard.KEYS.LEFT)) {
-                this.pivot.position.x -= this.maxVel * deltaTime;
-            }
-            else if (Keyboard.contains(Keyboard.KEYS.D) || Keyboard.contains(Keyboard.KEYS.RIGHT)) {
-                this.pivot.position.x += this.maxVel * deltaTime;
-            }
-            for (var i = 0; i < this.level.trees.length; ++i) {
-                var tree = this.level.trees[i];
-                var heightRadiusSizeThing = 3;
-                if (this.pivot.position.x - this.width / 2 > tree.pivot.position.x - 0.5 - tree.width / 2 &&
-                    this.pivot.position.x + this.width / 2 < tree.pivot.position.x + 0.5 + tree.width / 2 &&
-                    this.pivot.position.y > tree.pivot.position.y - heightRadiusSizeThing &&
-                    this.pivot.position.y < tree.pivot.position.y + heightRadiusSizeThing) {
-                    this.pivot.position.x = px;
-                    this.pivot.position.y = py;
+            if (Keyboard.contains(Keyboard.KEYS.B)) {
+                if (this.wood >= 15 && this.axe == AXE.STEEL) {
+                    this.axe = AXE.GOLD;
+                    this.wood -= 15;
+                    this.weaponMaterial.map = Resource.goldAxeTexture;
+                    this.pivot.children[0].rotateZ(-1);
+                    setTimeout(function (w) { w.rotateZ(-1); }, 50, this.pivot.children[0]);
+                    setTimeout(function (w) { w.rotateZ(-1); }, 150, this.pivot.children[0]);
+                    setTimeout(function (w) { w.rotateZ(-1); }, 250, this.pivot.children[0]);
+                    setTimeout(function (w) { w.rotateZ(-1); }, 350, this.pivot.children[0]);
+                    setTimeout(function (w) { w.rotateZ(5); }, 450, this.pivot.children[0]);
+                    Sound.play(Sound.powerup);
                 }
             }
-            if (this.pivot.position.x - this.width / 2 < -this.level.width / 2) {
-                this.pivot.position.x = -this.level.width / 2 + this.width / 2;
-            }
-            if (this.pivot.position.x + this.width / 2 > this.level.width / 2) {
-                this.pivot.position.x = this.level.width / 2 - this.width / 2;
-            }
-            if (this.pivot.position.y - this.height / 2 > this.level.height) {
-                this.pivot.position.y = this.level.height + this.height / 2;
-            }
-            if (this.pivot.position.y - this.height < 0) {
-                this.pivot.position.y = this.height;
-            }
-            if (Keyboard.contains(Keyboard.KEYS.C)) {
-                var closest = -1;
-                var closestDist = 5;
-                for (var t in this.level.trees) {
-                    var diff = new THREE.Vector3();
-                    diff.subVectors(this.level.trees[t].pivot.position, this.pivot.position);
-                    var dist = diff.length();
-                    if (dist < closestDist) {
-                        closestDist = dist;
-                        closest = t;
+        }
+        else {
+            this.animator.switchAnimation(Player.IDLE_ANIM);
+        }
+    };
+    Player.prototype.updatePosition = function (deltaTime) {
+        if (Keyboard.contains(Keyboard.KEYS.SHIFT)) {
+            this.maxVel = Player.MAX_V_RUN;
+            this.animator.switchAnimation(Player.RUN_ANIM);
+        }
+        else {
+            this.maxVel = Player.MAX_V_WALK;
+            this.animator.switchAnimation(Player.WALK_ANIM);
+        }
+        var px = this.pivot.position.x;
+        var py = this.pivot.position.y;
+        var xv = 0;
+        var yv = 0;
+        var input = false;
+        if (Keyboard.contains(Keyboard.KEYS.W) || Keyboard.contains(Keyboard.KEYS.UP)) {
+            yv = this.maxVel * deltaTime;
+            input = true;
+        }
+        else if (Keyboard.contains(Keyboard.KEYS.S) || Keyboard.contains(Keyboard.KEYS.DOWN)) {
+            yv = -this.maxVel * deltaTime;
+            input = true;
+        }
+        if (Keyboard.contains(Keyboard.KEYS.A) || Keyboard.contains(Keyboard.KEYS.LEFT)) {
+            xv = -this.maxVel * deltaTime;
+            input = true;
+        }
+        else if (Keyboard.contains(Keyboard.KEYS.D) || Keyboard.contains(Keyboard.KEYS.RIGHT)) {
+            xv = this.maxVel * deltaTime;
+            input = true;
+        }
+        if (input === false) {
+            this.animator.switchAnimation(0);
+            return;
+        }
+        this.pivot.position.x += xv;
+        this.pivot.position.y += yv;
+        if (px == this.pivot.position.x && py == this.pivot.position.y) {
+            this.animator.switchAnimation(0);
+        }
+        this.collideWithEntities();
+        var nudgeMultiplyer = this.maxVel * 2;
+        var nudgeThreshold = 3;
+        var tree = this.level.collides(this.pivot.position.x, this.pivot.position.y, this.width, this.height);
+        if (tree !== null) {
+            if (this.level.collides(this.pivot.position.x, py, this.width, this.height) === null) {
+                if (this.pivot.position.x < tree.pivot.position.x) {
+                    var dist = Math.abs((this.pivot.position.x + this.width / 2) - (tree.pivot.position.x - tree.width / 2));
+                    if (dist < nudgeThreshold) {
+                        if (xv <= 0) {
+                            this.pivot.position.x -= this.maxVel * deltaTime;
+                        }
                     }
                 }
-                if (closest != -1 && this.level.trees[closest].chopped == false) {
-                    this.level.trees[closest].chopped = true;
+                else {
+                    var dist = Math.abs((this.pivot.position.x - this.width / 2) - (tree.pivot.position.x + tree.width / 2));
+                    if (dist < nudgeThreshold) {
+                        if (xv >= 0) {
+                            this.pivot.position.x += this.maxVel * deltaTime;
+                        }
+                    }
+                }
+                this.pivot.position.y = py;
+            }
+            else if (this.level.collides(px, this.pivot.position.y, this.width, this.height) === null) {
+                if (this.pivot.position.y < tree.pivot.position.y) {
+                    var dist = Math.abs((this.pivot.position.y) - (tree.pivot.position.y + tree.trunkRadius));
+                    if (dist < nudgeThreshold) {
+                        if (yv <= 0) {
+                            this.pivot.position.y -= this.maxVel * deltaTime;
+                        }
+                    }
+                }
+                else {
+                    if (this.pivot.position.y > tree.pivot.position.y) {
+                        var dist = Math.abs((this.pivot.position.y) - (tree.pivot.position.y - tree.trunkRadius));
+                        if (dist < nudgeThreshold) {
+                            if (yv >= 0) {
+                                this.pivot.position.y += this.maxVel * deltaTime;
+                            }
+                        }
+                    }
+                }
+                this.pivot.position.x = px;
+            }
+        }
+        if (this.pivot.position.x - this.width / 2 < -this.level.width / 2) {
+            this.pivot.position.x = -this.level.width / 2 + this.width / 2;
+        }
+        if (this.pivot.position.x + this.width / 2 > this.level.width / 2) {
+            this.pivot.position.x = this.level.width / 2 - this.width / 2;
+        }
+        if (this.pivot.position.y - this.height / 2 > this.level.height) {
+            this.pivot.position.y = this.level.height + this.height / 2;
+        }
+        if (this.pivot.position.y - this.height < 0) {
+            this.pivot.position.y = this.height;
+        }
+    };
+    Player.prototype.collideWithEntities = function () {
+        for (var e in this.gameState.entityManager.entities) {
+            var entity = this.gameState.entityManager.entities[e];
+            var width = entity.mesh.geometry.parameters.width;
+            var height = entity.mesh.geometry.parameters.height;
+            if (this.pivot.position.x + this.width / 2 > entity.mesh.position.x - width / 2 &&
+                this.pivot.position.x - this.width / 2 < entity.mesh.position.x + width / 2 &&
+                this.pivot.position.y > entity.mesh.position.y &&
+                this.pivot.position.y < entity.mesh.position.y + height) {
+                this.gameState.entityManager.remove(entity);
+                Sound.play(Sound.pickup);
+                ++this.wood;
+                get('woodInfoTab').innerHTML = "Wood: " + this.wood;
+            }
+        }
+    };
+    Player.prototype.swingAxe = function (deltaTime) {
+        if (this.choppingTime === -1) {
+            this.animateAxeSwing();
+            this.choppingTime = 22;
+            var closest = -1;
+            var closestDist = 5;
+            for (var t in this.level.trees) {
+                var diff = new THREE.Vector3();
+                diff.subVectors(this.level.trees[t].pivot.position, this.pivot.position);
+                var dist = diff.length();
+                if (dist < closestDist && this.level.trees[t].damage > 0) {
+                    closestDist = dist;
+                    closest = t;
+                }
+            }
+            if (closest != -1 && this.level.trees[closest].damage > 0) {
+                var tree = this.level.trees[closest];
+                setTimeout(function () { Sound.playRandom(Sound.hit); }, 100);
+                tree.chop();
+                if (tree.damage == 0) {
+                    for (var i = 0; i < tree.height; ++i) {
+                        var radius = (Math.random() * 3 + 1.5);
+                        var angle = Math.random() * Math.PI * 2;
+                        var x = tree.pivot.position.x + Math.cos(angle) * radius;
+                        var y = tree.pivot.position.y + Math.sin(angle) * radius - 3;
+                        this.gameState.entityManager.add(new TreeSectionEntity(x, y, 1 + Math.random() * 2));
+                    }
                     this.level.trees[closest].pivot.children[0].material = new THREE.MeshPhongMaterial({
                         map: THREE.ImageUtils.loadTexture("res/trunk.png"),
                         transparent: true
@@ -281,8 +423,17 @@ var Player = (function () {
             }
         }
     };
+    Player.prototype.animateAxeSwing = function () {
+        this.pivot.children[0].rotateZ(-0.5);
+        setTimeout(function (w) { w.rotateZ(-0.5); }, 50, this.pivot.children[0]);
+        setTimeout(function (w) { w.rotateZ(0.5); }, 100, this.pivot.children[0]);
+        setTimeout(function (w) { w.rotateZ(0.5); }, 250, this.pivot.children[0]);
+    };
     Player.MAX_V_WALK = 0.015;
     Player.MAX_V_RUN = 0.025;
+    Player.IDLE_ANIM = 0;
+    Player.WALK_ANIM = 1;
+    Player.RUN_ANIM = 2;
     return Player;
 })();
 var Level = (function () {
@@ -290,24 +441,32 @@ var Level = (function () {
         this.width = width;
         this.height = height;
         var planeGeometry = new THREE.PlaneGeometry(width, height);
-        var grassTexture = THREE.ImageUtils.loadTexture("res/grass_diffuse.jpg");
-        grassTexture.wrapS = grassTexture.wrapT = THREE.RepeatWrapping;
-        grassTexture.repeat.set(3, 6);
+        Resource.grassTexture.repeat.set(width / 15, height / 15);
         var planeMaterial = new THREE.MeshPhongMaterial({
-            map: grassTexture
+            map: Resource.grassTexture
         });
         this.mesh = new THREE.Mesh(planeGeometry, planeMaterial);
         this.mesh.position = new THREE.Vector3(0, this.height / 2, 0);
         scene.add(this.mesh);
-        this.trees = new Array(50);
+        this.trees = new Array(220);
         for (var i = 0; i < this.trees.length; ++i) {
             var pos;
-            do {
-            } while (false);
-            pos = new Vec2(Math.random() * width - width / 2, Math.random() * height + 5);
-            this.trees[i] = new Tree(pos.x, pos.y, new Vec2(48, 48), scene);
+            pos = new THREE.Vector2(Math.random() * width - width / 2, Math.random() * (height - 5) + 5);
+            this.trees[i] = new Tree(pos.x, pos.y, scene);
         }
     }
+    Level.prototype.collides = function (x, y, width, height) {
+        for (var t in this.trees) {
+            var tree = this.trees[t];
+            if (x - width / 2 > tree.pivot.position.x - tree.trunkRadius - tree.width / 2 &&
+                x + width / 2 < tree.pivot.position.x + tree.trunkRadius + tree.width / 2 &&
+                y > tree.pivot.position.y - tree.trunkRadius &&
+                y < tree.pivot.position.y + tree.trunkRadius) {
+                return tree;
+            }
+        }
+        return null;
+    };
     Level.overlaps = function (pos, trees, width, height) {
         for (var i = 0; i < trees.length; ++i) {
             if (!trees[i])
@@ -324,63 +483,163 @@ var Level = (function () {
     return Level;
 })();
 var Tree = (function () {
-    function Tree(x, y, size, scene) {
+    function Tree(x, y, scene) {
         this.pivot = new THREE.Object3D();
         this.pivot.position = new THREE.Vector3(x, y, 0);
         this.pivot.rotateX(Math.PI / 6.0);
-        this.width = 3;
-        this.height = 6;
+        this.width = 5;
+        this.height = 7 + Math.floor(Math.random() * 3);
+        this.trunkRadius = 1.0;
+        this.woodValue = this.height;
         var planeGeometry = new THREE.PlaneGeometry(this.width, this.height);
         var planeMaterial = new THREE.MeshPhongMaterial({
-            map: THREE.ImageUtils.loadTexture("res/tree.png"),
+            map: Resource.treeTexture,
             transparent: true,
             shininess: 0.0
         });
         var mesh = new THREE.Mesh(planeGeometry, planeMaterial);
-        mesh.position.z = 1.85;
+        mesh.position.z = 2.35;
         this.pivot.add(mesh);
         scene.add(this.pivot);
-        this.size = size;
-        this.chopped = false;
+        this.damage = Math.floor(this.width / 2);
     }
     Tree.prototype.chop = function () {
-        this.chopped = true;
+        if (this.damage > 0) {
+            --this.damage;
+        }
     };
     return Tree;
 })();
-var Vec2 = (function () {
-    function Vec2(x, y) {
-        if (x === void 0) { x = 0; }
-        if (y === void 0) { y = 0; }
-        this.x = x;
-        this.y = y;
+var Entity = (function () {
+    function Entity(x, y, startingZ, width, height, material, life, bobDistance) {
+        var geometry = new THREE.PlaneGeometry(width, height);
+        this.mesh = new THREE.Mesh(geometry, material);
+        this.mesh.position.x = x;
+        this.mesh.position.y = y;
+        this.startingZ = startingZ;
+        this.mesh.position.z = this.startingZ;
+        this.mesh.rotateX(Math.PI / 6.0);
+        this.life = life;
+        this.bobDistance = bobDistance;
     }
-    return Vec2;
+    Entity.prototype.update = function (deltaTime) {
+        this.mesh.position.z = this.startingZ + deltaTime * (Math.sin(this.life / 10.0) / 80.0 * this.bobDistance);
+        --this.life;
+    };
+    return Entity;
+})();
+var TreeSectionEntity = (function (_super) {
+    __extends(TreeSectionEntity, _super);
+    function TreeSectionEntity(x, y, startingZ) {
+        var material = new THREE.MeshBasicMaterial({ map: Resource.treeSectionTexture, transparent: true });
+        var life = 350 + Math.floor(Math.random() * 150);
+        _super.call(this, x, y, startingZ, 2, 2, material, life, Math.random() * 5 + 2);
+    }
+    return TreeSectionEntity;
+})(Entity);
+var EntityManager = (function () {
+    function EntityManager(scene) {
+        this.scene = scene;
+        this.entities = new Array(0);
+    }
+    EntityManager.prototype.add = function (entity) {
+        this.scene.add(entity.mesh);
+        this.entities.push(entity);
+    };
+    EntityManager.prototype.remove = function (entity) {
+        var index = this.entities.indexOf(entity);
+        this.scene.remove(this.entities[index].mesh);
+        this.entities.splice(index, 1);
+    };
+    EntityManager.prototype.update = function (deltaTime) {
+        for (var e in this.entities) {
+            this.entities[e].update(deltaTime);
+            if (this.entities[e].life <= 0) {
+                this.scene.remove(this.entities[e].mesh);
+                this.entities.splice(e, 1);
+            }
+        }
+    };
+    return EntityManager;
+})();
+var SpriteAnimator = (function () {
+    function SpriteAnimator(textureAnimators, material, currentAnimationIndex) {
+        if (currentAnimationIndex === void 0) { currentAnimationIndex = 0; }
+        this.textureAnimators = textureAnimators;
+        this.material = material;
+        this.currentAnimationIndex = currentAnimationIndex;
+    }
+    SpriteAnimator.prototype.update = function (deltaTime) {
+        this.textureAnimators[this.currentAnimationIndex].update(deltaTime);
+    };
+    SpriteAnimator.prototype.switchAnimation = function (newAnimationIndex) {
+        this.currentAnimationIndex = newAnimationIndex;
+        this.material.map = this.textureAnimators[this.currentAnimationIndex].texture;
+    };
+    return SpriteAnimator;
+})();
+var TextureAnimator = (function () {
+    function TextureAnimator(texture, tileCountX, tileCountY, numberOfTiles, msPerFrame) {
+        this.texture = texture;
+        this.tileCountX = tileCountX;
+        this.tileCountY = tileCountY;
+        this.numberOfTiles = numberOfTiles;
+        this.texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        this.texture.repeat.set(1 / this.tileCountX, 1 / this.tileCountY);
+        this.msPerFrame = msPerFrame;
+        this.msElapsedThisFrame = 0;
+        this.currentTileIndex = 0;
+    }
+    TextureAnimator.prototype.update = function (deltaTime) {
+        this.msElapsedThisFrame += deltaTime;
+        while (this.msElapsedThisFrame > this.msPerFrame) {
+            this.msElapsedThisFrame -= this.msPerFrame;
+            this.currentTileIndex++;
+            this.currentTileIndex %= this.numberOfTiles;
+            var currentColumn = this.currentTileIndex % this.tileCountX;
+            this.texture.offset.x = currentColumn / this.tileCountX;
+            var currentRow = Math.floor(this.currentTileIndex / this.tileCountX);
+            this.texture.offset.y = currentRow / this.tileCountY;
+        }
+    };
+    return TextureAnimator;
 })();
 var Resource = (function () {
     function Resource() {
     }
     Resource.loadAll = function () {
-        Resource.player = new SpriteSheet("res/player.png", 64, 128);
-        Resource.trunk = new Image();
-        Resource.trunk.src = "res/trunk.png";
-        Resource.tree = new Image();
-        Resource.tree.src = "res/tree.png";
-        Resource.deciduous_sapling = new Image();
-        Resource.deciduous_sapling.src = "res/deciduous_sapling.png";
-        Resource.coninferous_sapling = new Image();
-        Resource.coninferous_sapling.src = "res/coniferous_sapling.png";
+        Resource.textureLoader = new THREE.TextureLoader();
+        Resource.textureLoader.load("res/player_idle.png", function (tex) {
+            Resource.playerIdleTexture = tex;
+        });
+        Resource.textureLoader.load("res/player_walking.png", function (tex) {
+            Resource.playerWalkingTexture = tex;
+        });
+        Resource.textureLoader.load("res/player_running.png", function (tex) {
+            Resource.playerRunningTexture = tex;
+        });
+        Resource.textureLoader.load("res/steel_axe.png", function (tex) {
+            Resource.steelAxeTexture = tex;
+        });
+        Resource.textureLoader.load("res/gold_axe.png", function (tex) {
+            Resource.goldAxeTexture = tex;
+        });
+        Resource.textureLoader.load("res/tree_section.png", function (tex) {
+            Resource.treeSectionTexture = tex;
+        });
+        Resource.textureLoader.load("res/grass_diffuse.jpg", function (tex) {
+            Resource.grassTexture = tex;
+            Resource.grassTexture.wrapS = Resource.grassTexture.wrapT = THREE.RepeatWrapping;
+        });
+        Resource.textureLoader.load("res/tree.png", function (tex) {
+            Resource.treeTexture = tex;
+        });
+        Resource.textureLoader.load("res/trunk.png", function (tex) {
+            Resource.trunkTexture = tex;
+        });
+        console.log("All textures loaded!");
     };
     return Resource;
-})();
-var SpriteSheet = (function () {
-    function SpriteSheet(src, frameWidth, frameHeight) {
-        this.image = new Image();
-        this.image.src = src;
-        this.frameWidth = frameWidth;
-        this.frameHeight = frameHeight;
-    }
-    return SpriteSheet;
 })();
 var ClickType;
 (function (ClickType) {
@@ -422,6 +681,7 @@ var Keyboard = (function () {
     Keyboard.onKeyDown = function (event) {
         if (event.altKey)
             return false;
+        Controller.onKeyDown(event.keyCode);
         if (!Keyboard.contains(event.keyCode)) {
             Keyboard.keysDown.push(event.keyCode);
         }
@@ -441,6 +701,7 @@ var Keyboard = (function () {
         return false;
     };
     Keyboard.onKeyUp = function (event) {
+        Controller.onKeyDown(event.keyCode);
         for (var i in Keyboard.keysDown) {
             if (Keyboard.keysDown[i] === event.keyCode) {
                 Keyboard.keysDown.splice(i, 1);
@@ -456,6 +717,95 @@ var Keyboard = (function () {
     };
     Keyboard.keysDown = new Array(0);
     return Keyboard;
+})();
+var INPUT;
+(function (INPUT) {
+    INPUT[INPUT["UP"] = 0] = "UP";
+    INPUT[INPUT["DOWN"] = 1] = "DOWN";
+    INPUT[INPUT["LEFT"] = 2] = "LEFT";
+    INPUT[INPUT["RIGHT"] = 3] = "RIGHT";
+    INPUT[INPUT["JUMP"] = 4] = "JUMP";
+})(INPUT || (INPUT = {}));
+var KeyboardInput = (function () {
+    function KeyboardInput(keyCode) {
+        this.down = false;
+        this.pressed = false;
+        this.ticksDown = -1;
+        this.keyCode = keyCode;
+    }
+    KeyboardInput.prototype.onKeyDown = function () {
+        if (this.down == false) {
+            this.pressed = true;
+            this.ticksDown = 1;
+        }
+        else {
+            this.pressed = false;
+            this.ticksDown++;
+        }
+    };
+    KeyboardInput.prototype.onKeyUp = function () {
+        this.down = false;
+        this.pressed = false;
+        this.ticksDown = -1;
+    };
+    return KeyboardInput;
+})();
+var Controller = (function () {
+    function Controller() {
+        Controller.inputs = new Array();
+        Controller.inputs.push(new KeyboardInput(Keyboard.KEYS.W));
+    }
+    Controller.onKeyDown = function (keyCode) {
+        for (var i in Controller.inputs) {
+            if (Controller.inputs[i].keyCode == keyCode) {
+                Controller.inputs[i].onKeyDown();
+            }
+        }
+    };
+    Controller.onKeyUp = function (keyCode) {
+        for (var i in Controller.inputs) {
+            if (Controller.inputs[i].keyCode == keyCode) {
+                Controller.inputs[i].onKeyUp();
+            }
+        }
+    };
+    return Controller;
+})();
+var Sound = (function () {
+    function Sound() {
+    }
+    Sound.init = function () {
+        Sound.hit2 = get('hit2');
+        Sound.hit3 = get('hit3');
+        Sound.hit4 = get('hit4');
+        Sound.hit = new Array();
+        Sound.hit.push(Sound.hit2);
+        Sound.hit.push(Sound.hit3);
+        Sound.hit.push(Sound.hit4);
+        Sound.pickup = get('pickup');
+        Sound.powerup = get('powerup');
+        Sound.volumeSlider = get('volumeSlider');
+    };
+    Sound.changeVolume = function () {
+        Sound.volume = Number(Sound.volumeSlider.value) / 100;
+    };
+    Sound.toggleMute = function () {
+        Sound.muted = !Sound.muted;
+    };
+    Sound.play = function (sound) {
+        if (Sound.muted)
+            return;
+        sound.volume = Sound.volume;
+        sound.currentTime = 0;
+        sound.play();
+    };
+    Sound.playRandom = function (sounds) {
+        var rand = Math.floor(Math.random() * sounds.length);
+        Sound.play(sounds[rand]);
+    };
+    Sound.muted = false;
+    Sound.volume = 0.5;
+    return Sound;
 })();
 function clickType(event) {
     if (event.which === 3 || event.button === 2)

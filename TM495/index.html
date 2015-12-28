@@ -8,6 +8,10 @@
     <script src="js/main.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r67/three.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Sarala' rel='stylesheet' type='text/css'>
+    <link rel="icon" type="image/png" href="favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="favicons/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="favicons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="favicons/favicon-16x16.png" sizes="16x16">
     <style type="text/css">
     * {
         /* PREVENT TEXT HIGHLIGHTING SITE-WIDE */
@@ -61,7 +65,8 @@
         box-shadow: inset 2px 2px 1px black;
     }
     #gameCanvas {
-        box-shadow: 0 0 40px rgba(15, 15, 15, 0.3)
+        vertical-align: top; /* Removes gap between canvases */
+        box-shadow: 0 0 40px rgba(15, 15, 15, 0.3), 0 9px 10px -6px #000;
     }
     footer {
         background-color: #250500;
@@ -70,6 +75,20 @@
         width: 100%;
         font-size: 14px;
         margin-top: 120px;
+    }
+    #gameplayTabs {
+        width: 720px;
+        margin: 0 auto;
+    }
+    #gameplayTabs div {
+        display: inline-block;
+        color: #DDD;
+        padding: 5px 12px 2px 12px;
+        background-color: #531212;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        box-shadow: 2px 2px 1px rgba(1, 1, 1, 0.5), inset -1px -1px 1px rgba(1, 1, 1, 0.5);
+        text-shadow: 1px 1px 1px #000;
     }
     </style>
 </head>
@@ -85,11 +104,11 @@
     <div id="aboutState" style="display: none">
         <div id="backButton" class="button" onclick="Main.sm.enterPreviousState();">Back</div>
         <p>
-            TM495 is a 2D lumberjack game made by AJ Weeks in December 2015.
+            TM495 is a lumberjack game made by AJ Weeks in December 2015.
         </p>
         <div>
             <a href="https://twitter.com/home?status=You%20should%20try%20AJ%20Weeks'%20newest%20game,%20TM495%20over%20at%20ajweeks.github.io/tm495"
-                style="color: rgba(0, 0,0,0)"> <!-- Prevent weird line from rendering by making it invisible -->
+                style="color: rgba(0,0,0,0)"> <!-- Prevent weird line from rendering by making it invisible -->
                 <img src="res/twitter.png" style="cursor: pointer">
             </a>
             <a href="https://www.facebook.com/sharer/sharer.php?u=ajweeks.github.io">
@@ -98,20 +117,34 @@
         </div>
     </div>
 
+    <audio id="hit2"><source src="res/sounds/hit2.wav"></source></audio>
+    <audio id="hit3"><source src="res/sounds/hit3.wav"></source></audio>
+    <audio id="hit4"><source src="res/sounds/hit4.wav"></source></audio>
+    <audio id="pickup"><source src="res/sounds/pickup.wav"></source></audio>
+    <audio id="powerup"><source src="res/sounds/powerup.wav"></source></audio>
+
     <div id="gameState" style="display: none">
         <div id="backButton" class="button" onclick="Main.sm.enterPreviousState();">Back</div>
         <div id="gameWindow">
-            <div id="gameContent">
+            <!-- TODO(AJ): Find out how to add fullscreen option -->
+            <div id="gameContent"></div>
+        <div id="gameplayTabs">
+            <div id="woodInfoTab">Wood: 0</div>
+            <div id="paperInfoTab">Paper: 0</div>
+            <div id="volume" style="display: inline-block">
+                <input id="volumeSlider" type="range" value="75" style="" onchange="Sound.changeVolume()"/>
+                <span style="display: block; font-size: 22px; margin-left: 125px;">volume</span>
             </div>
+        </div>
         <br />
         <span>
             WASD or arrow keys to move
             <br />
+            Space to chop
+            <br />
             Shift to sprint
         </span>
     </div>
-
-
     <footer>
         AJ Weeks 2015
     </footer>
