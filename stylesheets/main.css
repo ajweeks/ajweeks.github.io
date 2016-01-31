@@ -89,6 +89,7 @@ nav {
 
 nav + #navShadow {
     width: 100%;
+    margin-top: 32px;
     position: fixed;
     height: 32px;
     background: -moz-linear-gradient(top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%); /* FF3.6+ */
