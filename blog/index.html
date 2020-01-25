@@ -1,0 +1,26 @@
+---
+layout: default
+title: Blog
+---
+
+<p style="text-align: right" class="rss-subscribe">
+  <a class="underline" href="{{ "/feed.xml" | prepend: site.baseurl }}">Subscribe</a>
+  <a aria-label="" target="_blank" href="{{ "/feed.xml" | prepend: site.baseurl }}"><i class="icon fa fa-rss-square" aria-hidden="true"></i></a>
+</p>
+
+<ul class="post-list">
+  {% for post in site.posts %}
+    <li class="post-li">
+      <h2 class="post-link-holder">
+        <a class="post-link underline" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+      </h2>
+
+      <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+    </li>
+  {% endfor %}
+</ul>
+
+<p class="rss-subscribe">
+  <a class="underline" href="{{ "/feed.xml" | prepend: site.baseurl }}">Subscribe</a>
+  <a aria-label="" target="_blank" href="{{ "/feed.xml" | prepend: site.baseurl }}"><i class="icon fa fa-rss-square" aria-hidden="true"></i></a>
+</p>

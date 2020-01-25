@@ -1,135 +1,86 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Games</title>
+---
+layout: default
+title: Games
+---
+<!-- <h4>Below you can find all of my finished games. If you have any feedback, feel free to <a href="/contact">contact me</a>.</h4> -->
 
-    <link rel="shortcut icon" href="res/logo.ico">
-    <script type="text/javascript">
-    window.addEventListener("onscroll", onscroll, false);
-    window.addEventListener("scroll", onscroll, false);
+<h2>Games</h2>
 
-    function onscroll () {
-        if (window.scrollY > 80) {
-            if (document.getElementById('header-large')) document.getElementById('header-large').id = 'header-small';
-        } else {
-            if (document.getElementById('header-small')) document.getElementById('header-small').id = 'header-large';
-        }
-    }
-    </script>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
-    <style type="text/css">
-        .gameBlock {
-            height: 150px;
-            line-height: 150px;
-            display: block;
-            background-color: #FFF;
-            padding: 5px;
-            margin-bottom: 18px;
-            text-align: center;
-            transition: all 0.4s;
-            color: #333;
-        }
-        .gameBlock:hover {
-            box-shadow: inset 0 0 3px #888;
-            background-color: #F3F3F3;
-            color: #000;
-        }
-        .gameBlock h2 {
-            display: inline-block;
-            margin: 0;
-            margin-right: 20px
-        }
-        .gameBlock img {
-            float: right;
-        }
-        .gameBlock.beta {
-            background-color: #c1a1a1;
-        }
-        .gameBlock.beta:hover {
-            background-color: #aa8b8b;
-        }
-    </style>
-</head>
-<body id="games">
+<p>Here are the games that I've finished, listed in a chronological order. My latest and greatest work can be found on the <a class="underline" href="/">home page</a></p>
 
-    <header id="header-large">
-        <h1><a href="/">aj weeks</a></h1>
 
-        <nav>
-          <ul>
-            <li><a class="home" href="/">Home</a></li>
-            <li><a class="games" href="#">Games</a></li>
-            <li><a class="threed" href="/3D">3D</a></li>
-            <li><a class="about" href="/about">About</a></li>
-          </ul>
-        </nav>
-        <div id="navShadow"></div>
-    </header>
-
-    <main>
-        <a href="/TM495" class="gameBlock beta">
-            <h2>TM495 (Beta)</h2>
-            <img src="/res/tm495_screenshot_01.png" width="245" height="150">
-        </a>
-        <a href="/breakout" class="gameBlock">
-            <h2>Breakout</h2>
-            <img src="/res/breakout_screenshot.png" width="188" height="150">
-        </a>
-        <a href="/mirrors" class="gameBlock">
-            <h2>Mirrors</h2>
-            <img src="/res/mirrors_screenshot.png" width="146" height="150">
-        </a>
-        <a href="/tictactoe" class="gameBlock">
-            <h2>Ultimate Tic Tac Toe</h2>
-            <img src="/res/tictactoe_screenshot.png" width="150" height="150">
-        </a>
-        <a href="/koch" class="gameBlock">
-            <h2>Koch Snowflake</h2>
-            <img src="/res/koch_screenshot.png" width="193" height="150">
-        </a>
-        <a href="/games/pong" class="gameBlock">
-            <h2>Pong</h2>
-            <img src="/res/pong_screenshot.png" width="225" height="150">
-        </a>
-        <a href="/games/circuit" class="gameBlock">
-            <h2>Electronic Circuit Simulator</h2>
-            <img src="/res/circuit_screenshot.png" width="158" height="150">
-        </a>
-        <a href="/games/gameoflife" class="gameBlock">
-            <h2>Game of Life</h2>
-            <img src="/res/gameoflife_screenshot.png" width="150" height="150">
-        </a>
-
-        <div id="disqus_thread"></div>
-        <script type="text/javascript">
-            /* * * CONFIGURATION VARIABLES * * */
-            var disqus_shortname = 'ajweeks';
-
-            /* * * DON'T EDIT BELOW THIS LINE * * */
-            (function() {
-                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-    </main>
-
-    <footer>
-        <span>&copy; AJ Weeks 2016</span>
-    </footer>
-
-    <script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES * * */
-    var disqus_shortname = 'ajweeks';
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
-</body>
-</html>
+<a href="/swing-bolt" class="gameBlock">
+    <div class="gamename">Swing Bolt</div>
+    <div class="gamedate">2017</div>
+    <img src="/assets/img/swing-bolt-01-square.jpg" width="150" height="150">
+</a>
+<a href="/hexahover" class="gameBlock">
+    <div class="gamename">HexaHover</div>
+    <div class="gamedate">2017</div>
+    <img src="/assets/img/hexa-hover-thumb-01.jpg" width="150" height="150">
+</a>
+<a href="/redshift" class="gameBlock">
+    <div class="gamename">Redshift</div>
+    <div class="gamedate">2017</div>
+    <img src="/assets/img/redshift-02-square.png" width="150" height="150">
+</a>
+<a href="/tangent" class="gameBlock">
+    <div class="gamename">Tangent</div>
+    <div class="gamedate">2017</div>
+    <img src="/assets/img/tangent-thumb-01.jpg" width="150" height="150">
+</a>
+<a href="/apex-engine" class="gameBlock">
+    <div class="gamename">Crowchild</div>
+    <div class="gamedate">2016</div>
+    <img src="/assets/img/apex-engine-logo-s.jpg" width="150" height="150">
+</a>
+<a href="/games/SuperMarioWorld" class="gameBlock">
+    <div class="gamename">Super Mario World</div>
+    <div class="gamedate">2016</div>
+    <img src="/assets/img/SMW_thumb-01.jpg" width="150" height="150">
+</a>
+<a href="/rubiks-cube" class="gameBlock">
+    <div class="gamename">Rubiks Cube Simulator</div>
+    <div class="gamedate">2016</div>
+    <img src="/assets/img/rubiks-02-small.jpg" width="150" height="150">
+</a>
+<a href="/TM495" class="gameBlock">
+    <div class="gamename">TM495</div>
+    <div class="gamedate">2016</div>
+    <img src="/assets/img/tm495_screenshot_01.png" width="150" height="150">
+</a>
+<a href="/mirrors-desc" class="gameBlock">
+    <div class="gamename">Mirrors</div>
+    <div class="gamedate">2016</div>
+    <img src="/assets/img/mirrors_screenshot.png" width="146" height="150">
+</a>
+<a href="/breakout" class="gameBlock">
+  <div class="gamename">Breakout</div>
+  <div class="gamedate">2015</div>
+  <img src="/assets/img/breakout-thumb-01.jpg" width="150" height="150">
+</a>
+<a href="/tictactoe" class="gameBlock">
+    <div class="gamename">Ultimate Tic Tac Toe</div>
+    <div class="gamedate">2015</div>
+    <img src="/assets/img/tictactoe_screenshot.png" width="150" height="150">
+</a>
+<a href="/games/koch" class="gameBlock">
+    <div class="gamename">Koch Snowflake</div>
+    <div class="gamedate">2014</div>
+    <img src="/assets/img/koch_screenshot.jpg" width="150" height="150">
+</a>
+<a href="/games/pong" class="gameBlock">
+  <div class="gamename">Pong</div>
+  <div class="gamedate">2014</div>
+  <img src="/assets/img/pong-thumb-01.jpg" width="150" height="150">
+</a>
+<a href="/games/circuit" class="gameBlock">
+  <div class="gamename">Circuit Simulator</div>
+  <div class="gamedate">2014</div>
+  <img src="/assets/img/circuit-thumb-01.jpg" width="150" height="150">
+</a>
+<a href="/games/gameoflife" class="gameBlock">
+  <div class="gamename">Game of Life</div>
+  <div class="gamedate">2014</div>
+  <img src="/assets/img/gameoflife_screenshot.png" width="150" height="150">
+</a>
