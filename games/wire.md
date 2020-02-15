@@ -19,7 +19,7 @@ Live the life of a telephone operator in the mid twentieth century, connecting t
 <p></p>
 
 <div style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0; margin-bottom: 18px">
-  <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/nkYnawqeFOU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <iframe style="position: absolute; top: 0; left: 0; width: 97%; height: 97%;" src="https://www.youtube.com/embed/nkYnawqeFOU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
 Made for the Global Game Jam 2020 using the Godot game engine in 48 hours by:
