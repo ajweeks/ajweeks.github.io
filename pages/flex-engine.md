@@ -26,7 +26,7 @@ Flex Engine is a personal game engine I began work on in February 2017. I use it
 - In-game scripting language
 - GPU particles (compute shader)
 
-<a data-fancybox="gallery" href="/assets/img/flex_engine_banner_3.png"><img src="/assets/img/flex_engine_banner_3.png"  width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/flex_engine_banner_3.jpg"><img src="/assets/img/flex_engine_banner_3.jpg"  width="100%"></a>
 
 <a data-fancybox="gallery" href="/assets/img/flex-engine-editor.png"><img src="/assets/img/flex-engine-editor.png"  width="100%"></a>
 <span class="caption">A view of the editor tools showing info about scenes, objects, materials, lights, and user-settings</span>
