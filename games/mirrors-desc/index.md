@@ -10,7 +10,7 @@ permalink: /mirrors-desc/
 
 Mirrors is a tile-based puzzle game I created first using Java, then later in JavaScript and finally once again in TypeScript. The aim of the game is to guide coloured lasers into laser receptors using rotatable mirrors.
 
-You can play the TypeScript version in your browser here: [ajweeks.com/mirrors](http://ajweeks.com/mirrors)
+You can play the TypeScript version in your browser here: [ajweeks.com/mirrors](https://ajweeks.com/mirrors)
 
 And the new TypeScript version's source can be found here: [github.com/ajweeks/mirrors-ts](https://github.com/ajweeks/mirrors-ts)
 
