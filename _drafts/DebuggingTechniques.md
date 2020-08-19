@@ -1,11 +1,11 @@
 ---
 layout: post
-title:  "Debugging Techniques"
+title: "Debugging Techniques"
+date: 2018-11-18
 tags: miscellaneous
 permalink: /blog/:year/:month/:day/:title/
 author: AJ Weeks
 ---
-<!-- date:   2018-11-18 -->
 
 
 Debugging is an inevitable part of game development, and yet I don't hear people talk about it often. Maybe that's because debugging can be a less interesting part of the development cycle than feature creation, but nonethess debugging is something you will need to do at many points throughout development, and so I think it's worth spending some time learning techniques to better tackle issues as they arrise. That is why I'm writing this post. I am rather new to the industry, but I'm hoping lessons I've learned can be taught to others, and that this will start a converation about techniques of which I am not aware.
