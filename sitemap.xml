@@ -1,20 +1,370 @@
----
----
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    {% for post in site.posts %}
+    
     <url>
-        <loc>https://ajweeks.com{{ post.url | remove: 'index.html' }}</loc>
+        <loc>https://ajweeks.com/blog/2019/05/11/SSAO/</loc>
     </url>
-    {% endfor %}
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2019/05/05/EssentialToolsForGameDevelopers/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2019/04/06/ReverseZ/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2019/02/04/InputHandling/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2019/01/21/Raymarching-Workshop/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2018/07/03/Flex-Engine-Update-5/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2017/11/11/Relaxing/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2017/10/05/Flex-Engine-Update-4/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2017/08/16/Rendering-Engine-Update-3/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2017/08/03/Ludum-Dare-39/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2017/05/13/Rendering-Engine-Update-2/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2017/04/27/Ludum-Dare-38/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2016/03/16/Rubiks-Cube-Simulator/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2016/02/26/Rendering-Engine-Update-1/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2016/01/31/devember-recap/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2015/11/17/November-2015-Update/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2015/08/12/progress/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2015/03/05/two-down-ten-to-go/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2015/02/04/12-in-12/</loc>
+    </url>
+    
+    <url>
+        <loc>https://ajweeks.com/blog/2015/02/01/why-i-created-this-blog/</loc>
+    </url>
+    
 
-    {% for page in site.pages %}
-    {% if page.layout != nil %}
-    {% if page.layout != 'feed' %}
+    
+    
+    
     <url>
-        <loc>https://ajweeks.com{{ page.url | remove: 'index.html' }}</loc>
+        <loc>https://ajweeks.com/404.html</loc>
     </url>
-    {% endif %}
-    {% endif %}
-    {% endfor %}
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/about/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/apex-engine/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/contact/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/electric-square/</loc>
+    </url>
+    
+    
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/flex-engine/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/hexahover/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/</loc>
+    </url>
+    
+    
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/games/circuit/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/games/gameoflife/</loc>
+    </url>
+    
+    
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/blog/</loc>
+    </url>
+    
+    
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/3D/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/3D/LE_final/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/games/rubiks/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/3D/GAP_simple_object/</loc>
+    </url>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/games/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/3D/GAP_melee_weapon/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/3D/GAP_arisaka_rifle/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/3D/3D2_fiat_131/</loc>
+    </url>
+    
+    
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/3D/3D2_3_objects/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/mirrors-desc/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/slappin-stackers/</loc>
+    </url>
+    
+    
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/meshtober-2018/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/new-atlas/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/games/pong/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/redshift/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/rubiks-cube/</loc>
+    </url>
+    
+    
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/games/SuperMarioWorld/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/swing-bolt/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/tangent/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/unreal-level/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/wingate/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/wire/</loc>
+    </url>
+    
+    
+    
+    
+    
 </urlset>

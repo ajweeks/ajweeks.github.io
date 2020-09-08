@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"https://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>SSAO in Vulkan</title>
+  <meta name="description" content="AJ Weeks - Graphics Programmer">
+
+  <meta name="viewport" content="width=425">
+
+  <link rel="shortcut icon" href="https://ajweeks.com/logo.ico" />
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.rawgit.com/konpa/devicon/master/devicon.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/devicons/1.8.0/css/devicons.min.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="/css/main.css">
+
+  <link rel="alternate" type="application/rss+xml" title="Subscribe" href="https://ajweeks.com/feed.xml" />
+
+  <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>
+</head>
+
+  <body onload="onLoad()">
+      <div id="page-header">
+  <div class="row content">
+    <a href="/" style="color: #fff; text-decoration: none"><span class="site-title">AJ Weeks</span></a>
+
+    <div class="icons-header">
+      <div class="tooltip">
+        <a aria-label="Send email" href="mailto:contact@ajweeks.com"><i class="icon fa fa-envelope"></i></a>
+      </div>
+      <div class="tooltip">
+        <a aria-label="My Twitter" target="_blank" href="https://twitter.com/liqwidice"><i class="icon fa fa-twitter" aria-hidden="true"></i></a>
+      </div>
+      <div class="tooltip">
+        <a aria-label="My Github" target="_blank" href="https://github.com/ajweeks"><i class="icon fa fa-github-alt" aria-hidden="true"></i></a>
+      </div>
+    </div>
+    <!-- <a class="link" href="/Andrew-Weeks-Resume.pdf">
+      <img src="/assets/img/pdf.svg" width="28px" height="28px" style="padding-right: 3px" />
+      PDF Resume
+    </a> -->
+  </div>
+
+  <!-- <div class="content" style="column-count: 2">
+    <div class="shrinker">
+      <h1>
+        <a href="/" style="color: #fff; text-decoration: none"><span class="site-title">AJ Weeks</span></a>
+        <span class="site-description"></span>
+      </h1>
+    </div>
+    <div>
+      <div class="icons-header">
+        <a aria-label="Send email" href="mailto:contact@ajweeks.com"><i class="icon fa fa-envelope"></i></a>
+        <a aria-label="My Twitter" target="_blank" href="https://twitter.com/liqwidice"><i class="icon fa fa-twitter" aria-hidden="true"></i></a>
+        <a aria-label="My Github" target="_blank" href="https://github.com/ajweeks"><i class="icon fa fa-github-alt" aria-hidden="true"></i></a>
+      </div>
+      <a class="link" href="/Andrew-Weeks-Resume.pdf">
+        <img src="/assets/img/pdf.svg" width="28px" height="28px" style="padding-right: 3px" />
+        PDF Resume
+      </a>
+    </div>
+  </div> -->
+</div>
+
+      <section style="height: 20px"></section>
+      <section class="container">
+        <article class="post" itemscope itemtype="https://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">SSAO in Vulkan</h1>
+    <p class="post-meta"><time datetime="2019-05-11T00:00:00+01:00" itemprop="datePublished">May 11, 2019</time> • <span itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name">AJ Weeks</span></span></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p><a data-fancybox="gallery" href="/assets/img/ssao-final-01.jpg"><img width="100%" src="/assets/img/ssao-final-01.jpg" /></a></p>
+
+<p>SSAO (Screen-space ambient occlusion) is a widespread technique employed by many games to simulate the shadowing effect of objects occluding other nearby objects. It was originally proposed by Crytek in 2007 (<a class="underline" href="http://developer.amd.com/wordpress/media/2012/10/Chapter8-Mittring-Finding_NextGen_CryEngine2.pdf">original paper [1]</a>), and has since seen many improvements. I’ve implemented a variant of it in <a class="underline" href="https://ajweeks.com/flex-engine/">Flex</a> recently, and this is a short discussion of the implementation details.</p>
+
+<p>The necessary inputs are the scene depth and normals, both in view space. The depth buffer will be used as a rough estimate of how occluded each pixel is, and the normals will be used to orient a hemisphere about each pixel to generate our sample points in. Because Flex already supports deferred rendering, these two input buffers were readily available. The only change necessary was to output the normals in view space, rather than world space.</p>
+
+<div width="100%">
+<a data-fancybox="gallery" href="/assets/img/ssao-depth.jpg"><img width="49%" src="/assets/img/ssao-depth.jpg" /></a>
+<a data-fancybox="gallery" href="/assets/img/ssao-normals.jpg"><img width="49%" src="/assets/img/ssao-normals.jpg" /></a>
+</div>
+
+<p>Instead of depth, some implementations require a three-channel position buffer as input. I’ve opted to reconstruct position from the depth buffer instead to save on texture bandwidth. There’s a number of ways to do this, if you’re implementing this yourself then definitely give this <a class="underline" href="https://mynameismjp.wordpress.com/2009/03/10/reconstructing-position-from-depth/">three</a> <a class="underline" href="https://mynameismjp.wordpress.com/2009/05/05/reconstructing-position-from-depth-continued/">part</a> <a class="underline" href="https://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/">series</a> by MJP a read. I opted for using the already existing view-space hardware depth buffer. Here’s how I’m unpacking that into a view-space position:</p>
+
+<div class="language-glsl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">vec3</span> <span class="nf">reconstructVSPosFromDepth</span><span class="p">(</span><span class="kt">vec2</span> <span class="n">uv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">float</span> <span class="n">depth</span> <span class="o">=</span> <span class="n">texture</span><span class="p">(</span><span class="n">in_Depth</span><span class="p">,</span> <span class="n">uv</span><span class="p">).</span><span class="n">r</span><span class="p">;</span>
+  <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="n">uv</span><span class="p">.</span><span class="n">x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">.</span><span class="mi">0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+  <span class="kt">float</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">-</span> <span class="n">uv</span><span class="p">.</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">.</span><span class="mi">0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+  <span class="kt">vec4</span> <span class="n">pos</span> <span class="o">=</span> <span class="kt">vec4</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+  <span class="kt">vec4</span> <span class="n">posVS</span> <span class="o">=</span> <span class="n">uboConstant</span><span class="p">.</span><span class="n">invProj</span> <span class="o">*</span> <span class="n">pos</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">posVS</span><span class="p">.</span><span class="n">xyz</span> <span class="o">/</span> <span class="n">posVS</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>In order to avoid banding artifacts we will modulate the sample points by some random noise. A 4x4 noise texture can be generated at startup. To get random rotations around the z-axis, our texture will contain values in the range [-1.0, 1.0] in the red and green channels. This requires the use of a floating point texture format, but could easily be scaled and biased to fit into an integral format just as well.</p>
+
+<div style="text-align: center; padding-top: 30px">Packed two channel noise texture</div>
+<p><a data-fancybox="gallery" href="/assets/img/ssao-noise-rg.jpg"><img width="100%" src="/assets/img/ssao-noise-rg.jpg" /></a></p>
+
+<p>To orient the hemisphere about the normal, I first use the <a class="underline" href="http://en.wikipedia.org/wiki/Gram–Schmidt_process">Gram-Schmidt</a> process to obtain a local coordinate frame:</p>
+
+<div class="language-glsl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">ivec2</span> <span class="n">depthSize</span> <span class="o">=</span> <span class="n">textureSize</span><span class="p">(</span><span class="n">in_Depth</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="kt">ivec2</span> <span class="n">noiseSize</span> <span class="o">=</span> <span class="n">textureSize</span><span class="p">(</span><span class="n">in_Noise</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="kt">float</span> <span class="n">renderScale</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">;</span> <span class="c1">// SSAO is rendered at 0.5x scale</span>
+<span class="kt">vec2</span> <span class="n">noiseUV</span> <span class="o">=</span> <span class="kt">vec2</span><span class="p">(</span><span class="kt">float</span><span class="p">(</span><span class="n">depthSize</span><span class="p">.</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="kt">float</span><span class="p">(</span><span class="n">noiseSize</span><span class="p">.</span><span class="n">x</span><span class="p">),</span>
+                    <span class="kt">float</span><span class="p">(</span><span class="n">depthSize</span><span class="p">.</span><span class="n">y</span><span class="p">)</span><span class="o">/</span><span class="kt">float</span><span class="p">(</span><span class="n">noiseSize</span><span class="p">.</span><span class="n">y</span><span class="p">))</span>
+                    <span class="o">*</span> <span class="n">ex_UV</span> <span class="o">*</span> <span class="n">renderScale</span><span class="p">;</span>
+<span class="kt">vec3</span> <span class="n">randVec</span> <span class="o">=</span> <span class="n">texture</span><span class="p">(</span><span class="n">in_Noise</span><span class="p">,</span> <span class="n">noiseUV</span><span class="p">).</span><span class="n">xyz</span><span class="p">;</span>
+
+<span class="kt">vec3</span> <span class="n">tangent</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">randVec</span> <span class="o">-</span> <span class="n">normal</span> <span class="o">*</span> <span class="nf">dot</span><span class="p">(</span><span class="n">randVec</span><span class="p">,</span> <span class="n">normal</span><span class="p">));</span>
+<span class="kt">vec3</span> <span class="n">bitangent</span> <span class="o">=</span> <span class="n">cross</span><span class="p">(</span><span class="n">tangent</span><span class="p">,</span> <span class="n">normal</span><span class="p">);</span>
+<span class="kt">mat3</span> <span class="n">TBN</span> <span class="o">=</span> <span class="kt">mat3</span><span class="p">(</span><span class="n">tangent</span><span class="p">,</span> <span class="n">bitangent</span><span class="p">,</span> <span class="n">normal</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Then the real meat of the algorithm can commence:</p>
+
+<div class="language-glsl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="n">bias</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mo">01</span><span class="p">;</span>
+
+<span class="kt">float</span> <span class="n">occlusion</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">SSAO_KERNEL_SIZE</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">vec3</span> <span class="n">samplePos</span> <span class="o">=</span> <span class="n">TBN</span> <span class="o">*</span> <span class="n">uboConstant</span><span class="p">.</span><span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">xyz</span><span class="p">;</span>
+  <span class="n">samplePos</span> <span class="o">=</span> <span class="n">posVS</span> <span class="o">+</span> <span class="n">samplePos</span> <span class="o">*</span> <span class="n">SSAO_RADIUS</span><span class="p">;</span>
+
+  <span class="c1">// Convert view-space position into clip-space</span>
+  <span class="kt">vec4</span> <span class="n">offset</span> <span class="o">=</span> <span class="kt">vec4</span><span class="p">(</span><span class="n">samplePos</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+  <span class="n">offset</span> <span class="o">=</span> <span class="n">uboConstant</span><span class="p">.</span><span class="n">projection</span> <span class="o">*</span> <span class="n">offset</span><span class="p">;</span>
+  <span class="n">offset</span><span class="p">.</span><span class="n">xy</span> <span class="o">/=</span> <span class="n">offset</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+  <span class="n">offset</span><span class="p">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">offset</span><span class="p">.</span><span class="n">xy</span> <span class="o">*</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">;</span>
+  <span class="n">offset</span><span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">-</span> <span class="n">offset</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+
+  <span class="kt">vec3</span> <span class="n">reconstructedPos</span> <span class="o">=</span> <span class="n">reconstructVSPosFromDepth</span><span class="p">(</span><span class="n">offset</span><span class="p">.</span><span class="n">xy</span><span class="p">);</span>
+  <span class="n">occlusion</span> <span class="o">+=</span> <span class="p">(</span><span class="n">reconstructedPos</span><span class="p">.</span><span class="n">z</span> <span class="o">&lt;=</span> <span class="n">samplePos</span><span class="p">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">bias</span> <span class="o">?</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">occlusion</span> <span class="o">=</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">-</span> <span class="p">(</span><span class="n">occlusion</span> <span class="o">/</span> <span class="kt">float</span><span class="p">(</span><span class="n">SSAO_KERNEL_SIZE</span><span class="p">));</span>
+
+<span class="n">fragColor</span> <span class="o">=</span> <span class="n">occlusion</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>In essence, we count all points that are farther into the scene than the current fragment as occluders, and all others as non-occluders. Note that this is calculated at half-size since it a low-frequency effect and this quarters the execution time necessary.</p>
+
+<p>This solution however has some gaping holes which need to be patched up. For one, large depth discontinuities are ignored, causing a dark halo effect around objects which are well in front of other objects. This can be addressed by scaling the occlusion factor based a point’s distance from the center.</p>
+
+<p>Another big issue with the current implementation is the level of noise. We traded off banding artifacts for noise by jittering the sampled location, but a simple blur pass will greatly improve the final result. The blur should run at full-resolution in order to avoid cracks at the edges of objects. I first implemented a simple <a class="underline" href="https://en.wikipedia.org/wiki/Box_blur">box blur</a>, but later replaced it with a two-pass edge-preserving <a class="underline" href="https://en.wikipedia.org/wiki/Bilateral_filter">bilateral blur</a> covered in more detail below.</p>
+
+<div class="language-glsl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="n">rangeCheck</span> <span class="o">=</span> <span class="n">smoothstep</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span> <span class="n">uboConstant</span><span class="p">.</span><span class="n">ssaoRadius</span> <span class="o">/</span> <span class="n">abs</span><span class="p">(</span><span class="n">reconstructedPos</span><span class="p">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">samplePos</span><span class="p">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">bias</span><span class="p">));</span>
+<span class="n">occlusion</span> <span class="o">+=</span> <span class="p">(</span><span class="n">reconstructedPos</span><span class="p">.</span><span class="n">z</span> <span class="o">&lt;=</span> <span class="n">samplePos</span><span class="p">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">bias</span> <span class="o">?</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">:</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">rangeCheck</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><a data-fancybox="gallery" href="/assets/img/ssao-sibnek.jpg"><img width="100%" src="/assets/img/ssao-sibnek.jpg" /></a></p>
+
+<h3 id="two-pass-bilateral-blur">Two-pass bilateral blur</h3>
+<p>An NxN box blur is a simple effect to implement, however also an expensive one to compute, especially as N increases. The technique is to simply average all the pixel values around the pixel you’re blurring (extending N pixels out).</p>
+
+<p>A much more efficient approach is to use a separable blur. This just means computing the blur in two passes. The first pass will calculate the horizontal blur using just N samples, and the second will compute the vertical blur, again using just N samples. Because the blur filter is “separable”, this is mathematically-equivillent and therefore produces the same image. The reduction from N<sup>2</sup> samples to just 2N samples is a huge win. The three stages of the bilateral blur are shown below.</p>
+
+<p><a data-fancybox="gallery" href="/assets/img/ssao-blur.gif"><img src="/assets/img/ssao-blur.gif" width="100%" /></a></p>
+
+<div width="100%">
+<a data-fancybox="gallery" href="/assets/img/ssao-01z.jpg"><img src="/assets/img/ssao-01z.jpg" width="32%" /></a>
+<a data-fancybox="gallery" href="/assets/img/ssao-02z.jpg"><img src="/assets/img/ssao-02z.jpg" width="32%" /></a>
+<a data-fancybox="gallery" href="/assets/img/ssao-03z.jpg"><img src="/assets/img/ssao-03z.jpg" width="32%" /></a>
+</div>
+<p><br /></p>
+
+<p>In order to avoid blurring across hard edges, the normal and depth buffers are passed into the blur shader. When sampling neighbouring pixels, samples whose depth lie outside of a given distance or whose normal differs by a large-enough value are ignored. This allows for edges to remain sharp, and prevents blurring across large depth discontinuities. This extra step makes the blur <a class="underline" href="https://en.wikipedia.org/wiki/Bilateral_filter">bilateral</a> (or, “edge-preserving”).</p>
+
+<h3 id="specialization-constants">Specialization Constants</h3>
+<p>I utilized SPIR-V’s <a class="underline" href="https://renderdoc.org/vkspec_chunked/chap9.html#pipelines-specialization-constants">specialization constant</a> feature to retrieve a unique ID for the <i>kernelSize</i> constant uniform so it can be updated without needing to modify the shader code dynamically. See <a class="underline" href="https://blogs.igalia.com/itoral/2018/03/20/improving-shader-performance-with-vulkans-specialization-constants/">[5]</a> for a great explanation.</p>
+
+<p><a data-fancybox="gallery" href="/assets/img/ssao-final-02.jpg"><img width="100%" src="/assets/img/ssao-final-02.jpg" /></a></p>
+
+<p>Thanks for reading! As always, the source code is all available on <a class="underline" href="https://github.com/ajweeks/FlexEngine/tree/development">GitHub</a>.</p>
+
+<h4 id="references">References</h4>
+<p>[1] <a class="underline" href="http://developer.amd.com/wordpress/media/2012/10/Chapter8-Mittring-Finding_NextGen_CryEngine2.pdf">Finding Next Gen - CryEngine 2</a><br />
+[2] <a class="underline" href="http://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html">SSAO Tutorial - John Chapman</a><br />
+[3] <a class="underline" href="https://learnopengl.com/Advanced-Lighting/SSAO">LearnOpenGL.com - SSAO</a><br />
+[4] <a class="underline" href="https://mtnphil.wordpress.com/2013/06/26/know-your-ssao-artifacts/">Know your SSAO artifacts - Philip Fortier</a><br />
+[5] <a class="underline" href="https://blogs.igalia.com/itoral/2018/03/20/improving-shader-performance-with-vulkans-specialization-constants/">Improving shader performance with Vulkan’s specialization constants - Iago Toral</a><br /></p>
+
+<p>Thanks to <a class="underline" href="https://sketchfab.com/luyssport">luyssport</a> for the <a class="underline" href="https://sketchfab.com/3d-models/che-1e529f4b8efc4f20925957a9a4208dcd">car model</a>!</p>
+
+  </div>
+
+  <div class="post-nav">
+      <div style="float:left; width:40%; text-align:left"><a class="underline" href="/blog/2019/05/05/EssentialToolsForGameDevelopers/">&lt; Essential Tools for Game Developers</a></div>
+      <div style="width:20%; text-align:center; display:inline-block"><a class="underline" href="/blog" style="width:33.33%">Index</a></div>
+      <div style="float:right; width:40%; text-align:right"><p></p></div>
+  </div>
+
+</article>
+
+<p style="text-align: right; padding-top: 30px" class="rss-subscribe">
+  <a class="underline" href="/feed.xml">Subscribe</a>
+  <a aria-label="" target="_blank" href="/feed.xml"><i class="icon fa fa-rss-square" aria-hidden="true"></i></a>
+</p>
+
+      </section>
+      <footer class="footer">
+  <div class="footerlinks">
+    <div class="section-left">
+      <a class="underline" href="/games/">All games</a>
+      <a class="underline" href="/Andrew-Weeks-Resume.pdf">PDF resume</a>
+      <a class="underline" href="/about/">About</a>
+    </div>
+    <div class="section-right">
+      <a class="underline" href="/blog">Blog</a>
+      <a class="underline" href="/Andrew-Weeks-CV.pdf">CV</a>
+      <a class="underline" href="/contact/">Contact</a>
+    </div>
+  </div>
+  <p>&copy; AJ Weeks</p>
+  <a rel="me" href="https://mastodon.gamedev.place/@ajweeks"></a>
+</footer>
+<script src="/assets/js/sweet-scroll.min.js"></script>
+<script src="/assets/js/main.js"></script>
+<!-- Google Analytics -->
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-57413391-2', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+  </body>
+</html>

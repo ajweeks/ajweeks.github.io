@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"https://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Ludum Dare 39 – ⚡ Swing Bolt ⚡</title>
+  <meta name="description" content="AJ Weeks - Graphics Programmer">
+
+  <meta name="viewport" content="width=425">
+
+  <link rel="shortcut icon" href="https://ajweeks.com/logo.ico" />
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.rawgit.com/konpa/devicon/master/devicon.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/devicons/1.8.0/css/devicons.min.css">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="/css/main.css">
+
+  <link rel="alternate" type="application/rss+xml" title="Subscribe" href="https://ajweeks.com/feed.xml" />
+
+  <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>
+</head>
+
+  <body onload="onLoad()">
+      <div id="page-header">
+  <div class="row content">
+    <a href="/" style="color: #fff; text-decoration: none"><span class="site-title">AJ Weeks</span></a>
+
+    <div class="icons-header">
+      <div class="tooltip">
+        <a aria-label="Send email" href="mailto:contact@ajweeks.com"><i class="icon fa fa-envelope"></i></a>
+      </div>
+      <div class="tooltip">
+        <a aria-label="My Twitter" target="_blank" href="https://twitter.com/liqwidice"><i class="icon fa fa-twitter" aria-hidden="true"></i></a>
+      </div>
+      <div class="tooltip">
+        <a aria-label="My Github" target="_blank" href="https://github.com/ajweeks"><i class="icon fa fa-github-alt" aria-hidden="true"></i></a>
+      </div>
+    </div>
+    <!-- <a class="link" href="/Andrew-Weeks-Resume.pdf">
+      <img src="/assets/img/pdf.svg" width="28px" height="28px" style="padding-right: 3px" />
+      PDF Resume
+    </a> -->
+  </div>
+
+  <!-- <div class="content" style="column-count: 2">
+    <div class="shrinker">
+      <h1>
+        <a href="/" style="color: #fff; text-decoration: none"><span class="site-title">AJ Weeks</span></a>
+        <span class="site-description"></span>
+      </h1>
+    </div>
+    <div>
+      <div class="icons-header">
+        <a aria-label="Send email" href="mailto:contact@ajweeks.com"><i class="icon fa fa-envelope"></i></a>
+        <a aria-label="My Twitter" target="_blank" href="https://twitter.com/liqwidice"><i class="icon fa fa-twitter" aria-hidden="true"></i></a>
+        <a aria-label="My Github" target="_blank" href="https://github.com/ajweeks"><i class="icon fa fa-github-alt" aria-hidden="true"></i></a>
+      </div>
+      <a class="link" href="/Andrew-Weeks-Resume.pdf">
+        <img src="/assets/img/pdf.svg" width="28px" height="28px" style="padding-right: 3px" />
+        PDF Resume
+      </a>
+    </div>
+  </div> -->
+</div>
+
+      <section style="height: 20px"></section>
+      <section class="container">
+        <article class="post" itemscope itemtype="https://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Ludum Dare 39 – ⚡ Swing Bolt ⚡</h1>
+    <p class="post-meta"><time datetime="2017-08-03T00:00:00+01:00" itemprop="datePublished">Aug 3, 2017</time> • <span itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name">AJ Weeks</span></span></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p><a data-fancybox="gallery" href="/assets/img/swing-bolt-01.jpg"><img src="/assets/img/swing-bolt-01.jpg" width="49%" style="float: right" /></a>
+This past weekend I participated the thirty-ninth Ludum Dare game jam competition. For the unaware, it is a forty-eight hour game making competition based on a theme announced at the start of the event. In the days leading up to the event users can submit theme suggestions, and later vote on the best ones submitted. This time the theme was <em>Running out of Power</em>.</p>
+
+<p>The event started at three in the morning in my timezone, so as usual I slept through the announcement and started at a more sensible time, around eight. I spent the first hour or two brainstorming ideas that were manageable for me to make in just two days, but still interesting and unique. I ended up going with a hovercraft-like vehicle towing around device attached by a chain, whose job it was to collect batteries to stay charged. Looking back now, I think I should have spent a little more time in this phase to try to figure out additional mechanics that would add interesting gameplay, but nonetheless this turned out to be a decent mechanic on its own.</p>
+
+<p><a data-fancybox="gallery" href="/assets/img/swing-bolt-02.jpg"><img src="/assets/img/swing-bolt-02.jpg" width="100%" /></a></p>
+
+<p>I worked the rest of the day implementing the main mechanics; the chain, item pickups, and enemy spawning and basic AI. The blue sphere you see above are the “enemies”, they don’t actually serve any purpose – I never got around to adding any. They do however work as a difficulty ramp since as the game progresses more and more of the spawn, making it harder to reach the new batteries in time. In the evening when I was starting to get tired I began working on the less brain-intensive parts of the game like meshes, sound effects, music, post-processing, and menus.</p>
+
+<p>The following day I began by adding bombs that drop in every so often to give the player something to dodge, and I added a timer so the player can see how long they can last. I added more meshes, particles, UI elements, a little main menu animation, and I fixed some small bugs. I also spent quite a while trying to get a decent looking thumbnail, as I knew that would be the only thing people have to go on when deciding whether or not to play your game.</p>
+
+<p>With the deadline fast approaching, I finished off the game and submitted it around one in the morning, with two hours to spare.</p>
+
+<div width="100%">
+  <a data-fancybox="gallery" href="/assets/img/swing-bolt-03.jpg"><img src="/assets/img/swing-bolt-03.jpg" width="49%" /></a>
+  <a data-fancybox="gallery" href="/assets/img/swing-bolt-04.jpg"><img src="/assets/img/swing-bolt-04.jpg" width="49%" /></a>
+</div>
+
+<p><a data-fancybox="gallery" href="/assets/img/swing-bolt-05.jpg"><img src="/assets/img/swing-bolt-05.jpg" width="100%" /></a></p>
+
+<p>I’m definitely glad with how it turned out, as it was my first time doing a game jam by myself, and my third time ever. I’m currently working on a few small updates to the game, first is adding a leaderboard so you can compare your time to other people’s.</p>
+
+<p>If you want to play the game, you can find it on the submission page here: <a class="underline" href="https://ldjam.com/events/ludum-dare/39/swing-bolt">ldjam.com/events/ludum-dare/39/swing-bolt</a>)</p>
+
+<p>And you can find the project’s repository here: <a class="underline" href="https://github.com/ajweeks/LD39">github.com/ajweeks/LD39</a></p>
+
+<p>Feel free to contact me on Twitter: <a class="underline" href="https://twitter.com/liqwidice">@liqwidice</a></p>
+
+<p>Thanks for reading!</p>
+
+  </div>
+
+  <div class="post-nav">
+      <div style="float:left; width:40%; text-align:left"><a class="underline" href="/blog/2017/05/13/Rendering-Engine-Update-2/">&lt; Rendering Engine Update 2 – OpenGL & Vulkan Feature Parity</a></div>
+      <div style="width:20%; text-align:center; display:inline-block"><a class="underline" href="/blog" style="width:33.33%">Index</a></div>
+      <div style="float:right; width:40%; text-align:right"><a class="underline" href="/blog/2017/08/16/Rendering-Engine-Update-3/" style="float:right width:33.33%">Rendering Engine Update 3 &gt;</a></div>
+  </div>
+
+</article>
+
+<p style="text-align: right; padding-top: 30px" class="rss-subscribe">
+  <a class="underline" href="/feed.xml">Subscribe</a>
+  <a aria-label="" target="_blank" href="/feed.xml"><i class="icon fa fa-rss-square" aria-hidden="true"></i></a>
+</p>
+
+      </section>
+      <footer class="footer">
+  <div class="footerlinks">
+    <div class="section-left">
+      <a class="underline" href="/games/">All games</a>
+      <a class="underline" href="/Andrew-Weeks-Resume.pdf">PDF resume</a>
+      <a class="underline" href="/about/">About</a>
+    </div>
+    <div class="section-right">
+      <a class="underline" href="/blog">Blog</a>
+      <a class="underline" href="/Andrew-Weeks-CV.pdf">CV</a>
+      <a class="underline" href="/contact/">Contact</a>
+    </div>
+  </div>
+  <p>&copy; AJ Weeks</p>
+  <a rel="me" href="https://mastodon.gamedev.place/@ajweeks"></a>
+</footer>
+<script src="/assets/js/sweet-scroll.min.js"></script>
+<script src="/assets/js/main.js"></script>
+<!-- Google Analytics -->
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-57413391-2', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+  </body>
+</html>
