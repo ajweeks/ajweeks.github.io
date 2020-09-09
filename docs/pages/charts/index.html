@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<html>
+<head>
+	<meta charset="UTF-8">
+	<script src="Chart.min.js"></script>
+
+	<style>
+		body {
+			background-color: #19191a;
+			color: white;
+		}
+
+		body > div {
+			max-width: 1280px;
+			height: 100%;
+			margin: 0 auto;
+			padding: 10px;
+			background-color: #2d2d33;
+
+		  	-webkit-box-shadow: 0px 3px 10px 0 #000;  /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+  			-moz-box-shadow:    0px 3px 10px 0 #000;  /* Firefox 3.5 - 3.6 */
+  			box-shadow:         0px 3px 10px 0 #000;  /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+
+		}
+
+		span {
+		}
+
+		.border {
+			border-style: groove;
+			display: inline-block;
+			padding: 2px;
+		}
+
+		#messageBox {
+		    background-color: #b903032e;
+    		padding: 10px 0;
+    		margin-top: 35px;
+		}
+
+		#message {
+			color: red;
+			margin-left: 50%;
+		}
+
+		#buttonContainer {
+			position: absolute;
+		    left: 50%;
+		    margin-left: -25%;
+		    margin-top: 15px;
+		}
+	</style>
+</head>
+<body onload="regenerateChart()">
+
+	<div>
+		<canvas id="myChart" width="1000" height="400"></canvas>
+		
+		<div id="buttonContainer">
+			<div class="border"><span>File 1: </span><input id="fileItem1" type="file" onchange="regenerateChart()"></div>
+			<div class="border"><span>File 2: </span><input id="fileItem2" type="file"onchange="regenerateChart()"></div>
+
+		<!--	<div class="border"><span>Files: </span><input id="files" type="file" onchange="regenerateChart()" multiple></div> -->
+
+			<button onclick="regenerateChart()">Regenerate</button>
+		</div>
+
+		<br />
+
+		<div id="messageBox"><span id="message"></span></div>
+	</div>
+
+<script>
+	function readTextFile(file)
+	{
+	    var rawFile = new XMLHttpRequest();
+	    rawFile.open("GET", file, false);
+	    rawFile.onreadystatechange = function ()
+	    {
+	        if(rawFile.readyState === 4)
+	        {
+	            if(rawFile.status === 200 || rawFile.status == 0)
+	            {
+	                var allText = rawFile.responseText;
+	                alert(allText);
+	            }
+	        }
+	    }
+	    rawFile.send(null);
+	}
+
+	function getData(fileName, type) {
+	  return new Promise(function(resolve, reject){
+	    fs.readFile(fileName, type, (err, data) => {
+	        err ? reject(err) : resolve(data);
+	    });
+	  });
+	}
+
+	function parseFile(fileContents)
+	{
+		var result = [];
+		var fileLines = fileContents.split('\n');
+
+		for (var i = 5; i < fileLines.length; ++i) // Skip first five lines
+		{
+			var lineParts = fileLines[i].split(',');
+			var frameTime = parseFloat(lineParts[3]); // frame time
+			if (!isNaN(frameTime) && isFinite(frameTime))
+			{
+				result.push(frameTime);
+			}
+		}
+
+		return result;
+	}
+
+	function computeDifference(data1, data2)
+	{
+		var len = Math.min(data1.length, data2.length);
+		var result = [];
+		for (var i = 0; i < len; ++i)
+		{
+			result.push(data1[i] - data2[i]);
+		}
+		return result;
+	}
+
+	function regenerateChart()
+	{
+		var file1 = document.getElementById('fileItem1').files[0];
+		var file2 = document.getElementById('fileItem2').files[0];
+
+		var messageElem = document.getElementById('message');
+		var messageBoxElem = document.getElementById('messageBox');
+		messageBoxElem.style.visibility = 'hidden';
+		messageElem.innerHTML = '';
+
+		if (file1 == null || file2 == null)
+		{
+			messageBoxElem.style.visibility = 'visible';
+			messageElem.innerHTML = "Please supply two files";
+			clearChart();
+		}
+		else if (file1.name == file2.name)
+		{
+			messageBoxElem.style.visibility = 'visible';
+			messageElem.innerHTML = "Files provided are the same!";
+			clearChart();
+		}
+		else
+		{
+			file1.text().then((fileContents1) => {
+				file2.text().then((fileContents2) => {
+					var dataList1 = parseFile(fileContents1);
+					var dataList2 = parseFile(fileContents2);
+
+					var dataListDiff = computeDifference(dataList1, dataList2);
+
+				    regenerateChartInternal(file1.name, file2.name, dataListDiff);
+				});
+			});
+		}
+	}
+
+	function regenerateChartInternal(file1Name, file2Name, dataList)
+	{
+		var ctx = document.getElementById('myChart').getContext('2d');
+
+	    var labels = [];
+	    var xys = [];
+	    for (var i = 0; i < dataList.length; ++i)
+	    {
+	        xys.push({ x: i.toString(), y: dataList[i].toString() });
+	        labels.push(i);
+	    }
+
+	    var file1NameClean = file1Name.split('.')[0];
+	    var file2NameClean = file2Name.split('.')[0];
+
+		var myChart = new Chart(ctx, {
+		    type: 'line',
+		    data: {
+		    	labels: labels,
+		        datasets: [{
+		            label: 'Frame time diffs in ms (' + file1NameClean + ' - ' + file2NameClean + ')',
+		            data: xys,
+		            backgroundColor: [
+		                'rgba(255, 200, 180, 0.4)',
+		            ],
+		            borderColor: [
+		                'rgba(255, 99, 132, 1)',
+		            ],
+		            borderWidth: 0,
+		            lineTension: 0,
+		            pointRadius: 3,
+		            pointHoverRadius: 10
+		        }]
+		    },
+		    options: {
+		        scales: {
+		            yAxes: [{
+		                ticks: {
+		                    beginAtZero: true
+		                }
+		            }]
+		        }
+		    }
+		});
+	}
+
+	function clearChart()
+	{
+		var ctx = document.getElementById('myChart').getContext('2d');
+		var chart = new Chart(ctx, {});
+	}
+
+	</script>
+</body>
+</html>

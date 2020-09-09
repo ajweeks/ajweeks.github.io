@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"https://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+  {% include head.html %}
+  <body onload="onLoad()">
+      {% include header.html %}
+      <section style="height: 20px"></section>
+      <section class="container">
+        {{ content }}
+      </section>
+      {% include footer.html %}
+  </body>
+</html>
