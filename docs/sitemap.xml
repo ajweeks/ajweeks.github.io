@@ -172,16 +172,6 @@
     
     
     <url>
-        <loc>https://ajweeks.com/blog/</loc>
-    </url>
-    
-    
-    
-    
-    
-    
-    
-    <url>
         <loc>https://ajweeks.com/3D/</loc>
     </url>
     
@@ -189,8 +179,18 @@
     
     
     
+    
+    
     <url>
         <loc>https://ajweeks.com/3D/LE_final/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/3D/GAP_simple_object/</loc>
     </url>
     
     
@@ -206,7 +206,7 @@
     
     
     <url>
-        <loc>https://ajweeks.com/3D/GAP_simple_object/</loc>
+        <loc>https://ajweeks.com/3D/GAP_melee_weapon/</loc>
     </url>
     
     
@@ -226,7 +226,7 @@
     
     
     <url>
-        <loc>https://ajweeks.com/3D/GAP_melee_weapon/</loc>
+        <loc>https://ajweeks.com/3D/GAP_arisaka_rifle/</loc>
     </url>
     
     
@@ -234,7 +234,7 @@
     
     
     <url>
-        <loc>https://ajweeks.com/3D/GAP_arisaka_rifle/</loc>
+        <loc>https://ajweeks.com/blog/</loc>
     </url>
     
     
@@ -345,6 +345,14 @@
     
     <url>
         <loc>https://ajweeks.com/unreal-level/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/ultimate-efficiency/</loc>
     </url>
     
     
