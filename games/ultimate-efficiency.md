@@ -12,8 +12,8 @@ In this heart-thumping nuclear power plant manager, ensure you don't lose your p
 **Download the game here**: [ajweeks.itch.io/ultimate-efficiency](https://ajweeks.itch.io/ultimate-efficiency)
 
 <div width="100%">
-  <a data-fancybox="gallery" href="/assets/img/UltimateEfficiency_Screen0.jpg"><img src="/assets/img/UltimateEfficiency_Screen0.jpg" width="54%"></a>
-  <a data-fancybox="gallery" href="/assets/img/UltimateEfficiency_Screen1.jpg"><img src="/assets/img/UltimateEfficiency_Screen1.jpg" width="54%"></a>
+  <a data-fancybox="gallery" href="/assets/img/UltimateEfficiency_Screen0.jpg"><img src="/assets/img/UltimateEfficiency_Screen0.jpg" width="49%"></a>
+  <a data-fancybox="gallery" href="/assets/img/UltimateEfficiency_Screen1.jpg"><img src="/assets/img/UltimateEfficiency_Screen1.jpg" width="49%"></a>
 </div>
 <p></p>
 
