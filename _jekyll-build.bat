@@ -1,1 +1,2 @@
-call jekyll build
+call bundle exec jekyll build
+PAUSE

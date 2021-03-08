@@ -1,1 +1,2 @@
-call jekyll serve -w --incremental
+call bundle exec jekyll serve -w --incremental
+PAUSE
