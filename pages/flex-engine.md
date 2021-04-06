@@ -9,22 +9,25 @@ author: AJ Weeks
 ## Flex Engine
 ###### 2017-Present
 
-- C++, Vulkan, OpenGL
+- C++, Vulkan
 
 Flex Engine is a personal game engine I began work on in February 2017. I use it as a playground for learning about real-time techniques. You can find the source here: <a class="underline" href="https://github.com/ajweeks/FlexEngine"><i class="icon fa fa-github" aria-hidden="true" style="color: #222"></i> github.com/ajweeks/FlexEngine</a>
 
 #### Notable Features
-- Vulkan and OpenGL backends
-- Signed-distance field font generation & rendering
-- Physically based shading model
-- Image based lighting
-- Screen-space ambient occlusion
-- Stable cascaded shadow mapping
+- Vulkan backend
 - Conditional checksum-based shader compilation
+- Support for Windows & linux
 - Scene editor with serialization
-- Profiling tools
-- In-game scripting language
-- GPU particles (compute shader)
+- In-game scripting language & virtual machine
+- Built-in profiling capture/inspection tools
+- Rendering:
+  - Physically based shading model
+  - Image based lighting
+  - Screen-space ambient occlusion
+  - Stable cascaded shadow mapping
+  - Temporal anti-aliasing
+  - Signed-distance field font generation & rendering
+  - GPU particles
 
 <a data-fancybox="gallery" href="/assets/img/flex_engine_banner_3.jpg"><img src="/assets/img/flex_engine_banner_3.jpg"  width="100%"></a>
 
@@ -64,7 +67,7 @@ A huge thank you must be given to the following individuals and organizations fo
  - Alexander Overvoorde of [vulkan-tutorial.com](https://vulkan-tutorial.com)
  - Sascha Willems of [github.com/SaschaWillems/Vulkan](https://github.com/SaschaWillems/Vulkan)
  - Joey de Vries of [learnopengl.com](https://learnopengl.com)
- - Andrew Maximov for the pistol model and textures [artisaverb.info/PBT.html ](http://artisaverb.info/PBT.html)
+ - Andrew Maximov for the pistol model and textures [artisaverb.info/PBT.html ](https://artisaverb.info/PBT.html)
  - [FreePBR.com](https://FreePBR.com) for the high-quality PBR textures
  - All authors and contributors to the open-source libraries mentioned above
 

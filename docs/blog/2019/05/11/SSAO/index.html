@@ -12,6 +12,8 @@
 
   <meta name="viewport" content="width=425">
 
+  <link rel="preload" href="css/monokai.css">
+
   <link rel="shortcut icon" href="https://ajweeks.com/logo.ico" />
 
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
@@ -83,7 +85,7 @@
   <div class="post-content" itemprop="articleBody">
     <p><a data-fancybox="gallery" href="/assets/img/ssao-final-01.jpg"><img width="100%" src="/assets/img/ssao-final-01.jpg" /></a></p>
 
-<p>SSAO (Screen-space ambient occlusion) is a widespread technique employed by many games to simulate the shadowing effect of objects occluding other nearby objects. It was originally proposed by Crytek in 2007 (<a class="underline" href="http://developer.amd.com/wordpress/media/2012/10/Chapter8-Mittring-Finding_NextGen_CryEngine2.pdf">original paper [1]</a>), and has since seen many improvements. I’ve implemented a variant of it in <a class="underline" href="https://ajweeks.com/flex-engine/">Flex</a> recently, and this is a short discussion of the implementation details.</p>
+<p>SSAO (Screen-space ambient occlusion) is a widespread technique employed by many games to simulate the shadowing effect of objects occluding other nearby objects. It was originally proposed by Crytek in 2007 (<a class="underline" href="https://developer.amd.com/wordpress/media/2012/10/Chapter8-Mittring-Finding_NextGen_CryEngine2.pdf">original paper [1]</a>), and has since seen many improvements. I’ve implemented a variant of it in <a class="underline" href="https://ajweeks.com/flex-engine/">Flex</a> recently, and this is a short discussion of the implementation details.</p>
 
 <p>The necessary inputs are the scene depth and normals, both in view space. The depth buffer will be used as a rough estimate of how occluded each pixel is, and the normals will be used to orient a hemisphere about each pixel to generate our sample points in. Because Flex already supports deferred rendering, these two input buffers were readily available. The only change necessary was to output the normals in view space, rather than world space.</p>
 
@@ -110,7 +112,7 @@
 <div style="text-align: center; padding-top: 30px">Packed two channel noise texture</div>
 <p><a data-fancybox="gallery" href="/assets/img/ssao-noise-rg.jpg"><img width="100%" src="/assets/img/ssao-noise-rg.jpg" /></a></p>
 
-<p>To orient the hemisphere about the normal, I first use the <a class="underline" href="http://en.wikipedia.org/wiki/Gram–Schmidt_process">Gram-Schmidt</a> process to obtain a local coordinate frame:</p>
+<p>To orient the hemisphere about the normal, I first use the <a class="underline" href="https://en.wikipedia.org/wiki/Gram–Schmidt_process">Gram-Schmidt</a> process to obtain a local coordinate frame:</p>
 
 <div class="language-glsl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">ivec2</span> <span class="n">depthSize</span> <span class="o">=</span> <span class="n">textureSize</span><span class="p">(</span><span class="n">in_Depth</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 <span class="kt">ivec2</span> <span class="n">noiseSize</span> <span class="o">=</span> <span class="n">textureSize</span><span class="p">(</span><span class="n">in_Noise</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
@@ -186,8 +188,8 @@
 <p>Thanks for reading! As always, the source code is all available on <a class="underline" href="https://github.com/ajweeks/FlexEngine/tree/development">GitHub</a>.</p>
 
 <h4 id="references">References</h4>
-<p>[1] <a class="underline" href="http://developer.amd.com/wordpress/media/2012/10/Chapter8-Mittring-Finding_NextGen_CryEngine2.pdf">Finding Next Gen - CryEngine 2</a><br />
-[2] <a class="underline" href="http://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html">SSAO Tutorial - John Chapman</a><br />
+<p>[1] <a class="underline" href="https://developer.amd.com/wordpress/media/2012/10/Chapter8-Mittring-Finding_NextGen_CryEngine2.pdf">Finding Next Gen - CryEngine 2</a><br />
+[2] <a class="underline" href="https://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html">SSAO Tutorial - John Chapman</a><br />
 [3] <a class="underline" href="https://learnopengl.com/Advanced-Lighting/SSAO">LearnOpenGL.com - SSAO</a><br />
 [4] <a class="underline" href="https://mtnphil.wordpress.com/2013/06/26/know-your-ssao-artifacts/">Know your SSAO artifacts - Philip Fortier</a><br />
 [5] <a class="underline" href="https://blogs.igalia.com/itoral/2018/03/20/improving-shader-performance-with-vulkans-specialization-constants/">Improving shader performance with Vulkan’s specialization constants - Iago Toral</a><br /></p>

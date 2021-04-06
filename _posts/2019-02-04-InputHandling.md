@@ -22,7 +22,7 @@ if (g_InputManager->IsGamepadButtonPressed(m_Index, GamepadButton::A) ||
 
 Clearly not good in a number of ways:
 
-**1.** **The player can not edit keybindings**. This is the _first_ item on the "basic" category on the great <a class="underline" href="http://gameaccessibilityguidelines.com/">Game Accessibility Guidelines</a>, so I'd say it's a necessary feature to have if you have any desire to cater toward disabled gamers, plus it's a useful feature for able gamers alike.
+**1.** **The player can not edit keybindings**. This is the _first_ item on the "basic" category on the great <a class="underline" href="https://gameaccessibilityguidelines.com/">Game Accessibility Guidelines</a>, so I'd say it's a necessary feature to have if you have any desire to cater toward disabled gamers, plus it's a useful feature for able gamers alike.
 
 **2.** That's simply **too much code** for catching an action event, and it will only grow longer as more input methods are added. This will inevitably lead to typos and copy-paste errors.
 

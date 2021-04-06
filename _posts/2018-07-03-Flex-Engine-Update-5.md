@@ -37,7 +37,7 @@ I’ve added handful of post-processing effects thus far including basic contras
 <span class="caption">Some different looks I’m able to achieve by tweaking contrast, brightness, and saturation</span>
 <br />
 
-For physics simulation I’m using <a class="underline" href="http://bulletphysics.org/wordpress/">Bullet</a>. It was quite a simple addition to the project which just required adding some boilerplate initialization and destruction code and a wrapper for rigid bodies.
+For physics simulation I’m using <a class="underline" href="https://pybullet.org/wordpress/">Bullet</a>. It was quite a simple addition to the project which just required adding some boilerplate initialization and destruction code and a wrapper for rigid bodies.
 
 <a data-fancybox="gallery" href="/assets/img/flex-engine-18.png"><img src="/assets/img/flex-engine-18.png" width="60%" style="display: block; margin: 0 auto"></a>
 <br />

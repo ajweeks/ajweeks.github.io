@@ -57,6 +57,7 @@ exclude:
   - package.json
   - src/
   - node_modules/
+  - docs
 #   - .jekyll-cache/
 #   - gemfiles/
 #   - Gemfile

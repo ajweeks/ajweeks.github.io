@@ -20,8 +20,8 @@ My main roles for the project included **player movement**, **audio programming*
 Play the game here: [solarbear.itch.io/hexahover](https://solarbear.itch.io/hexahover)
 
 Other team members:
-- [Aidan Vangrysperre](http://aidanv.com)
-- [Brian Vanhyfte](http://brianvanhyfte.com/)
+- [Aidan Vangrysperre](https://aidanv.com)
+- [Brian Vanhyfte](https://brianvanhyfte.com/)
 
 <div style="display: block; width: 100%">
   <a data-fancybox="gallery" href="https://i.gyazo.com/61518fd28d424b0181f3f20eb917ef4f.mp4"><video preload="auto" autoplay="autoplay" style="margin: auto" src="https://i.gyazo.com/61518fd28d424b0181f3f20eb917ef4f.mp4" width="52%"></a>

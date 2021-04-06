@@ -21,10 +21,10 @@ Another big goal of the project is to learn how to design components in an API-a
 
 Since my objective with this project is to learn about graphics APIs, and not the internal structure of a png image (not that that doesn’t interest me!), I’m going to be using various libraries. So far I’ve used:
 
-- <a class="underline" href="http://www.glfw.org/">GLFW</a> (for linking to OpenGL)
-- <a class="underline" href="http://glm.g-truc.net">GLM</a> (for matrix & vector math functions)
+- <a class="underline" href="https://www.glfw.org/">GLFW</a> (for linking to OpenGL)
+- <a class="underline" href="https://glm.g-truc.net">GLM</a> (for matrix & vector math functions)
 - <a class="underline" href="https://github.com/Dav1dde/glad">GLAD</a> (for loading library extensions)
-- <a class="underline" href="http://www.lonesock.net/soil.html">SOIL</a> (for loading images)
+- <a class="underline" href="https://www.lonesock.net/soil.html">SOIL</a> (for loading images)
 
 I initially tried to get the project building using <a class="underline" href="https://cmake.org">cmake</a>, with the hopes of reducing the headache of trying to setup the project on another workstation (i.e. my teacher’s). After spending several hours without having any luck, I decided to simply use Visual Studio, as that was what I was used to, and I know that all my teachers all definitely know how to use it. I would like to try again in the future to get everything building using cmake.
 

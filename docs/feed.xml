@@ -5,15 +5,15 @@
     <description>AJ Weeks - Graphics Programmer</description>
     <link>https://ajweeks.com/</link>
     <atom:link href="https://ajweeks.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 20 Feb 2021 17:08:26 +0000</pubDate>
-    <lastBuildDate>Sat, 20 Feb 2021 17:08:26 +0000</lastBuildDate>
+    <pubDate>Tue, 06 Apr 2021 16:36:58 +0100</pubDate>
+    <lastBuildDate>Tue, 06 Apr 2021 16:36:58 +0100</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
         <title>SSAO in Vulkan</title>
         <description>&lt;p&gt;&lt;a data-fancybox=&quot;gallery&quot; href=&quot;/assets/img/ssao-final-01.jpg&quot;&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/img/ssao-final-01.jpg&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;SSAO (Screen-space ambient occlusion) is a widespread technique employed by many games to simulate the shadowing effect of objects occluding other nearby objects. It was originally proposed by Crytek in 2007 (&lt;a class=&quot;underline&quot; href=&quot;http://developer.amd.com/wordpress/media/2012/10/Chapter8-Mittring-Finding_NextGen_CryEngine2.pdf&quot;&gt;original paper [1]&lt;/a&gt;), and has since seen many improvements. I’ve implemented a variant of it in &lt;a class=&quot;underline&quot; href=&quot;https://ajweeks.com/flex-engine/&quot;&gt;Flex&lt;/a&gt; recently, and this is a short discussion of the implementation details.&lt;/p&gt;
+&lt;p&gt;SSAO (Screen-space ambient occlusion) is a widespread technique employed by many games to simulate the shadowing effect of objects occluding other nearby objects. It was originally proposed by Crytek in 2007 (&lt;a class=&quot;underline&quot; href=&quot;https://developer.amd.com/wordpress/media/2012/10/Chapter8-Mittring-Finding_NextGen_CryEngine2.pdf&quot;&gt;original paper [1]&lt;/a&gt;), and has since seen many improvements. I’ve implemented a variant of it in &lt;a class=&quot;underline&quot; href=&quot;https://ajweeks.com/flex-engine/&quot;&gt;Flex&lt;/a&gt; recently, and this is a short discussion of the implementation details.&lt;/p&gt;
 
 &lt;p&gt;The necessary inputs are the scene depth and normals, both in view space. The depth buffer will be used as a rough estimate of how occluded each pixel is, and the normals will be used to orient a hemisphere about each pixel to generate our sample points in. Because Flex already supports deferred rendering, these two input buffers were readily available. The only change necessary was to output the normals in view space, rather than world space.&lt;/p&gt;
 
@@ -40,7 +40,7 @@
 &lt;div style=&quot;text-align: center; padding-top: 30px&quot;&gt;Packed two channel noise texture&lt;/div&gt;
 &lt;p&gt;&lt;a data-fancybox=&quot;gallery&quot; href=&quot;/assets/img/ssao-noise-rg.jpg&quot;&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/img/ssao-noise-rg.jpg&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;To orient the hemisphere about the normal, I first use the &lt;a class=&quot;underline&quot; href=&quot;http://en.wikipedia.org/wiki/Gram–Schmidt_process&quot;&gt;Gram-Schmidt&lt;/a&gt; process to obtain a local coordinate frame:&lt;/p&gt;
+&lt;p&gt;To orient the hemisphere about the normal, I first use the &lt;a class=&quot;underline&quot; href=&quot;https://en.wikipedia.org/wiki/Gram–Schmidt_process&quot;&gt;Gram-Schmidt&lt;/a&gt; process to obtain a local coordinate frame:&lt;/p&gt;
 
 &lt;div class=&quot;language-glsl highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;ivec2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;depthSize&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;textureSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;in_Depth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;kt&quot;&gt;ivec2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;noiseSize&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;textureSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;in_Noise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
@@ -116,8 +116,8 @@
 &lt;p&gt;Thanks for reading! As always, the source code is all available on &lt;a class=&quot;underline&quot; href=&quot;https://github.com/ajweeks/FlexEngine/tree/development&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h4 id=&quot;references&quot;&gt;References&lt;/h4&gt;
-&lt;p&gt;[1] &lt;a class=&quot;underline&quot; href=&quot;http://developer.amd.com/wordpress/media/2012/10/Chapter8-Mittring-Finding_NextGen_CryEngine2.pdf&quot;&gt;Finding Next Gen - CryEngine 2&lt;/a&gt;&lt;br /&gt;
-[2] &lt;a class=&quot;underline&quot; href=&quot;http://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html&quot;&gt;SSAO Tutorial - John Chapman&lt;/a&gt;&lt;br /&gt;
+&lt;p&gt;[1] &lt;a class=&quot;underline&quot; href=&quot;https://developer.amd.com/wordpress/media/2012/10/Chapter8-Mittring-Finding_NextGen_CryEngine2.pdf&quot;&gt;Finding Next Gen - CryEngine 2&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a class=&quot;underline&quot; href=&quot;https://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html&quot;&gt;SSAO Tutorial - John Chapman&lt;/a&gt;&lt;br /&gt;
 [3] &lt;a class=&quot;underline&quot; href=&quot;https://learnopengl.com/Advanced-Lighting/SSAO&quot;&gt;LearnOpenGL.com - SSAO&lt;/a&gt;&lt;br /&gt;
 [4] &lt;a class=&quot;underline&quot; href=&quot;https://mtnphil.wordpress.com/2013/06/26/know-your-ssao-artifacts/&quot;&gt;Know your SSAO artifacts - Philip Fortier&lt;/a&gt;&lt;br /&gt;
 [5] &lt;a class=&quot;underline&quot; href=&quot;https://blogs.igalia.com/itoral/2018/03/20/improving-shader-performance-with-vulkans-specialization-constants/&quot;&gt;Improving shader performance with Vulkan’s specialization constants - Iago Toral&lt;/a&gt;&lt;br /&gt;&lt;/p&gt;
@@ -201,7 +201,7 @@
     
       <item>
         <title>Reverse Z</title>
-        <description>&lt;p&gt;I recently switched the depth buffers in &lt;a href=&quot;https://ajweeks.com/flex-engine&quot;&gt;Flex&lt;/a&gt; to use “reversed Z” due to the precision benefits it provides. The default way of encoding depth is from 0.0 to 1.0 as objects get further from the camera. One reason to reverse this is to spread the depth precision out more evenly across the distance of your scene. Using the default encoding, floating point precision combined with a non-linear depth results in lots of precision right next to the near plane, and little precision as things get farther away. See &lt;a href=&quot;http://www.reedbeta.com/blog/depth-precision-visualized/&quot;&gt;this&lt;/a&gt; for a more in-depth explanation. I also found a great explanation of the perspective projection &lt;a href=&quot;http://ogldev.atspace.co.uk/www/tutorial12/tutorial12.html&quot;&gt;here&lt;/a&gt;, which was a great refresher.&lt;/p&gt;
+        <description>&lt;p&gt;I recently switched the depth buffers in &lt;a href=&quot;https://ajweeks.com/flex-engine&quot;&gt;Flex&lt;/a&gt; to use “reversed Z” due to the precision benefits it provides. The default way of encoding depth is from 0.0 to 1.0 as objects get further from the camera. One reason to reverse this is to spread the depth precision out more evenly across the distance of your scene. Using the default encoding, floating point precision combined with a non-linear depth results in lots of precision right next to the near plane, and little precision as things get farther away. See &lt;a href=&quot;https://www.reedbeta.com/blog/depth-precision-visualized/&quot;&gt;this&lt;/a&gt; for a more in-depth explanation. I also found a great explanation of the perspective projection &lt;a href=&quot;https://ogldev.atspace.co.uk/www/tutorial12/tutorial12.html&quot;&gt;here&lt;/a&gt;, which was a great refresher.&lt;/p&gt;
 
 &lt;p&gt;The four steps (five for OpenGL) involved in swapping to reversed Z are as follows:&lt;/p&gt;
 &lt;ul&gt;
@@ -256,7 +256,7 @@ Default depth buffer (left) reversed depth buffer (right)
 
 &lt;p&gt;Clearly not good in a number of ways:&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;1.&lt;/strong&gt; &lt;strong&gt;The player can not edit keybindings&lt;/strong&gt;. This is the &lt;em&gt;first&lt;/em&gt; item on the “basic” category on the great &lt;a class=&quot;underline&quot; href=&quot;http://gameaccessibilityguidelines.com/&quot;&gt;Game Accessibility Guidelines&lt;/a&gt;, so I’d say it’s a necessary feature to have if you have any desire to cater toward disabled gamers, plus it’s a useful feature for able gamers alike.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1.&lt;/strong&gt; &lt;strong&gt;The player can not edit keybindings&lt;/strong&gt;. This is the &lt;em&gt;first&lt;/em&gt; item on the “basic” category on the great &lt;a class=&quot;underline&quot; href=&quot;https://gameaccessibilityguidelines.com/&quot;&gt;Game Accessibility Guidelines&lt;/a&gt;, so I’d say it’s a necessary feature to have if you have any desire to cater toward disabled gamers, plus it’s a useful feature for able gamers alike.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;2.&lt;/strong&gt; That’s simply &lt;strong&gt;too much code&lt;/strong&gt; for catching an action event, and it will only grow longer as more input methods are added. This will inevitably lead to typos and copy-paste errors.&lt;/p&gt;
 
@@ -496,7 +496,7 @@ Default depth buffer (left) reversed depth buffer (right)
 &lt;span class=&quot;caption&quot;&gt;Some different looks I’m able to achieve by tweaking contrast, brightness, and saturation&lt;/span&gt;
 &lt;br /&gt;&lt;/p&gt;
 
-&lt;p&gt;For physics simulation I’m using &lt;a class=&quot;underline&quot; href=&quot;http://bulletphysics.org/wordpress/&quot;&gt;Bullet&lt;/a&gt;. It was quite a simple addition to the project which just required adding some boilerplate initialization and destruction code and a wrapper for rigid bodies.&lt;/p&gt;
+&lt;p&gt;For physics simulation I’m using &lt;a class=&quot;underline&quot; href=&quot;https://pybullet.org/wordpress/&quot;&gt;Bullet&lt;/a&gt;. It was quite a simple addition to the project which just required adding some boilerplate initialization and destruction code and a wrapper for rigid bodies.&lt;/p&gt;
 
 &lt;p&gt;&lt;a data-fancybox=&quot;gallery&quot; href=&quot;/assets/img/flex-engine-18.png&quot;&gt;&lt;img src=&quot;/assets/img/flex-engine-18.png&quot; width=&quot;60%&quot; style=&quot;display: block; margin: 0 auto&quot; /&gt;&lt;/a&gt;
 &lt;br /&gt;&lt;/p&gt;

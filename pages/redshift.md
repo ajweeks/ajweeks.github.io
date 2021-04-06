@@ -21,7 +21,7 @@ You can see my blog posts made throughout the project here: <a class="underline"
 
 - AJ Weeks *(Programmer)*
 - <a class="underline" href="https://www.artstation.com/evgenivdovlov">Evgeni Vdovlov *(Artist)*
-- <a class="underline" href="http://emilievangeel.com/">Emilie Van Geel *(Programmer)*
+- <a class="underline" href="https://emilievangeel.com/">Emilie Van Geel *(Programmer)*
 - Pieter Ophalvens *(Programmer)*
 
 <div class="videoWrapper">

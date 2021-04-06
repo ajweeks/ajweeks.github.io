@@ -1452,7 +1452,7 @@ function mobileCheck() {
 }
 window.onload = function () {
     if (mobileCheck()) {
-        window.location.href = 'http://ajweeks.com/mirrorsm';
+        window.location.href = 'https://ajweeks.com/mirrorsm';
     }
     Game.init();
     Game.loop();

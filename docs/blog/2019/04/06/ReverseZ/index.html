@@ -12,6 +12,8 @@
 
   <meta name="viewport" content="width=425">
 
+  <link rel="preload" href="css/monokai.css">
+
   <link rel="shortcut icon" href="https://ajweeks.com/logo.ico" />
 
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
@@ -81,7 +83,7 @@
   </header>
 
   <div class="post-content" itemprop="articleBody">
-    <p>I recently switched the depth buffers in <a href="https://ajweeks.com/flex-engine">Flex</a> to use “reversed Z” due to the precision benefits it provides. The default way of encoding depth is from 0.0 to 1.0 as objects get further from the camera. One reason to reverse this is to spread the depth precision out more evenly across the distance of your scene. Using the default encoding, floating point precision combined with a non-linear depth results in lots of precision right next to the near plane, and little precision as things get farther away. See <a href="http://www.reedbeta.com/blog/depth-precision-visualized/">this</a> for a more in-depth explanation. I also found a great explanation of the perspective projection <a href="http://ogldev.atspace.co.uk/www/tutorial12/tutorial12.html">here</a>, which was a great refresher.</p>
+    <p>I recently switched the depth buffers in <a href="https://ajweeks.com/flex-engine">Flex</a> to use “reversed Z” due to the precision benefits it provides. The default way of encoding depth is from 0.0 to 1.0 as objects get further from the camera. One reason to reverse this is to spread the depth precision out more evenly across the distance of your scene. Using the default encoding, floating point precision combined with a non-linear depth results in lots of precision right next to the near plane, and little precision as things get farther away. See <a href="https://www.reedbeta.com/blog/depth-precision-visualized/">this</a> for a more in-depth explanation. I also found a great explanation of the perspective projection <a href="https://ogldev.atspace.co.uk/www/tutorial12/tutorial12.html">here</a>, which was a great refresher.</p>
 
 <p>The four steps (five for OpenGL) involved in swapping to reversed Z are as follows:</p>
 <ul>
