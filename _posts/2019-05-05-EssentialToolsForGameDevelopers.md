@@ -7,7 +7,9 @@ permalink: /blog/:year/:month/:day/:title/
 author: AJ Weeks
 ---
 
-This is an ongoing list of things I find really useful. If you have any that you couldn't live without that aren't here, let me know on twitter [@liqwidice](https://twitter.com/liqwidice)
+This is an ongoing list of things I find really useful.
+
+If you have any that you couldn't live without that aren't here, let me know on twitter [@\_ajweeks\_](https://twitter.com/_ajweeks_)
 
 ### Tools
 General programmers:

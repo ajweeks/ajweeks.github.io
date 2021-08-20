@@ -33,4 +33,4 @@ Certain issues are best visualized over time, and by having a system in place wh
 7.
 
 
-I'm sure I've missed many techniques here, let me know your favorite technique below or here: [@liqwidice])(https://twitter.com/liqwidice).
+I'm sure I've missed many techniques here, let me know your favorite technique below or here: [@\_ajweeks\_])(https://twitter.com/_ajweeks_).

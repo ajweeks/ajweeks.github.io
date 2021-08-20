@@ -110,14 +110,6 @@
     
     
     <url>
-        <loc>https://ajweeks.com/contact/</loc>
-    </url>
-    
-    
-    
-    
-    
-    <url>
         <loc>https://ajweeks.com/electric-square/</loc>
     </url>
     
@@ -137,6 +129,14 @@
     
     <url>
         <loc>https://ajweeks.com/hexahover/</loc>
+    </url>
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://ajweeks.com/blog/</loc>
     </url>
     
     
@@ -169,6 +169,12 @@
     
     
     
+    <url>
+        <loc>https://ajweeks.com/3D/GAP_melee_weapon/</loc>
+    </url>
+    
+    
+    
     
     
     <url>
@@ -190,7 +196,7 @@
     
     
     <url>
-        <loc>https://ajweeks.com/3D/GAP_simple_object/</loc>
+        <loc>https://ajweeks.com/3D/GAP_arisaka_rifle/</loc>
     </url>
     
     
@@ -206,7 +212,7 @@
     
     
     <url>
-        <loc>https://ajweeks.com/3D/GAP_melee_weapon/</loc>
+        <loc>https://ajweeks.com/3D/3D2_fiat_131/</loc>
     </url>
     
     
@@ -225,24 +231,10 @@
     
     
     
-    <url>
-        <loc>https://ajweeks.com/3D/GAP_arisaka_rifle/</loc>
-    </url>
-    
-    
-    
     
     
     <url>
-        <loc>https://ajweeks.com/blog/</loc>
-    </url>
-    
-    
-    
-    
-    
-    <url>
-        <loc>https://ajweeks.com/3D/3D2_fiat_131/</loc>
+        <loc>https://ajweeks.com/3D/GAP_simple_object/</loc>
     </url>
     
     
@@ -260,7 +252,7 @@
     
     
     <url>
-        <loc>https://ajweeks.com/mirrors-desc/</loc>
+        <loc>https://ajweeks.com/slappin-stackers/</loc>
     </url>
     
     
@@ -268,7 +260,7 @@
     
     
     <url>
-        <loc>https://ajweeks.com/slappin-stackers/</loc>
+        <loc>https://ajweeks.com/mirrors-desc/</loc>
     </url>
     
     

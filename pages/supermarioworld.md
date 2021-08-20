@@ -23,7 +23,7 @@ As a way to improve my game development skills and put my new knowledge of C++ t
 
 **Download** the game [here](https://www.dropbox.com/s/uwgc71l5n1k3hdk/SuperMarioWorld_v1.0.zip?dl=0).
 
-Have any feedback? Contact me on twitter [@liqwidice](https://twitter.com/liqwidice)
+Have any feedback? Contact me on twitter [@\_ajweeks\_](https://twitter.com/_ajweeks_)
 
 The entire game was written in C++, and used my school's game engine. You can view the source at [github.com/ajweeks/SuperMarioWorld](https://github.com/ajweeks/SuperMarioWorld).
 
