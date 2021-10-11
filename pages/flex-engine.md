@@ -59,17 +59,17 @@ Flex Engine is a personal game engine I began work on in February 2017. I use it
 
 <a data-fancybox="gallery" href="/assets/img/flex-engine-rotate.gif"><img src="/assets/img/flex-engine-rotate.gif"  width="100%"></a>
 
-See more screenshots [here](https://github.com/ajweeks/FlexEngine/tree/development/FlexEngine/screenshots)
+See more screenshots <a class="underline" href="https://github.com/ajweeks/FlexEngine/tree/development/FlexEngine/screenshots">here</a>
 
 ## Acknowledgments
 A huge thank you must be given to the following individuals and organizations for their incredibly useful resources:
- - Baldur Karlsson of [github.com/baldurk/renderdoc](https://github.com/baldurk/renderdoc)
- - Alexander Overvoorde of [vulkan-tutorial.com](https://vulkan-tutorial.com)
- - Sascha Willems of [github.com/SaschaWillems/Vulkan](https://github.com/SaschaWillems/Vulkan)
- - Joey de Vries of [learnopengl.com](https://learnopengl.com)
- - Andrew Maximov for the pistol model and textures [artisaverb.info/PBT.html ](https://artisaverb.info/PBT.html)
- - [FreePBR.com](https://FreePBR.com) for the high-quality PBR textures
+ - Baldur Karlsson of <a class="underline" href="https://github.com/baldurk/renderdoc">github.com/baldurk/renderdoc</a>
+ - Alexander Overvoorde of <a class="underline" href="https://vulkan-tutorial.com">vulkan-tutorial.com</a>
+ - Sascha Willems of <a class="underline" href="https://github.com/SaschaWillems/Vulkan">github.com/SaschaWillems/Vulkan</a>
+ - Joey de Vries of <a class="underline" href="https://learnopengl.com">learnopengl.com</a>
+ - Andrew Maximov for the pistol model and textures <a class="underline" href="https://artisaverb.info/PBT.html">artisaverb.info/PBT.html</a>
+ - <a class="underline" href="https://FreePBR.com">FreePBR.com</a> for the high-quality PBR textures
  - All authors and contributors to the open-source libraries mentioned above
 
 ## Blog
-Stay (somewhat) up to date about this project on my blog at [ajweeks.com/blog](https://ajweeks.com/blog/)
+Stay (somewhat) up to date about this project on my blog at <a class="underline" href="https://ajweeks.com/blog/">ajweeks.com/blog</a>
