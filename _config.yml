@@ -39,10 +39,6 @@ sass:
   sass-dir: css
   style: compressed
 
-# Google-analytics
-google-analytics:
-  id: "UA-57413391-2"
-
 highlighter: rouge
 
 # Exclude from processing.
