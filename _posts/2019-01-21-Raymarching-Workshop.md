@@ -16,4 +16,4 @@ So if you're interested in learning about graphics programming, take a look and 
 </div>
 <br />
 
-<a href="https://github.com/ElectricSquare/RaymarchingWorkshop"><img width="100%" src="/assets/img/raymarching-02.jpg" /></a>
+<a href="https://github.com/ElectricSquare/RaymarchingWorkshop"><img width="100%" src="/assets/img/raymarching-02.webp" /></a>

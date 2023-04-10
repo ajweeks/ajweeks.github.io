@@ -29,35 +29,35 @@ Flex Engine is a personal game engine I began work on in February 2017. I use it
   - Signed-distance field font generation & rendering
   - GPU particles
 
-<a data-fancybox="gallery" href="/assets/img/flex_engine_banner_3.jpg"><img src="/assets/img/flex_engine_banner_3.jpg"  width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/flex-engine-banner-03.webp"><img src="/assets/img/flex-engine-banner-03.webp" width="960"></a>
 
-<a data-fancybox="gallery" href="/assets/img/flex-engine-editor.png"><img src="/assets/img/flex-engine-editor.png"  width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/flex-engine-editor.webp"><img src="/assets/img/flex-engine-editor.webp" width="960" loading="lazy"></a>
 <span class="caption">A view of the editor tools showing info about scenes, objects, materials, lights, and user-settings</span>
 
-<a data-fancybox="gallery" href="/assets/img/flex-engine-shadows.jpg"><img src="/assets/img/flex-engine-shadows.jpg"  width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/flex-engine-shadows.webp"><img src="/assets/img/flex-engine-shadows.webp" width="960" loading="lazy"></a>
 <span class="caption">Basic implementation of Cascaded Shadow Mapping</span>
 
-<a data-fancybox="gallery" href="/assets/img/flex-gpu-particles.jpg"><img src="/assets/img/flex-gpu-particles.jpg"  width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/flex-gpu-particles.webp"><img src="/assets/img/flex-gpu-particles.webp" width="960" loading="lazy"></a>
 <span class="caption">Two million particles updated and rendered entirely on the GPU, utilizing the compute stage</span>
 
-<a data-fancybox="gallery" href="/assets/img/flex-engine-profiler.jpg"><img src="/assets/img/flex-engine-profiler.jpg"  width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/flex-engine-profiler.webp"><img src="/assets/img/flex-engine-profiler.webp" width="960" loading="lazy"></a>
 <span class="caption">Profiler overlay showing a breakdown the CPU-time of a single frame</span>
 
-<a data-fancybox="gallery" href="/assets/img/flex-editor-windows.jpg"><img src="/assets/img/flex-editor-windows.jpg"  width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/flex-editor-windows.webp"><img src="/assets/img/flex-editor-windows.webp" width="960" loading="lazy"></a>
 <span class="caption">Some of the editor windows</span>
 
-<a data-fancybox="gallery" href="/assets/img/flex-ssao.png"><img src="/assets/img/flex-ssao.png"  width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/flex-ssao.webp"><img src="/assets/img/flex-ssao.webp" width="960" loading="lazy"></a>
 <span class="caption">Screen-Space Ambient Occlusion (SSAO)</span>
 
-<a data-fancybox="gallery" href="/assets/img/flex-engine-gbuf.jpg"><img src="/assets/img/flex-engine-gbuf.jpg"  width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/flex-engine-gbuf.webp"><img src="/assets/img/flex-engine-gbuf.webp" width="960" loading="lazy"></a>
 <span class="caption">GBuffer (top-left to bottom-right): position, albedo, normal, final image, depth, metallic, AO, roughness</span>
 
- <a data-fancybox="gallery" href="/assets/img/flex-engine-guns-01.jpg"><img src="/assets/img/flex-engine-guns-01.jpg"  width="100%"></a>
- <a data-fancybox="gallery" href="/assets/img/flex-engine-guns-02.jpg"><img src="/assets/img/flex-engine-guns-02.jpg"  width="100%"></a>
- <a data-fancybox="gallery" href="/assets/img/flex-engine-guns-03.jpg"><img src="/assets/img/flex-engine-guns-03.jpg"  width="100%"></a>
+ <a data-fancybox="gallery" href="/assets/img/flex-engine-guns-01.webp"><img src="/assets/img/flex-engine-guns-01.webp" width="960" loading="lazy"></a>
+ <a data-fancybox="gallery" href="/assets/img/flex-engine-guns-02.webp"><img src="/assets/img/flex-engine-guns-02.webp" width="960" loading="lazy"></a>
+ <a data-fancybox="gallery" href="/assets/img/flex-engine-guns-03.webp"><img src="/assets/img/flex-engine-guns-03.webp" width="960" loading="lazy"></a>
 <span class="caption">The effect different environment maps have on the same model when using image-based lighting</span>
 
-<a data-fancybox="gallery" href="/assets/img/flex-engine-rotate.gif"><img src="/assets/img/flex-engine-rotate.gif"  width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/flex-engine-rotate.webp"><img src="/assets/img/flex-engine-rotate.webp" width="960" loading="lazy"></a>
 
 See more screenshots <a class="underline" href="https://github.com/ajweeks/FlexEngine/tree/development/FlexEngine/screenshots">here</a>
 
