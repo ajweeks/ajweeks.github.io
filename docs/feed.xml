@@ -5,9 +5,9 @@
     <description>AJ Weeks - Graphics Programmer</description>
     <link>https://ajweeks.com/</link>
     <atom:link href="https://ajweeks.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 06 Apr 2021 16:36:58 +0100</pubDate>
-    <lastBuildDate>Tue, 06 Apr 2021 16:36:58 +0100</lastBuildDate>
-    <generator>Jekyll v3.9.0</generator>
+    <pubDate>Thu, 13 Apr 2023 18:26:22 +0200</pubDate>
+    <lastBuildDate>Thu, 13 Apr 2023 18:26:22 +0200</lastBuildDate>
+    <generator>Jekyll v3.9.3</generator>
     
       <item>
         <title>SSAO in Vulkan</title>
@@ -124,7 +124,7 @@
 
 &lt;p&gt;Thanks to &lt;a class=&quot;underline&quot; href=&quot;https://sketchfab.com/luyssport&quot;&gt;luyssport&lt;/a&gt; for the &lt;a class=&quot;underline&quot; href=&quot;https://sketchfab.com/3d-models/che-1e529f4b8efc4f20925957a9a4208dcd&quot;&gt;car model&lt;/a&gt;!&lt;/p&gt;
 </description>
-        <pubDate>Sat, 11 May 2019 00:00:00 +0100</pubDate>
+        <pubDate>Sat, 11 May 2019 00:00:00 +0200</pubDate>
         <link>https://ajweeks.com/blog/2019/05/11/SSAO/</link>
         <guid isPermaLink="true">https://ajweeks.com/blog/2019/05/11/SSAO/</guid>
         
@@ -155,34 +155,34 @@
         <title>Essential Tools for Game Developers</title>
         <description>&lt;p&gt;This is an ongoing list of things I find really useful.&lt;/p&gt;
 
-&lt;p&gt;If you have any that you couldn’t live without that aren’t here, let me know on twitter &lt;a href=&quot;https://twitter.com/_ajweeks_&quot;&gt;@_ajweeks_&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If you have any that you couldn’t live without that aren’t here, let me know on twitter &lt;a class=&quot;underline&quot; href=&quot;https://twitter.com/_ajweeks_&quot;&gt;@_ajweeks_&lt;/a&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;tools&quot;&gt;Tools&lt;/h3&gt;
 &lt;p&gt;General programmers:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.listary.com/&quot;&gt;Listary&lt;/a&gt; - for finding any file or folder on your system almost instantly [free]&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.wholetomato.com/&quot;&gt;Visual Assist&lt;/a&gt; - for various useful code searching/editing features in VS&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/mridgers/clink&quot;&gt;clink&lt;/a&gt; - adds some nice to have features to shell (cmd)&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.manictime.com/&quot;&gt;Manic Time&lt;/a&gt; - time tracking software&lt;/li&gt;
+  &lt;li&gt;&lt;a class=&quot;underline&quot; href=&quot;https://www.listary.com&quot;&gt;Listary&lt;/a&gt; - for finding any file or folder on your system almost instantly [free]&lt;/li&gt;
+  &lt;li&gt;&lt;a class=&quot;underline&quot; href=&quot;https://www.wholetomato.com&quot;&gt;Visual Assist&lt;/a&gt; - for various useful code searching/editing features in VS&lt;/li&gt;
+  &lt;li&gt;&lt;a class=&quot;underline&quot; href=&quot;https://github.com/mridgers/clink&quot;&gt;clink&lt;/a&gt; - adds some nice to have features to shell (cmd)&lt;/li&gt;
+  &lt;li&gt;&lt;a class=&quot;underline&quot; href=&quot;https://www.manictime.com&quot;&gt;Manic Time&lt;/a&gt; - time tracking software&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Graphics-specific:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://renderdoc.org/&quot;&gt;RenderDoc&lt;/a&gt; - for debugging anything graphical&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://developer.nvidia.com/nsight-visual-studio-edition&quot;&gt;Nvidia Nsight&lt;/a&gt; - for debugging anything graphical when RenderDoc isn’t working&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/visualstudio/debugger/graphics/visual-studio-graphics-diagnostics?view=vs-2019&quot;&gt;Visual Studio Graphics Debugging&lt;/a&gt; - for debugging anything graphical when Nsight isn’t working either&lt;/li&gt;
+  &lt;li&gt;&lt;a class=&quot;underline&quot; href=&quot;https://renderdoc.org&quot;&gt;RenderDoc&lt;/a&gt; - for debugging anything graphical&lt;/li&gt;
+  &lt;li&gt;&lt;a class=&quot;underline&quot; href=&quot;https://developer.nvidia.com/nsight-visual-studio-edition&quot;&gt;Nvidia Nsight&lt;/a&gt; - for debugging anything graphical when RenderDoc isn’t working&lt;/li&gt;
+  &lt;li&gt;&lt;a class=&quot;underline&quot; href=&quot;https://docs.microsoft.com/en-us/visualstudio/debugger/graphics/visual-studio-graphics-diagnostics?view=vs-2019&quot;&gt;Visual Studio Graphics Debugging&lt;/a&gt; - for debugging anything graphical when Nsight isn’t working either&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h3 id=&quot;resources&quot;&gt;Resources&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/SaschaWillems/Vulkan&quot;&gt;Sascha Willems’ Vulkan&lt;/a&gt; - for example Vulkan code&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://handmadehero.org/watch&quot;&gt;Handmade Hero&lt;/a&gt; - recorded live-streams of in-depth explanations of every aspect that goes into making a full game from scratch&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.gameenginebook.com/&quot;&gt;Game Engine Architecture&lt;/a&gt; - book (more aptly, a tome) describing many details of creating a game engine&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://fgiesen.wordpress.com/&quot;&gt;The ryg blog&lt;/a&gt; - insanely detailed explanations of various CS topics&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.jendrikillner.com/tags/weekly/&quot;&gt;Graphics Programming Weekly&lt;/a&gt; - weekly blog posts summarizing the past week’s news in graphics&lt;/li&gt;
+  &lt;li&gt;&lt;a class=&quot;underline&quot; href=&quot;https://github.com/SaschaWillems/Vulkan&quot;&gt;Sascha Willems’ Vulkan&lt;/a&gt; - for example Vulkan code&lt;/li&gt;
+  &lt;li&gt;&lt;a class=&quot;underline&quot; href=&quot;https://handmadehero.org&quot;&gt;Handmade Hero&lt;/a&gt; - recorded live-streams of in-depth explanations of every aspect that goes into making a full game from scratch&lt;/li&gt;
+  &lt;li&gt;&lt;a class=&quot;underline&quot; href=&quot;https://www.gameenginebook.com&quot;&gt;Game Engine Architecture&lt;/a&gt; - book (more aptly, a tome) describing many details of creating a game engine&lt;/li&gt;
+  &lt;li&gt;&lt;a class=&quot;underline&quot; href=&quot;https://fgiesen.wordpress.com&quot;&gt;The ryg blog&lt;/a&gt; - insanely detailed explanations of various CS topics&lt;/li&gt;
+  &lt;li&gt;&lt;a class=&quot;underline&quot; href=&quot;https://www.jendrikillner.com/tags/weekly&quot;&gt;Graphics Programming Weekly&lt;/a&gt;- weekly blog posts summarizing the past week’s news in graphics&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>Sun, 05 May 2019 00:00:00 +0100</pubDate>
+        <pubDate>Sun, 05 May 2019 00:00:00 +0200</pubDate>
         <link>https://ajweeks.com/blog/2019/05/05/EssentialToolsForGameDevelopers/</link>
         <guid isPermaLink="true">https://ajweeks.com/blog/2019/05/05/EssentialToolsForGameDevelopers/</guid>
         
@@ -203,7 +203,7 @@
     
       <item>
         <title>Reverse Z</title>
-        <description>&lt;p&gt;I recently switched the depth buffers in &lt;a href=&quot;https://ajweeks.com/flex-engine&quot;&gt;Flex&lt;/a&gt; to use “reversed Z” due to the precision benefits it provides. The default way of encoding depth is from 0.0 to 1.0 as objects get further from the camera. One reason to reverse this is to spread the depth precision out more evenly across the distance of your scene. Using the default encoding, floating point precision combined with a non-linear depth results in lots of precision right next to the near plane, and little precision as things get farther away. See &lt;a href=&quot;https://www.reedbeta.com/blog/depth-precision-visualized/&quot;&gt;this&lt;/a&gt; for a more in-depth explanation. I also found a great explanation of the perspective projection &lt;a href=&quot;https://ogldev.atspace.co.uk/www/tutorial12/tutorial12.html&quot;&gt;here&lt;/a&gt;, which was a great refresher.&lt;/p&gt;
+        <description>&lt;p&gt;I recently switched the depth buffers in &lt;a class=&quot;underline&quot; href=&quot;https://ajweeks.com/flex-engine&quot;&gt;Flex Engine&lt;/a&gt; to use “reversed Z” due to the precision benefits it provides. The default way of encoding depth is from 0.0 to 1.0 as objects get further from the camera. One reason to reverse this is to spread the depth precision out more evenly across the distance of your scene. Using the default encoding, floating point precision combined with a non-linear depth results in lots of precision right next to the near plane, and little precision as things get farther away. See &lt;a class=&quot;underline&quot; href=&quot;https://www.reedbeta.com/blog/depth-precision-visualized&quot;&gt;this&lt;/a&gt; for a more in-depth explanation. I also found a great explanation of the perspective projection &lt;a class=&quot;underline&quot; href=&quot;http://ogldev.atspace.co.uk/www/tutorial12/tutorial12.html&quot;&gt;here&lt;/a&gt;, which was a great refresher.&lt;/p&gt;
 
 &lt;p&gt;The four steps (five for OpenGL) involved in swapping to reversed Z are as follows:&lt;/p&gt;
 &lt;ul&gt;
@@ -227,7 +227,7 @@ Default depth buffer (left) reversed depth buffer (right)
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 </description>
-        <pubDate>Sat, 06 Apr 2019 00:00:00 +0100</pubDate>
+        <pubDate>Sat, 06 Apr 2019 00:00:00 +0200</pubDate>
         <link>https://ajweeks.com/blog/2019/04/06/ReverseZ/</link>
         <guid isPermaLink="true">https://ajweeks.com/blog/2019/04/06/ReverseZ/</guid>
         
@@ -417,7 +417,7 @@ Default depth buffer (left) reversed depth buffer (right)
 
 &lt;p&gt;While implementing this system I was very wary of compile times, and knowing that templates and modern C++ classes are &lt;a class=&quot;underline&quot; href=&quot;https://zeuxcg.org/2019/01/17/is-c-fast/&quot;&gt;known&lt;/a&gt; for being slow in several senses, I tried to keep things as simple as I could. However, I think there’s still some work to be done in that regard. With that said, this system feels like a big step forward and I’ve been really enjoying cleaning up the old code to use it.&lt;/p&gt;
 </description>
-        <pubDate>Mon, 04 Feb 2019 00:00:00 +0000</pubDate>
+        <pubDate>Mon, 04 Feb 2019 00:00:00 +0100</pubDate>
         <link>https://ajweeks.com/blog/2019/02/04/InputHandling/</link>
         <guid isPermaLink="true">https://ajweeks.com/blog/2019/02/04/InputHandling/</guid>
         
@@ -436,18 +436,18 @@ Default depth buffer (left) reversed depth buffer (right)
     
       <item>
         <title>Raymarching Workshop</title>
-        <description>&lt;p&gt;I recently published the course notes I created for a workshop I gave at &lt;a href=&quot;https://electricsquare.com&quot;&gt;work&lt;/a&gt; here: &lt;a href=&quot;https://github.com/ElectricSquare/RaymarchingWorkshop&quot;&gt;github.com/ElectricSquare/RaymarchingWorkshop&lt;/a&gt;. The workshop takes you through the theory and application of raymarching, an alternative rendering technique to rasterization. By the end you will have your very own raymarcher which can produce images like the one shown below! No prior graphics programming experience is required, nor is any software besides a web browser!&lt;/p&gt;
+        <description>&lt;p&gt;I recently published the course notes I created for a workshop I gave at &lt;a class=&quot;underline&quot; href=&quot;https://electricsquare.com&quot;&gt;work&lt;/a&gt; here: &lt;a class=&quot;underline&quot; href=&quot;https://github.com/ElectricSquare/RaymarchingWorkshop&quot;&gt;github.com/ElectricSquare/RaymarchingWorkshop&lt;/a&gt;. The workshop takes you through the theory and application of raymarching, an alternative rendering technique to rasterization. By the end you will have your very own raymarcher which can produce images like the one shown below! No prior graphics programming experience is required, nor is any software besides a web browser!&lt;/p&gt;
 
 &lt;p&gt;So if you’re interested in learning about graphics programming, take a look and share what you make!&lt;/p&gt;
 
 &lt;div style=&quot;text-align:center&quot;&gt;
-&lt;a href=&quot;https://github.com/ElectricSquare/RaymarchingWorkshop&quot;&gt;github.com/ElectricSquare/RaymarchingWorkshop&lt;/a&gt;
+&lt;a class=&quot;underline&quot; href=&quot;https://github.com/ElectricSquare/RaymarchingWorkshop&quot;&gt;github.com/ElectricSquare/RaymarchingWorkshop&lt;/a&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/ElectricSquare/RaymarchingWorkshop&quot;&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/img/raymarching-02.jpg&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/ElectricSquare/RaymarchingWorkshop&quot;&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/img/raymarching-02.webp&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
 </description>
-        <pubDate>Mon, 21 Jan 2019 00:00:00 +0000</pubDate>
+        <pubDate>Mon, 21 Jan 2019 00:00:00 +0100</pubDate>
         <link>https://ajweeks.com/blog/2019/01/21/Raymarching-Workshop/</link>
         <guid isPermaLink="true">https://ajweeks.com/blog/2019/01/21/Raymarching-Workshop/</guid>
         
@@ -507,7 +507,7 @@ Default depth buffer (left) reversed depth buffer (right)
 
 &lt;p&gt;Going forward I’ll be continuing to focus on implementing and improving gameplay-systems and hopefully getting closer to having a fun game.&lt;/p&gt;
 </description>
-        <pubDate>Tue, 03 Jul 2018 00:00:00 +0100</pubDate>
+        <pubDate>Tue, 03 Jul 2018 00:00:00 +0200</pubDate>
         <link>https://ajweeks.com/blog/2018/07/03/Flex-Engine-Update-5/</link>
         <guid isPermaLink="true">https://ajweeks.com/blog/2018/07/03/Flex-Engine-Update-5/</guid>
         
@@ -526,7 +526,7 @@ Default depth buffer (left) reversed depth buffer (right)
 
 &lt;p&gt;It seems like I’ve decided that writing this blog post is a worth-while first activity for the day, who knows what else I’ll chose to do. It seems probable that I’ll pick items from the list semi-randomly until the weekend slips away and I find myself on Monday morning embracing the guidance of a brand new deadline being placed above me.&lt;/p&gt;
 </description>
-        <pubDate>Sat, 11 Nov 2017 00:00:00 +0000</pubDate>
+        <pubDate>Sat, 11 Nov 2017 00:00:00 +0100</pubDate>
         <link>https://ajweeks.com/blog/2017/11/11/Relaxing/</link>
         <guid isPermaLink="true">https://ajweeks.com/blog/2017/11/11/Relaxing/</guid>
         
@@ -558,7 +558,7 @@ Default depth buffer (left) reversed depth buffer (right)
 
 &lt;p&gt;Once IBL is fully implemented in both APIs, I will begin working on adding support for reflection probes. The general idea is this: instead of sampling a global cubemap for all objects (like above), individual snapshots of different parts of the world are taken and then used depending on each object’s position. One example of why this is needed is seeing reflections of clouds on objects that are indoors tends to look a bit off. Reflection probes can be placed around the world (some inside, some outside) and objects will use a blend of the nearest cubemap captures to create more realistic reflections. Stay tuned for updates on that!&lt;/p&gt;
 </description>
-        <pubDate>Thu, 05 Oct 2017 00:00:00 +0100</pubDate>
+        <pubDate>Thu, 05 Oct 2017 00:00:00 +0200</pubDate>
         <link>https://ajweeks.com/blog/2017/10/05/Flex-Engine-Update-4/</link>
         <guid isPermaLink="true">https://ajweeks.com/blog/2017/10/05/Flex-Engine-Update-4/</guid>
         
@@ -584,7 +584,7 @@ Default depth buffer (left) reversed depth buffer (right)
 
 &lt;p&gt;The next few items on the to-do list are; sky boxes, a deferred pipeline, and physically based rendering. That will surely keep me busy for the next few weeks at least.&lt;/p&gt;
 </description>
-        <pubDate>Wed, 16 Aug 2017 00:00:00 +0100</pubDate>
+        <pubDate>Wed, 16 Aug 2017 00:00:00 +0200</pubDate>
         <link>https://ajweeks.com/blog/2017/08/16/Rendering-Engine-Update-3/</link>
         <guid isPermaLink="true">https://ajweeks.com/blog/2017/08/16/Rendering-Engine-Update-3/</guid>
         
@@ -625,7 +625,7 @@ This past weekend I participated the thirty-ninth Ludum Dare game jam competitio
 
 &lt;p&gt;Thanks for reading!&lt;/p&gt;
 </description>
-        <pubDate>Thu, 03 Aug 2017 00:00:00 +0100</pubDate>
+        <pubDate>Thu, 03 Aug 2017 00:00:00 +0200</pubDate>
         <link>https://ajweeks.com/blog/2017/08/03/Ludum-Dare-39/</link>
         <guid isPermaLink="true">https://ajweeks.com/blog/2017/08/03/Ludum-Dare-39/</guid>
         

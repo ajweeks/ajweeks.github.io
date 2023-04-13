@@ -1,5 +1,3 @@
-document.addEventListener("DOMContentLoaded",function(){new SweetScroll({}); setBGCol();});
-
 function setBGCol() {
   var r = Math.random() * 90  + 60;
   var g = Math.random() * 115 + 60;
