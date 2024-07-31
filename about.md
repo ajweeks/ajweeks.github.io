@@ -6,7 +6,7 @@ permalink: /about/
 
 ## About
 
-I'm a game developer at <a class="underline" href="https://electricsquare.com/">Electric Square</a> in Brighton, UK.
+Professionally I work as graphics programmer on <a class="underline" href="https://www.ea.com/frostbite">Frostbite</a> in Stockholm, Sweden.
 
 I can best be reached on <a class="underline" href="https://x.com/_ajweeks_"><i class="fa-brands fa-x-twitter" aria-hidden="true" style="color: #222"></i> @\_ajweeks\_</a>
 
