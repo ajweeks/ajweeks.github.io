@@ -116,6 +116,8 @@ blockquote {
 .tooltip {
     position: relative;
     display: inline-block;
+    min-width: 63px;
+    min-height: 63px;
 }
 
 .tooltip .tooltiptext {
