@@ -1,3 +1,9 @@
+---
+layout: default
+title: Utterly Request Account Removal
+permalink: /utterly-request-account-removal/
+author: AJ Weeks
+---
 
 ## Utterly account removal
 
