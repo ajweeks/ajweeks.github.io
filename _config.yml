@@ -54,6 +54,7 @@ exclude:
   - src/
   - node_modules/
   - docs
+  - vendor/
 #   - .jekyll-cache/
 #   - gemfiles/
 #   - Gemfile
