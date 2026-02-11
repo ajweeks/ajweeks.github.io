@@ -1,24 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
   <base href="/utterly/">
 
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" flt-viewport>
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
+
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://accounts.google.com" crossorigin>
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+
+  <link rel="preload" as="image" href="icons/Icon-192.png">
+
+  <style>
+    html, body { height: 100%; }
+    body { margin: 0; }
+    #utterly-loading {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      color: #1a1a1a;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      text-align: center;
+    }
+    #utterly-loading .wrap { padding: 24px; }
+    #utterly-loading img { width: 96px; height: 96px; }
+    #utterly-loading .title { margin-top: 12px; font-size: 18px; font-weight: 600; }
+    #utterly-loading .sub { margin-top: 6px; font-size: 14px; opacity: 0.8; }
+    @media (prefers-color-scheme: dark) {
+      #utterly-loading { background: #0b0f0d; color: #f5f5f5; }
+    }
+  </style>
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -33,6 +49,33 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <div id="utterly-loading" role="status" aria-live="polite">
+    <div class="wrap">
+      <img src="icons/Icon-192.png" alt="Utterly">
+      <div class="title">Utterly</div>
+      <div class="sub">Loading…</div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      function removeLoader() {
+        var el = document.getElementById('utterly-loading');
+        if (el) el.remove();
+      }
+      window.addEventListener('flutter-first-frame', removeLoader);
+      window.addEventListener('load', function () {
+        setTimeout(removeLoader, 10000);
+      });
+    })();
+  </script>
+  <script>
+    // Prevent browser Ctrl+F / Cmd+F so the in-app search handles it
+    window.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+      }
+    });
+  </script>
+  <script src="flutter_bootstrap.js" defer></script>
 </body>
 </html>
