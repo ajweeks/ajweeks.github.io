@@ -8,8 +8,8 @@ const RESOURCES = {"assets/AssetManifest.bin": "0aa68484b4c1ce99c1c0753b9589ae4b
 "assets/assets/google-favicon.ico": "f3418a443e7d841097c714d69ec4bcb8",
 "assets/assets/icon/app_icon.png": "d96435c8abd86f66b2d47835499e7209",
 "assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
-"assets/fonts/MaterialIcons-Regular.otf": "cee5fd09ae39df7c63fa5a657a1eb870",
-"assets/NOTICES": "53caa6ab1d082f7ba42cb77884968505",
+"assets/fonts/MaterialIcons-Regular.otf": "5de40504ccdfb19f5ebdafdcc8fabd98",
+"assets/NOTICES": "d5f51c4e2cf66d91f9da9e1c31737cdc",
 "assets/packages/appflowy_editor/assets/images/check.svg": "c7b016041b6a5b0ce7cd50b7277364ec",
 "assets/packages/appflowy_editor/assets/images/checkmark.svg": "3dc55867deb579484c5702a79054bb0e",
 "assets/packages/appflowy_editor/assets/images/clear.svg": "f74736135d3ee5656b916262104469d0",
@@ -69,17 +69,17 @@ const RESOURCES = {"assets/AssetManifest.bin": "0aa68484b4c1ce99c1c0753b9589ae4b
 "canvaskit/skwasm_heavy.wasm": "b0be7910760d205ea4e011458df6ee01",
 "favicon.png": "a164679a3db006d5d2090ff678c2bd10",
 "flutter.js": "24bc71911b75b5f8135c949e27a2984e",
-"flutter_bootstrap.js": "629aee2b617ab846d83def58f72d6395",
+"flutter_bootstrap.js": "926c3f34fc5db7ccef10ced2986eb028",
 "icons/Icon-192.png": "57cc5438c8b7ebdd8de3538d4e4a87af",
 "icons/Icon-512.png": "51f2af69b1c78b7ae1a464273e9c5869",
 "icons/Icon-maskable-192.png": "57cc5438c8b7ebdd8de3538d4e4a87af",
 "icons/Icon-maskable-512.png": "51f2af69b1c78b7ae1a464273e9c5869",
 "index.html": "a0faf8d1f5fcb0aa2ef4a9c93d5e3406",
 "/": "a0faf8d1f5fcb0aa2ef4a9c93d5e3406",
-"main.dart.js": "2aef03e51af33f324504b8d9a5ceeead",
+"main.dart.js": "049ffae40cc2d50e0eecb15a2a3da0ae",
 "manifest.json": "f83f8cf3281cc85518c5f6f4b3f9300f",
 "robots.txt": "735ab4f94fbcd57074377afca324c813",
-"version.json": "8256699df09ac1b6eb3c1db285f840e8"};
+"version.json": "52a0e9be5d5ced6cd1717a8d55e06d1e"};
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",
