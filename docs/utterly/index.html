@@ -68,6 +68,14 @@
       });
     })();
   </script>
+  <script>
+    // Prevent browser Ctrl+F / Cmd+F so the in-app search handles it
+    window.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+      }
+    });
+  </script>
   <script src="flutter_bootstrap.js" defer></script>
 </body>
 </html>
