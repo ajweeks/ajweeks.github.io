@@ -270,7 +270,6 @@ var LevelSelectState = (function (_super) {
     }
     LevelSelectState.prototype.scroll = function (dir) {
         this.page += (dir === 'R' ? -1 : 1);
-        console.log(this.page);
         if (this.page > 0)
             this.page = 0;
         if (this.page < this.maxPages)

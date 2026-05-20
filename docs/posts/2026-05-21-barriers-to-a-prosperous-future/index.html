@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barriers to a Prosperous Future</title>
+  <meta name="description" content="On the risks posed by advanced AI systems">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+  <script>
+    (function () {
+      var theme = 'light';
+
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        if (storedTheme === 'light' || storedTheme === 'dark') {
+          theme = storedTheme;
+        } else {
+          theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+      } catch (error) {
+        theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.style.colorScheme = theme;
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <header>
+    <div class="site-title">
+      <a href="/">AJ Weeks</a>
+    </div>
+    <div class="theme-toggle-wrap">
+      <span class="theme-icon" aria-hidden="true">
+        <svg class="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M320 32C328.4 32 336.3 36.4 340.6 43.7L396.1 136.3L500.9 110C509.1 108 517.8 110.4 523.7 116.3C529.6 122.2 532 131 530 139.1L503.7 243.8L596.4 299.3C603.6 303.6 608.1 311.5 608.1 319.9C608.1 328.3 603.7 336.2 596.4 340.5L503.7 396.1L530 500.8C532 509 529.6 517.7 523.7 523.6C517.8 529.5 509 532 500.9 530L396.2 503.7L340.7 596.4C336.4 603.6 328.5 608.1 320.1 608.1C311.7 608.1 303.8 603.7 299.5 596.4L243.9 503.7L139.2 530C131 532 122.4 529.6 116.4 523.7C110.4 517.8 108 509 110 500.8L136.2 396.1L43.6 340.6C36.4 336.2 32 328.4 32 320C32 311.6 36.4 303.7 43.7 299.4L136.3 243.9L110 139.1C108 130.9 110.3 122.3 116.3 116.3C122.3 110.3 131 108 139.2 110L243.9 136.2L299.4 43.6L301.2 41C305.7 35.3 312.6 31.9 320 31.9z"/></svg>
+        <svg class="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576C388.8 576 451.3 548.8 497.3 504.6C504.6 497.6 506.7 486.7 502.6 477.5C498.5 468.3 488.9 462.6 478.8 463.4C473.9 463.8 469 464 464 464C362.4 464 280 381.6 280 280C280 207.9 321.5 145.4 382.1 115.2C391.2 110.7 396.4 100.9 395.2 90.8C394 80.7 386.6 72.5 376.7 70.3C358.4 66.2 339.4 64 320 64z"/></svg>
+      </span>
+      <div class="theme-switcher">
+        <input type="checkbox" id="theme-toggle">
+        <label for="theme-toggle" class="sr-only">Toggle dark theme</label>
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+
+
+<article lang="en">
+  <header>
+    <h1>Barriers to a Prosperous Future</h1>
+    <time class="post-meta" datetime="2026-05-21">May 21, 2026</time>
+    
+  </header>
+
+  <div class="post-content">
+    <p>Here I describe what, in my view, are the most concerning risks we face with the current rate development of frontier general artificial intelligence. Then, I outline my current plan to contribute to reducing these risks.</p>
+<p>The rapid development and integration of artificial intelligence systems into nearly all aspects of society will necessitate a monumental level of investment in enhancing our robustness to a plethora of unforeseen catastrophic risks. The level of understanding and control we have of frontier AI systems is shockingly minimal, and progressing at a worryingly slow pace compared to the rate of development of AI capabilities.</p>
+<h3>Types of Risk</h3>
+<p>It can be useful to categorize risks from advanced AI into three broad categories: misuse, misalignment, and systemic. Misuse refers to malicious actors—either individuals, groups, or states—using AI systems to achieve their nefarious objectives, whether via generating personalized misinformation at scale, hacking their adversaries, or building powerful weapons. Misalignment refers to AI models failing to truly obtain human values, leading to nearly limitless possibility for perilous disasters. Finally, systemic risks include those that can occur when our complex and vital societal systems become dependent on a technology which we don't fully understand nor control, leaving us vulnerable to the accumulation of many interacting, unpredictable decisions of those systems.</p>
+<p>All three categories contain critical issues worthy of serious mitigation efforts, but the focus of the remainder of this post will be on the third—and most complicated— cateogry – systemic risks. A subcategory of risk within this grouping that I find particularly concerning is sometimes called gradual disempowerment, referring to the incremental loss of human influence as a result of having more competitive machine alternatives to humans in almost all societal functions <sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>. The integration of advanced AI systems into all parts of society is likely to lead, by default, to a nearly imperceptible reduction in human influence over time as we come to depend on it ever more. Human empowerment in democratic nations comes in large part from human labour, so we should expect that replacing most human labour with AI labour would lead to an even greater economic disparity and power imbalance than we already see today. Consumer spending and labour costs in the US account for a significant portion of GDP (around 70% <sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>, and 60% <sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup> respectively). AI systems replacing human labour, therefore, have the potential to greatly diminish the power held by workers, for the first time in modern history. This process is also likely to increase the risk of coups and democratic backsliding <sup class="footnote-ref"><a href="#fn4" id="fnref4">[4]</a></sup>. For a more in-depth discussion of this topic, see Kulveit et al. 2025 <sup class="footnote-ref"><a href="#fn1" id="fnref1:1">[1:1]</a></sup>.</p>
+<h3>Rate of Development</h3>
+<p>We should expect AI companies to invest heavily in improving their models' ability to do autonomous AI research given the immense potential economic value of doing so <sup class="footnote-ref"><a href="#fn5" id="fnref5">[5]</a></sup>. This process is likely to lead to an ever-accelerating rate of development of AI capabilities, as more capable models give ever-higher &quot;uplift&quot; to the human researchers. If models surpass a threshold of being capable of operating largely autonomously—that is, producing hypotheses, developing efficient tests of those hypotheses, and analyzing the results to iterative improve themselves—we might see something referred to as an &quot;intelligence explosion&quot;, wherein countless digital minds running 24/7 drive rapid progress in AI research on a timescale we couldn't hope to keep up with. Even if progress is initially impeded by bottlenecks like model unreliability, human approval, and limited compute and energy supplies, the incentives to unblock these will be so great that before long solutions will be found. Indeed, AI companies are already claiming today to be seeing measurable improvements in employee productivity thanks to extensive use of frontier models. However, even if progress were to halt today, the raw capabilities of current frontier models are already sufficient to significantly disrupt many parts of our societies as their use permeates society.</p>
+<h3>Future Risks</h3>
+<p>While the risks that we face today from existing models are real and worth trying to mitigate, I believe they are greatly overshadowed by the risks posed by potential future models. This concern comes in large part from the sheer complexity of these alien minds, whose complexity even their creators understand almost nothing of <sup class="footnote-ref"><a href="#fn6" id="fnref6">[6]</a></sup>. The best techniques these multi-billion dollar companies have developed for &quot;aligning&quot; their models with human values is fundamentally surface-level and has been without exception bypassed, leading to many worrying behaviours <sup class="footnote-ref"><a href="#fn7" id="fnref7">[7]</a></sup>. If we are to entrust critical parts of our society such as education, healthcare, software development, and justice to these, and even more advanced, systems, we must invest heavily in both rapidly advancing the science of model alignment and greatly increasing societal preparedness.</p>
+<p>Previous technological revolutions have happened at a pace which allowed humanity to gradually adapt laws, cultural norms, and education over the span of decades to slowly adjust with relatively little turmoil. We have survived major technological developments such as the industrial revolution and digitalization due to having time to adapt. However, the rate of change we can expect when we set in motion many billions of digital minds thinking at superhuman speeds—a &quot;country of geniuses in a datacenter&quot; <sup class="footnote-ref"><a href="#fn8" id="fnref8">[8]</a></sup>—will simply be completely unprecedented and force a significant reorganization of many parts of society in a nearly impossibly short timeframe.</p>
+<p>We will need to grapple with, and enact solutions for, a great number of fundamental problems in the coming years; How can international agreements on constraining AI development be enforced? How can we reap the immense potential benefits of this technology without falling victim to the risks? How should governments tax &quot;AI labour&quot; in a just way? At what point should digital minds be considered for having rights, and in what form?</p>
+<h3>Mitigations</h3>
+<p>In order to strengthen our defenses against these risks and begin finding answers to these difficult questions, we will need to devote historic amounts of capital and effort in the coming years. There is reason to believe that AI systems with human-level capabilities, often referred to as artificial general intelligence, or AGI, may be developed within the coming 5–10 years, with many estimates converging around the year 2032 <sup class="footnote-ref"><a href="#fn9" id="fnref9">[9]</a></sup> <sup class="footnote-ref"><a href="#fn10" id="fnref10">[10]</a></sup>. Therefore it is imperative that we greatly increase the rate of investment in resistance-building actions immediately.</p>
+<p>While some argue for a global pause on or a mandated deceleration of frontier AI system development <sup class="footnote-ref"><a href="#fn11" id="fnref11">[11]</a></sup>, I don't personally believe such a pause is possible, nor even necessarily a net positive <sup class="footnote-ref"><a href="#fn12" id="fnref12">[12]</a></sup>. However, we have managed to successfully regulate, and in some cases ban, many powerful and potentially useful technologies in the past such as gene editing and human cloning. I remain therefore optimistic that government regulation at both the international and national levels will play a key role in mitigating these risks and giving us time to increase our robustness. Additionally, I believe that we need to require that frontier AI companies dramatically increase investment in AI interpretability and control, mandating rigorous safety testing prior to release, such as that described in the <a href="https://futureoflife.org/ai-safety-index-summer-2025/" target="_blank" rel="noopener">FLI AI Safety Index</a>. Finally, and crucially, we must use this window of time to greatly improve societal robustness to the types of risks posed by advanced artificial intelligence, through hardened cybersecurity, pandemic prevention, and regulation that limits and tracks our dependence on AI systems.</p>
+<p>We need more organizations like METR and Epoch AI, conducting research such as the <a href="https://metr.org/blog/2026-05-19-frontier-risk-report" target="_blank" rel="noopener">Frontier Risk Report</a> and <a href="https://epoch.ai/blog" target="_blank" rel="noopener">measuring and forecasting AI progress</a>, as well as, crucially, more research in line with the <a href="https://www.anthropic.com/research/economic-index-primitives" target="_blank" rel="noopener">Anthropic Economic Index</a>, tracking usage and impact of AI on all parts of society.</p>
+<p>The challenges ahead are great, but so too are the potential upsides. We still have time to act to prevent the worst outcomes, but the window is closing and much is needed. What follows is my personal plan, given the context above.</p>
+<hr>
+<h2>My Plans</h2>
+<p>I currently have the luxury of having space to think while I restructure my career away from my <a href="/professional-experience">previous trajectory</a>. As of now, my hope is to contribute in three primary ways: fostering a local community, conducting technical research, and founding a new organization.</p>
+<p>I plan to continue maintaining and expanding a thriving local community of concerned individuals where I live <sup class="footnote-ref"><a href="#fn13" id="fnref13">[13]</a></sup> in order to spread knowledge, provide a space for networking, and to lighten the load of at times heavy readings.</p>
+<p>I want to investigate the ways I can contribute to counteracting the slide into disempowerment we are already starting to see. What form this action takes is as yet unclear, and will depend on the result of further consideration and test projects.</p>
+<p>The <a href="https://internationalaisafetyreport.org/publication/international-ai-safety-report-2026" target="_blank" rel="noopener">International AI Safety Report</a> from 2026 states in §2.3.2 the following:</p>
+<p><em>&quot;There are major evidence gaps regarding the risks to human autonomy from AI, related to measurement, transparency, and the fact that the technology is relatively new.&quot;</em></p>
+<p>Finally, I plan to found a first of its kind organization in the Nordics that will conduct research on mitigating the most important and neglected of the above risks.</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>Kulveit et al.: <a href="https://gradual-disempowerment.ai" target="_blank" rel="noopener">Gradual Disempowerment</a>, January 2025 <a href="#fnref1" class="footnote-backref">↩︎</a> <a href="#fnref1:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p>FRED: <a href="https://fred.stlouisfed.org/series/DPCERE1Q156NBEA" target="_blank" rel="noopener">Shares of gross domestic product: Personal consumption expenditures</a> <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p>FRED: <a href="https://fred.stlouisfed.org/series/LABSHPUSA156NRUG" target="_blank" rel="noopener">Share of Labour Compensation in GDP at Current National Prices for United States</a> <a href="#fnref3" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn4" class="footnote-item"><p>Forethought: <a href="https://www.forethought.org/research/ai-enabled-coups-how-a-small-group-could-use-ai-to-seize-power#42-conventional-coups-and-backsliding" target="_blank" rel="noopener">AI-Enabled Coups: How a Small Group Could Use AI to Seize Power</a> <a href="#fnref4" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn5" class="footnote-item"><p>Situational Awareness, Leopold Aschenbrenner: <a href="https://situational-awareness.ai/from-agi-to-superintelligence/" target="_blank" rel="noopener">From AGI to Superintelligence: the Intelligence Explosion</a> <a href="#fnref5" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn6" class="footnote-item"><p>MIT Technology Review: <a href="https://www.technologyreview.com/2024/03/04/1089403/large-language-models-amazing-but-nobody-knows-why/" target="_blank" rel="noopener">Large language models can do jaw-dropping things. But nobody knows exactly why.</a> <a href="#fnref6" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn7" class="footnote-item"><p>Anthropic: <a href="https://www.anthropic.com/research/agentic-misalignment" target="_blank" rel="noopener">Agentic Misalignment</a>, June 2025 <a href="#fnref7" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn8" class="footnote-item"><p>Dario Amodei: <a href="https://www.darioamodei.com/essay/machines-of-loving-grace" target="_blank" rel="noopener">Machines of Loving Grace</a> <a href="#fnref8" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn9" class="footnote-item"><p>Metaculus: <a href="https://www.metaculus.com/questions/5121/when-will-the-first-general-ai-system-be-devised-tested-and-publicly-announced/" target="_blank" rel="noopener">When will the first general AI system be devised, tested, and publicly announced?</a> <a href="#fnref9" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn10" class="footnote-item"><p>80,000 Hours: <a href="https://80000hours.org/ai/guide/when-will-agi-arrive/" target="_blank" rel="noopener">When will AGI arrive?</a> <a href="#fnref10" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn11" class="footnote-item"><p><a href="https://pauseai.info" target="_blank" rel="noopener">PauseAI</a> <a href="#fnref11" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn12" class="footnote-item"><p>Nora Belrose: <a href="https://forum.effectivealtruism.org/posts/JYEAL8g7ArqGoTaX6/ai-pause-will-likely-backfire" target="_blank" rel="noopener">AI Pause Will Likely Backfire</a> <a href="#fnref12" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn13" class="footnote-item"><p><a href="https://www.meetup.com/stockholm-ai-safety/" target="_blank" rel="noopener">Stockholm AI Safety</a> <a href="#fnref13" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+
+  
+
+  <div class="footnotes-section"></div>
+
+  
+  
+  
+  
+
+  
+  
+    
+  
+
+  
+  
+
+  
+
+  
+</article>
+
+  </main>
+
+  <footer>
+    <div class="footer-nav">
+      <a href="/professional-experience/">Professional Experience</a>
+      <a href="/writings">Writings</a>
+      <a href="/games/">Games</a>
+      
+    </div>
+    <p class="built-with">Built with 11ty.</p>
+  </footer>
+
+  <script>
+    const toggleCheckbox = document.getElementById('theme-toggle');
+    if (toggleCheckbox) {
+      const currentTheme =
+        document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+
+      // Keep toggle UI in sync with the theme pre-applied in the inline head script.
+      toggleCheckbox.checked = currentTheme === 'dark';
+
+      toggleCheckbox.addEventListener('change', (event) => {
+        const newTheme = event.target.checked ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        document.documentElement.style.colorScheme = newTheme;
+
+        try {
+          localStorage.setItem('theme', newTheme);
+        } catch (error) {
+          // Ignore storage failures (private mode, blocked storage, etc.).
+        }
+      });
+    }
+  </script>
+
+  <script>
+    // Footnote processing (supports legacy [1] + [1]: ... and markdown-it-footnote)
+    (() => {
+      const main = document.querySelector('main');
+      if (!main) return;
+
+      const refSelector = [
+        'a.footnote-ref[href^="#footnote-"]',
+        'a.footnote-ref[href^="#fn"]',
+        'sup.footnote-ref > a[href^="#fn"]'
+      ].join(', ');
+
+      function findRefs() {
+        return Array.from(main.querySelectorAll(refSelector));
+      }
+
+      function buildLegacyFootnotes() {
+        const footnotes = Array.from(main.querySelectorAll('sup'))
+          .map((sup) => {
+            const match = sup.textContent.trim().match(/^\[(\d+)\]$/);
+            return match ? { number: match[1], element: sup } : null;
+          })
+          .filter(Boolean);
+
+        if (!footnotes.length) return;
+
+        // Parse definitions from paragraph HTML so inline links are preserved.
+        const footnoteDefs = {};
+        const defNodesToRemove = [];
+
+        Array.from(main.querySelectorAll('p')).forEach((p) => {
+          const html = p.innerHTML.trim();
+          const match = html.match(/^\[(\d+)\]:\s*/);
+          if (!match) return;
+
+          footnoteDefs[match[1]] = html.slice(match[0].length).trim();
+          defNodesToRemove.push(p);
+        });
+
+        defNodesToRemove.forEach((node) => node.remove());
+
+        const footnotesSection = main.querySelector('.footnotes-section');
+        footnotesSection.innerHTML = '';
+
+        const footnotesTitle = document.createElement('h3');
+        footnotesTitle.textContent = 'Footnotes';
+        footnotesSection.appendChild(footnotesTitle);
+
+        const footnotesList = document.createElement('ol');
+        footnotesList.className = 'footnotes-list';
+
+        footnotes.forEach(({ number, element }) => {
+          const footnoteLink = document.createElement('a');
+          footnoteLink.href = `#footnote-${number}`;
+          footnoteLink.className = 'footnote-ref';
+          footnoteLink.id = `ref-${number}`;
+          footnoteLink.textContent = number;
+
+          element.innerHTML = '';
+          element.appendChild(footnoteLink);
+
+          const footnoteItem = document.createElement('li');
+          footnoteItem.id = `footnote-${number}`;
+          footnoteItem.setAttribute('data-footnote-number', number);
+
+          const content = footnoteDefs[number] || `<em>Footnote ${number} content goes here</em>`;
+          footnoteItem.innerHTML = `${content} <a href="#ref-${number}" class="footnote-backref">↩</a>`;
+          footnotesList.appendChild(footnoteItem);
+        });
+
+        footnotesSection.appendChild(footnotesList);
+        if (!footnotesSection.parentNode) main.appendChild(footnotesSection);
+      }
+
+      function getFootnoteItem(ref) {
+        const href = ref.getAttribute('href') || '';
+        if (!href.startsWith('#')) return null;
+        return document.getElementById(decodeURIComponent(href.slice(1)));
+      }
+
+      let refs = findRefs();
+      if (!refs.length) {
+        buildLegacyFootnotes();
+        refs = findRefs();
+      }
+      if (!refs.length) return;
+
+      const bubble = document.createElement('div');
+      bubble.className = 'footnote-hover-bubble';
+      document.body.appendChild(bubble);
+
+      let hideTimer = null;
+
+      function cancelHide() {
+        if (hideTimer) {
+          clearTimeout(hideTimer);
+          hideTimer = null;
+        }
+      }
+
+      let hideDelayMs = 250;
+      function scheduleHide() {
+        cancelHide();
+        hideTimer = setTimeout(() => {
+          bubble.classList.remove('is-visible');
+          hideTimer = null;
+        }, hideDelayMs);
+      }
+
+      function hideBubble() {
+        cancelHide();
+        bubble.classList.remove('is-visible');
+      }
+
+      function positionBubble(ref) {
+        const r = ref.getBoundingClientRect();
+        const b = bubble.getBoundingClientRect();
+        let top = window.scrollY + r.top - b.height - 10;
+        if (top < window.scrollY + 8) top = window.scrollY + r.bottom + 10;
+        let left = window.scrollX + r.left + r.width / 2 - b.width / 2;
+        left = Math.max(window.scrollX + 8, Math.min(left, window.scrollX + window.innerWidth - b.width - 8));
+        bubble.style.top = `${top}px`;
+        bubble.style.left = `${left}px`;
+      }
+
+      function showBubble(ref) {
+        const item = getFootnoteItem(ref);
+        if (!item) return;
+
+        const clone = item.cloneNode(true);
+        clone.querySelectorAll('.footnote-backref, .reversefootnote').forEach((el) => el.remove());
+
+        // markdown-it-footnote wraps content in <p>; unwrap for cleaner bubble rendering
+        const firstP = clone.querySelector('p');
+        bubble.innerHTML = firstP ? firstP.innerHTML.trim() : clone.innerHTML.trim();
+        if (!bubble.innerHTML) return;
+
+        bubble.classList.add('is-visible');
+        positionBubble(ref);
+      }
+
+      refs.forEach((ref, i) => {
+        if (!ref.id) ref.id = `ref-${i + 1}`;
+
+        // In markdown-it output the <sup> has class="footnote-ref"; move styling to the <a>
+        // so the full circular area is hoverable/clickable.
+        const supWrapper = ref.closest('sup.footnote-ref');
+        if (supWrapper && supWrapper.firstElementChild === ref) {
+          supWrapper.classList.remove('footnote-ref');
+        }
+        ref.classList.add('footnote-ref');
+
+        // Normalize markdown-it default "[1]" label to "1".
+        let label = ref.textContent.trim();
+        const labelMatch = label.match(/^\[(.+)\]$/);
+        if (labelMatch) {
+          label = labelMatch[1];
+          ref.textContent = label;
+        }
+
+        // markdown-it can emit secondary refs like "1:1", "1:2".
+        // For bottom list numbering, keep only the primary index ("1").
+        const primaryLabel = label.split(':')[0];
+
+        const item = getFootnoteItem(ref);
+        if (item) {
+          // Show explicit index marker in bottom list (same style as legacy mode).
+          item.setAttribute('data-footnote-number', primaryLabel);
+        }
+        if (item && !item.querySelector('.footnote-backref, .reversefootnote')) {
+          const back = document.createElement('a');
+          back.href = `#${ref.id}`;
+          back.className = 'footnote-backref';
+          back.textContent = '↩';
+          item.appendChild(document.createTextNode(' '));
+          item.appendChild(back);
+        }
+
+        ref.addEventListener('mouseenter', () => {
+          cancelHide();
+          showBubble(ref);
+        });
+        ref.addEventListener('mouseleave', scheduleHide);
+        ref.addEventListener('focus', () => {
+          cancelHide();
+          showBubble(ref);
+        });
+        ref.addEventListener('blur', scheduleHide);
+        ref.addEventListener('click', (e) => {
+          e.preventDefault();
+          hideBubble();
+          const target = getFootnoteItem(ref);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      bubble.addEventListener('mouseenter', cancelHide);
+      bubble.addEventListener('mouseleave', scheduleHide);
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('a.footnote-ref, .footnote-hover-bubble')) hideBubble();
+      });
+
+      // Hide on scroll/resize (do not reposition)
+      document.addEventListener('scroll', hideBubble, { passive: true });
+      window.addEventListener('resize', hideBubble);
+    })();
+  </script>
+</body>
+</html>
