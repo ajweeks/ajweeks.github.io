@@ -4,6 +4,7 @@
   --space-unit: 0.5rem;
   --content-max-width: 750px;
   --bg-color: #efede6;
+  --bg-color-collapse: #f9f8f6;
   --text-color: #1a1a19;
   --link-color: #518ca5;
   --link-color-hover: #71acc5;
@@ -24,6 +25,7 @@
 
 [data-theme="dark"] {
   --bg-color: #1e1d1d;
+  --bg-color-collapse: #292928;
   --text-color: #edece6;
   --link-color: #92c6df;
   --link-color-hover: #add8ec;
@@ -550,7 +552,7 @@ footer {
 .footnote-hover-bubble {
   position: absolute;
   z-index: 2000;
-  max-width: min(360px, calc(100vw - 16px));
+  max-width: min(415px, calc(100vw - 16px));
   padding: 0.6rem 0.75rem;
   border-radius: 8px;
   background: var(--footnote-bg-color);
@@ -610,4 +612,11 @@ footer {
     width: 150px;
     height: 150px;
   }
+}
+
+details p {
+  border: solid var(--border-color) 1px;
+  border-radius: 10px;
+  background-color: var(--bg-color-collapse);
+  padding: 10px;
 }

@@ -62,151 +62,9 @@
       
       
     
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2019-01-21">Jan 21, 2019</time>
-        <a href="/posts/2019-01-21-Raymarching-Workshop/">Raymarching Workshop</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2018-07-03">Jul 3, 2018</time>
-        <a href="/posts/2018-07-03-Flex-Engine-Update-5/">Flex Engine Update 5</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2017-11-11">Nov 11, 2017</time>
-        <a href="/posts/2017-11-11-Relaxing/">Relaxing</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2017-10-05">Oct 5, 2017</time>
-        <a href="/posts/2017-10-05-Flex-Engine-Update-4/">Flex Engine Update 4</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2017-08-16">Aug 16, 2017</time>
-        <a href="/posts/2017-08-16-Rendering-Engine-Update-3/">Rendering Engine Update 3</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2017-08-03">Aug 3, 2017</time>
-        <a href="/posts/2017-08-03-Ludum-Dare-39/">Ludum Dare 39 – ⚡ Swing Bolt ⚡</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2017-05-13">May 13, 2017</time>
-        <a href="/posts/2017-05-13-Rendering-Engine-Update-2/">Rendering Engine Update 2 – OpenGL &amp; Vulkan Feature Parity</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2017-04-27">Apr 27, 2017</time>
-        <a href="/posts/2017-04-27-Ludum-Dare-38/">Ludum Dare 38 - HexaHover</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2016-03-16">Mar 16, 2016</time>
-        <a href="/posts/2016-03-16-Rubiks-Cube-Simulator/">Rubik&#39;s Cube Simulator</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2016-02-26">Feb 26, 2016</time>
-        <a href="/posts/2016-02-26-Rendering-Engine-Update-1/">Rendering Engine Update 1 - Project Creation</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2016-01-31">Jan 31, 2016</time>
-        <a href="/posts/2016-01-31-devember-recap/">Devember 2015 Recap</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2015-11-17">Nov 17, 2015</time>
-        <a href="/posts/2015-11-17-November-2015-Update/">November 2015 Update</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2015-08-12">Aug 12, 2015</time>
-        <a href="/posts/2015-08-12-progress/">Progress</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2015-03-05">Mar 5, 2015</time>
-        <a href="/posts/2015-03-05-two-down-ten-to-go/">Two down, ten to go!</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2015-02-04">Feb 4, 2015</time>
-        <a href="/posts/2015-02-04-12-in-12/">12 in 12</a>
-      </li>
-      
-    
-      
-      
-        
-      <li>
-        <time class="post-meta" datetime="2015-02-01">Feb 1, 2015</time>
-        <a href="/posts/2015-02-01-why-i-created-this-blog/">Why I created this blog</a>
-      </li>
-      
-    
   </ul>
+  
+  <p>No archived posts yet.</p>
   
 </section>
 
@@ -399,7 +257,7 @@
         }
         ref.classList.add('footnote-ref');
 
-        // Normalize markdown-it default "[1]" label to "1" for bubble styling.
+        // Normalize markdown-it default "[1]" label to "1".
         let label = ref.textContent.trim();
         const labelMatch = label.match(/^\[(.+)\]$/);
         if (labelMatch) {
@@ -407,10 +265,14 @@
           ref.textContent = label;
         }
 
+        // markdown-it can emit secondary refs like "1:1", "1:2".
+        // For bottom list numbering, keep only the primary index ("1").
+        const primaryLabel = label.split(':')[0];
+
         const item = getFootnoteItem(ref);
         if (item) {
           // Show explicit index marker in bottom list (same style as legacy mode).
-          item.setAttribute('data-footnote-number', label);
+          item.setAttribute('data-footnote-number', primaryLabel);
         }
         if (item && !item.querySelector('.footnote-backref, .reversefootnote')) {
           const back = document.createElement('a');

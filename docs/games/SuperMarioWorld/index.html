@@ -275,7 +275,7 @@ All designs are property of Nintendo Co., Ltd. and they are in no way associated
         }
         ref.classList.add('footnote-ref');
 
-        // Normalize markdown-it default "[1]" label to "1" for bubble styling.
+        // Normalize markdown-it default "[1]" label to "1".
         let label = ref.textContent.trim();
         const labelMatch = label.match(/^\[(.+)\]$/);
         if (labelMatch) {
@@ -283,10 +283,14 @@ All designs are property of Nintendo Co., Ltd. and they are in no way associated
           ref.textContent = label;
         }
 
+        // markdown-it can emit secondary refs like "1:1", "1:2".
+        // For bottom list numbering, keep only the primary index ("1").
+        const primaryLabel = label.split(':')[0];
+
         const item = getFootnoteItem(ref);
         if (item) {
           // Show explicit index marker in bottom list (same style as legacy mode).
-          item.setAttribute('data-footnote-number', label);
+          item.setAttribute('data-footnote-number', primaryLabel);
         }
         if (item && !item.querySelector('.footnote-backref, .reversefootnote')) {
           const back = document.createElement('a');
