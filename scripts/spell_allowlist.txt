@@ -1,0 +1,15 @@
+# Add domain-specific words here, one per line.
+
+disempowerment
+kulveit
+aschenbrenner
+interpretability
+digitalization
+cybersecurity
+datacenter
+superintelligence
+ramping
+sais
+href
+noopener
+

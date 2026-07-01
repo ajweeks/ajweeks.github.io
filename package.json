@@ -1,0 +1,24 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "eleventy --serve --port 8081",
+    "build": "eleventy",
+    "check:posts": "python scripts/check_posts.py",
+    "check:posts:fast": "python scripts/check_posts.py --skip-links",
+    "check:posts:links": "python scripts/check_posts.py --skip-spelling"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.2",
+    "luxon": "^3.7.2"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.1",
+    "markdown-it-footnote": "^4.0.0"
+  }
+}

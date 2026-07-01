@@ -1,0 +1,1652 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt-perturbation robustness — results</title>
+<style>
+:root{--bg:#0f1117;--card:#181b24;--ink:#e6e8ee;--muted:#9aa3b2;--line:#2b3040;--accent:#7aa2ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+ font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:30px 24px 80px}
+h1{font-size:23px;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:18px;margin:26px 0 6px}
+.sub{color:var(--muted);font-size:13.5px;margin:.2em 0 14px}
+.topbar{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+.gentime{color:var(--muted);font-size:12px;white-space:nowrap}
+.subhead{color:var(--muted);font-size:13px;margin:4px 0 10px}
+.subhead b{color:var(--ink)}
+.snaptabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 2px;align-items:center}
+.snaptabs .lbl{color:var(--muted);font-size:12px;margin-right:4px}
+.snaptab{padding:5px 12px;cursor:pointer;border:1px solid var(--line);border-radius:8px;
+ color:var(--muted);font-size:12.5px;background:#11141c}
+.snaptab:hover{color:var(--ink)}
+.snaptab.active{color:var(--ink);background:var(--card);border-color:var(--accent)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin:14px 0 18px}
+.tab{padding:8px 16px;cursor:pointer;border:1px solid transparent;border-bottom:none;
+ border-radius:9px 9px 0 0;color:var(--muted);font-size:14px;
+ background:color-mix(in srgb,var(--ec,var(--accent)) 14%,transparent)}
+.tab:hover{color:var(--ink);background:color-mix(in srgb,var(--ec,var(--accent)) 24%,transparent)}
+.tab.active{color:var(--ink);
+ background:color-mix(in srgb,var(--ec,var(--accent)) 32%,transparent);
+ border-color:color-mix(in srgb,var(--ec,var(--accent)) 55%,var(--line));
+ box-shadow:inset 0 3px 0 var(--ec,var(--accent))}
+.page{display:none}.page.active{display:block}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px;margin-top:8px}
+.evalcard{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--ec,var(--accent));
+ border-radius:12px;padding:16px 18px;display:flex;flex-direction:column}
+.evalcard h3{margin:0 0 4px;font-size:16px;color:var(--ec,var(--accent))}
+.evalcard .blurb{color:var(--muted);font-size:12.5px;margin:0 0 8px}
+.evalcard .ovchart{margin:4px 0 2px}
+.evalcard .ovcap{color:var(--muted);font-size:11px;margin-top:2px;font-style:italic}
+.evalcard .open{color:var(--ec,var(--accent));cursor:pointer;font-size:12.5px;
+ display:inline-block;margin-top:10px;align-self:flex-start}
+.evalcard .open:hover{text-decoration:underline}
+.page>h2{border-left:3px solid var(--ec,var(--accent));padding-left:11px}
+.empty{color:var(--muted);font-style:italic;font-size:13px}
+table.sum{border-collapse:collapse;margin:6px 0;font-size:13px;width:100%}
+table.sum th,table.sum td{border:1px solid var(--line);padding:5px 12px;text-align:center}
+table.sum th{background:#161922;color:var(--muted);font-weight:600}
+table.sum td:first-child,table.sum th:first-child{text-align:left}
+.spread{color:var(--muted);font-size:12px;margin-top:8px}
+.spread b{color:var(--ink)}
+.controls{margin:8px 0 6px;font-size:14px;color:var(--muted)}
+.controls label{margin-right:14px;cursor:pointer}
+.chart{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 6px}
+.bar:hover{fill-opacity:1 !important}
+.dosewrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:flex-start}
+.legend{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 2px;font-size:12.5px;color:var(--muted)}
+.lg{cursor:pointer;user-select:none;display:inline-flex;align-items:center;padding:1px 5px;border-radius:5px}
+.lg:hover{color:var(--ink)}
+.lg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;
+  box-sizing:border-box;border:1.5px solid transparent}
+.lg.off{opacity:.4}                       /* hidden model: dimmed… */
+.lg.off i{background:transparent!important}  /* …and its swatch becomes a hollow outline */
+.lg.hi{color:var(--ink);background:#1b2030}  /* hover-linked from a bar/point/square */
+.lg.hi i{box-shadow:0 0 0 2px var(--accent)}
+.lg:hover i{box-shadow:0 0 0 2px var(--line)}
+.lgnote{font-style:italic;cursor:default}
+/* sticky header: clickable model-visibility legend + the per-model chart picker.
+   Replaces the old checkbox row and stays pinned while scrolling the charts below. */
+.stickybar{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line);
+  padding:8px 2px 7px;margin:4px 0 10px;box-shadow:0 5px 9px -7px rgba(0,0,0,.7);
+  display:flex;flex-direction:column;gap:5px}
+.legend.modelsel{margin:0}
+.modelsel .lglbl{color:var(--muted);font-weight:600;margin-right:4px;cursor:default}
+.modelpick{display:none;font-size:12.5px;color:var(--muted)}  /* shown only in the per-model section */
+.modelpick select{margin-left:4px}
+/* in the per-model charts section the visibility legend is irrelevant, so the sticky
+   header swaps it for the single-model picker (toggled by scroll — see updateStickyMode) */
+.stickybar.permodel .modelsel{display:none}
+.stickybar.permodel .modelpick{display:block}
+.permodel-anchor{height:0;margin:0}
+.detail{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:12px;
+ padding:16px 18px;min-height:80px}
+.detail .hint{color:var(--muted);font-style:italic}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.chip{font-size:12px;padding:3px 10px;border-radius:20px;border:1px solid var(--line);
+ background:#11141c;color:var(--ink)}
+.chip b{color:var(--muted);font-weight:600}
+.block{margin-top:12px}
+.blocktitle{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:4px}
+.blockbody{background:#11141c;border:1px solid var(--line);border-radius:8px;padding:10px 12px;
+ white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.55;max-height:300px;overflow:auto}
+.sech{font-size:15px;margin:24px 0 2px}
+.subtle{color:var(--muted);font-size:12.5px;margin:0 0 8px}
+.diffwrap{margin-top:8px}
+.diffpick{margin:8px 0;font-size:13px;color:var(--muted)}
+.diffpick select{background:#11141c;color:var(--ink);border:1px solid var(--line);
+ border-radius:7px;padding:5px 9px;font-size:13px;max-width:100%}
+select.dsel{background:#11141c;color:var(--ink);border:1px solid var(--line);
+ border-radius:6px;padding:2px 6px;font-size:12px;margin-left:3px;max-width:260px}
+.chip select.dsel{margin-left:0}
+.navbtn{background:#11141c;color:var(--ink);border:1px solid var(--line);border-radius:6px;
+ cursor:pointer;font-size:13px;line-height:1;padding:2px 8px;margin:0 3px}
+.navbtn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.navbtn:disabled{opacity:.4;cursor:default}
+.diffbody{background:#11141c;border:1px solid var(--line);border-radius:8px;padding:10px 12px;
+ white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.7;
+ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.diffbody .ins{background:rgba(85,168,104,.22);color:#9be0ad;border-radius:3px;
+ text-decoration:none;padding:0 1px}
+.diffbody .del{background:rgba(196,78,82,.22);color:#f0a0a2;border-radius:3px;
+ text-decoration:line-through;padding:0 1px}
+.difflegend{font-size:11.5px;color:var(--muted);margin:4px 2px 0}
+.difflegend .ins{color:#9be0ad}.difflegend .del{color:#f0a0a2}
+.nochange{color:var(--muted);font-style:italic}
+footer{color:var(--muted);font-size:12px;text-align:center;margin-top:36px}
+/* permalink "go to example" bar (bottom of page) */
+#rf-goto{display:flex;align-items:center;gap:8px;margin:8px 0 2px;font-size:12px;
+  color:var(--muted);flex-wrap:wrap}
+#rf-goto .lbl{font-weight:600}
+#rf-goto input{flex:1 1 300px;min-width:260px;max-width:560px;background:#11141c;
+  border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:5px 9px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+#rf-goto input:focus{outline:none;border-color:var(--accent)}
+#rf-goto #rf-goto-msg{font-size:11px}
+
+#page-__findings .rf-scope{background:#12151d;border:1px solid var(--line);border-radius:10px;
+  padding:12px 16px;margin:10px 0 16px;font-size:13px;line-height:1.6;color:var(--muted)}
+#page-__findings .rf-scope b,#page-__findings .rf-scope code{color:var(--ink)}
+#page-__findings .rf-card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:16px 18px;margin:14px 0}
+#page-__findings .rf-h{font-size:15px;font-weight:650;color:var(--ink);margin-bottom:8px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#page-__findings .rf-badge{font-size:11px;font-weight:700;border-radius:20px;padding:2px 10px;letter-spacing:.3px}
+#page-__findings .rf-card p{font-size:13.5px;line-height:1.65;color:#d2d6e0;margin:6px 0}
+#page-__findings .rf-card b{color:var(--ink)}
+#page-__findings .rf-note{background:#12151d;border-left:3px solid var(--accent);padding:8px 12px;border-radius:4px}
+#page-__findings .rf-charts{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;
+  margin:12px 0;padding:10px;background:#0f1117;border-radius:8px}
+#page-__findings .rf-tbl{border-collapse:collapse;width:100%;font-size:12.5px;margin:10px 0}
+#page-__findings .rf-tbl th{background:#161922;color:var(--muted);font-weight:600;padding:5px 10px;border:1px solid var(--line)}
+#page-__findings .rf-tbl td{padding:4px 10px;border:1px solid var(--line);color:#d2d6e0}
+#page-__findings .rf-caveats ul,#page-__findings .rf-plist{margin:4px 0;padding-left:18px}
+#page-__findings .rf-caveats li,#page-__findings .rf-plist li{font-size:12.5px;line-height:1.6;color:#c2c7d2;margin:5px 0}
+#page-__findings .rf-caveats b,#page-__findings .rf-plist b{color:var(--ink)}
+
+</style></head>
+<body><div class="wrap">
+<div class="topbar">
+<h1>Prompt-perturbation robustness &mdash; results</h1>
+<span class="gentime" id="gentime"></span>
+</div>
+<div class="subhead" id="subhead"></div>
+<div class="snaptabs" id="snaptabs"></div>
+<div class="tabs" id="tabs"></div>
+<div id="pages"></div>
+<div id="rf-goto"></div>
+<footer id="foot">Generated by reporting.py</footer>
+</div>
+<script>
+let SNAPSHOTS = [];                 // [{label, generated, runs:[animals], reports:[...]}] — fetched at boot from DATA_URL
+const DATA_URL = "index-data.json.gz";   // gzipped sidecar holding SNAPSHOTS (kept out of the HTML to keep it light)
+let REPORTS = [];                  // the currently-displayed snapshot's reports
+let CURSNAP = null;                // the currently-displayed snapshot (for run-stats)
+const TIERS = {"-1": "control", "0": "orthographic", "1": "char-noise", "2": "syntactic", "3": "distractor", "4": "register", "5": "affect", "6": "framing"};
+const MODEL_ECI = {"claude-opus-4.8": 157, "glm-5.2": 155, "gemini-3.5-flash": 155, "grok-4.20": 154, "deepseek-v4-pro": 150, "claude-sonnet-4.6": 147, "gpt-5-mini": 146, "gemini-2.5-flash": 140, "qwen3-235b-a22b": 139, "deepseek-chat-v3-0324": 137, "llama-4-maverick": 133, "gpt-4o-mini": 127, "llama-3.1-70b-instruct": 126, "llama-3.1-8b-instruct": 115};   // {model_label: Epoch Capabilities Index}
+const FINDINGS_HTML = "\n<h2 style=\"margin-bottom:2px\">Research Findings<\/h2>\n<p class=\"sub\">Robustness of alignment-eval performance to prompt perturbations \u2014 a principled,\nsignificance-gated read of the sweep. <b>RQ1<\/b> how much does phrasing move alignment behaviour \u00b7\n<b>RQ2<\/b> which perturbation classes move it most \u00b7 <b>RQ3<\/b> does model capability change susceptibility.<\/p>\n\n<div class=\"rf-scope\">\n<b>Scope &amp; method.<\/b> Trusted full-roster round (<code>bulbasaur1-4<\/code> + <code>charizard1-4<\/code>):\n<b>14 capability-ranked models<\/b> (ECI 115\u2013157, 8 families) \u00d7 <b>3 single-turn evals<\/b>\n(MASK honesty \u00b7 APE persuasion \u00b7 sycophancy) \u00d7 <b>5 generations<\/b> \u00d7 <b>13 perturbation classes<\/b>\nspanning 7 taxonomy tiers (orthographic\u2192framing). One <b>cell<\/b> = (model, eval, class, pole); dose\nmagnitude pooled by sign (|dose|\u22652). Each cell's \u0394 is measured against the <b>control floor<\/b>\n(tier&nbsp;\u22121, faithful reproduction = the paraphrase/sampling noise floor). Significance: control-floor\n<b>permutation test<\/b> + <b>BH-FDR<\/b> across the grid; capability/family via Spearman/Wilcoxon.\n<b>Each eval rests on only 4\u20136 base\nscenarios<\/b> \u2014 see the power section: the independent unit is the scenario, so the design is\nitem-limited, not sample-limited.\n<\/div>\n\n<div class=\"rf-card\">\n  <div class=\"rf-h\">RQ1 \u00b7 How much does alignment depend on phrasing? <span class=\"rf-badge\" style=\"background:#d6a23322;border:1px solid #d6a233;color:#d6a233\">Mixed<\/span><\/div>\n  <p>Two-part answer. <b>(a) Absolute sensitivity is high.<\/b> Even a <i>faithful<\/i> re-rendering of the\n  same prompt moves the headline metric substantially \u2014 MASK lie-rate swings \u2248<b>8.3pp<\/b>\n  from paraphrase alone (APE/sycophancy \u22485.0\u20134.5pp),\n  and the largest single class shifts metrics 12.3\u201323.8pp.\n  Alignment-eval scores are materially phrasing-fragile.\n  <b>(b) But class-specific signal beyond that floor is mostly undetectable at this power.<\/b> After\n  correcting for the paraphrase floor and multiple comparisons, only <b>1/38<\/b>\n  model\u00d7eval combinations show a perturbation <i>class<\/i> moving the metric beyond noise at q&lt;.05 \u2014 the\n  rest are <b>81% underpowered<\/b> (per-cell minimum detectable effect \u224823\u201336pp \u226b typical\n  effect \u22484\u20139pp; see Power below). The largest genuine class effect that does clear the bar is\n  <b>llama-4-maverick on MASK (+16.8pp)<\/b>.<\/p>\n  <div class=\"rf-charts\"><svg viewBox=\"0 0 640 230\" width=\"100%\" style=\"max-width:640px\"><text x=\"320.0\" y=\"16\" text-anchor=\"middle\" font-size=\"12\" fill=\"#e6e8ee\">Absolute phrasing sensitivity (pp): faithful-paraphrase floor vs biggest class swing<\/text><line x1=\"46\" y1=\"184\" x2=\"617.0\" y2=\"184\" stroke=\"#2b3040\"/><line x1=\"46\" y1=\"46\" x2=\"46\" y2=\"184\" stroke=\"#2b3040\"/><text x=\"38\" y=\"50\" text-anchor=\"end\" font-size=\"10\" fill=\"#9aa3b2\">27.4<\/text><text x=\"38\" y=\"184\" text-anchor=\"end\" font-size=\"10\" fill=\"#9aa3b2\">0<\/text><rect x=\"59.7\" y=\"142.3\" width=\"63.9\" height=\"41.7\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>MASK \u00a6 paraphrase: 8.3pp<\/title><\/rect><text x=\"91.7\" y=\"138.3\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">8.3<\/text><text x=\"91.7\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 91.7 198.0)\">MASK \u00a6 paraphrase<\/text><rect x=\"151.0\" y=\"64.0\" width=\"63.9\" height=\"120.0\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>MASK \u00a6 max class: 23.8pp<\/title><\/rect><text x=\"183.0\" y=\"60.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">23.8<\/text><text x=\"183.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 183.0 198.0)\">MASK \u00a6 max class<\/text><rect x=\"242.4\" y=\"159.0\" width=\"63.9\" height=\"25.0\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>ape \u00a6 paraphrase: 5.0pp<\/title><\/rect><text x=\"274.3\" y=\"155.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">5.0<\/text><text x=\"274.3\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 274.3 198.0)\">ape \u00a6 paraphrase<\/text><rect x=\"333.7\" y=\"80.5\" width=\"63.9\" height=\"103.5\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>ape \u00a6 max class: 20.6pp<\/title><\/rect><text x=\"365.7\" y=\"76.5\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">20.6<\/text><text x=\"365.7\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 365.7 198.0)\">ape \u00a6 max class<\/text><rect x=\"425.0\" y=\"161.3\" width=\"63.9\" height=\"22.7\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>sycophancy \u00a6 paraphrase: 4.5pp<\/title><\/rect><text x=\"457.0\" y=\"157.3\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">4.5<\/text><text x=\"457.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 457.0 198.0)\">sycophancy \u00a6 paraphrase<\/text><rect x=\"516.4\" y=\"122.1\" width=\"63.9\" height=\"61.9\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>sycophancy \u00a6 max class: 12.3pp<\/title><\/rect><text x=\"548.3\" y=\"118.1\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">12.3<\/text><text x=\"548.3\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 548.3 198.0)\">sycophancy \u00a6 max class<\/text><\/svg><\/div>\n  <p class=\"rf-note\"><b>Takeaway:<\/b> phrasing demonstrably moves alignment metrics, and most of the\n  movement is <b>generic paraphrase/sampling variance<\/b> rather than identifiable perturbation classes.\n  We cannot resolve individual model\u00d7class effects below ~23pp \u2014 so this is \"absence of evidence\",\n  not evidence that specific classes have no effect.<\/p>\n<\/div>\n\n<div class=\"rf-card\">\n  <div class=\"rf-h\">RQ2 \u00b7 Which perturbation classes move behaviour most? (H2: higher tiers larger) <span class=\"rf-badge\" style=\"background:#c0566a22;border:1px solid #c0566a;color:#c0566a\">Not supported<\/span><\/div>\n  <p>Across-model mean |\u0394| is <b>essentially flat across tiers<\/b> (6.3\u20138.1pp from\n  orthographic to framing) with <b>no monotonic ordering<\/b>: tier does not predict effect size\n  (Spearman \u03c1=-0.00, p=0.88; tier-permutation p=0.60).\n  Even the coarse <b>surface (tiers 0\u20131) vs semantic (tiers 2\u20136)<\/b> contrast is not significant in the\n  trusted set (semantic +0.6pp, Wilcoxon p=0.11; it reached\n  p\u2248.05 only when legacy high-repeat runs were pooled in). The top movers\n  (hypothetical, politeness, formality, whitespace) are a <i>mix<\/i> of framing/register and a\n  surface class (whitespace), not a clean semantic&gt;surface story. <b>H2 is not supported<\/b>: the tier\n  taxonomy does not rank classes by how much they move alignment behaviour in this data.<\/p>\n  <div class=\"rf-charts\"><svg viewBox=\"0 0 560 230\" width=\"100%\" style=\"max-width:560px\"><text x=\"280.0\" y=\"16\" text-anchor=\"middle\" font-size=\"12\" fill=\"#e6e8ee\">Mean |\u0394metric| by perturbation tier (per-model)<\/text><line x1=\"46\" y1=\"184\" x2=\"537.0\" y2=\"184\" stroke=\"#2b3040\"/><line x1=\"46\" y1=\"46\" x2=\"46\" y2=\"184\" stroke=\"#2b3040\"/><text x=\"38\" y=\"50\" text-anchor=\"end\" font-size=\"10\" fill=\"#9aa3b2\">9.3<\/text><text x=\"38\" y=\"184\" text-anchor=\"end\" font-size=\"10\" fill=\"#9aa3b2\">0<\/text><rect x=\"57.7\" y=\"68.5\" width=\"54.6\" height=\"115.5\" rx=\"2\" fill=\"#ffd166\" opacity=\"0.9\"><title>orthographic: 7.8pp<\/title><\/rect><text x=\"85.0\" y=\"64.5\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">7.8<\/text><text x=\"85.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 85.0 198.0)\">orthographic<\/text><rect x=\"135.7\" y=\"89.9\" width=\"54.6\" height=\"94.1\" rx=\"2\" fill=\"#ffd166\" opacity=\"0.9\"><title>char-noise: 6.3pp<\/title><\/rect><text x=\"163.0\" y=\"85.9\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">6.3<\/text><text x=\"163.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 163.0 198.0)\">char-noise<\/text><rect x=\"213.7\" y=\"80.3\" width=\"54.6\" height=\"103.7\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>syntactic: 7.0pp<\/title><\/rect><text x=\"241.0\" y=\"76.3\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">7.0<\/text><text x=\"241.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 241.0 198.0)\">syntactic<\/text><rect x=\"291.7\" y=\"64.0\" width=\"54.6\" height=\"120.0\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>register: 8.1pp<\/title><\/rect><text x=\"319.0\" y=\"60.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">8.1<\/text><text x=\"319.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 319.0 198.0)\">register<\/text><rect x=\"369.7\" y=\"75.8\" width=\"54.6\" height=\"108.2\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>affect: 7.3pp<\/title><\/rect><text x=\"397.0\" y=\"71.8\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">7.3<\/text><text x=\"397.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 397.0 198.0)\">affect<\/text><rect x=\"447.7\" y=\"76.4\" width=\"54.6\" height=\"107.6\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>framing: 7.2pp<\/title><\/rect><text x=\"475.0\" y=\"72.4\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">7.2<\/text><text x=\"475.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 475.0 198.0)\">framing<\/text><\/svg><svg viewBox=\"0 0 640 230\" width=\"100%\" style=\"max-width:640px\"><text x=\"320.0\" y=\"16\" text-anchor=\"middle\" font-size=\"12\" fill=\"#e6e8ee\">Mean |\u0394metric| by perturbation class (dimension)<\/text><line x1=\"46\" y1=\"184\" x2=\"617.0\" y2=\"184\" stroke=\"#2b3040\"/><line x1=\"46\" y1=\"46\" x2=\"46\" y2=\"184\" stroke=\"#2b3040\"/><text x=\"38\" y=\"50\" text-anchor=\"end\" font-size=\"10\" fill=\"#9aa3b2\">9.4<\/text><text x=\"38\" y=\"184\" text-anchor=\"end\" font-size=\"10\" fill=\"#9aa3b2\">0<\/text><rect x=\"54.2\" y=\"64.0\" width=\"38.4\" height=\"120.0\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>hypothetical: 8.2pp<\/title><\/rect><text x=\"73.4\" y=\"60.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">8.2<\/text><text x=\"73.4\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 73.4 198.0)\">hypothetical<\/text><rect x=\"109.0\" y=\"65.5\" width=\"38.4\" height=\"118.5\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>politeness: 8.1pp<\/title><\/rect><text x=\"128.2\" y=\"61.5\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">8.1<\/text><text x=\"128.2\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 128.2 198.0)\">politeness<\/text><rect x=\"163.8\" y=\"66.0\" width=\"38.4\" height=\"118.0\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>formality: 8.0pp<\/title><\/rect><text x=\"183.0\" y=\"62.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">8.0<\/text><text x=\"183.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 183.0 198.0)\">formality<\/text><rect x=\"218.6\" y=\"70.2\" width=\"38.4\" height=\"113.8\" rx=\"2\" fill=\"#ffd166\" opacity=\"0.9\"><title>whitespace: 7.8pp<\/title><\/rect><text x=\"237.8\" y=\"66.2\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">7.8<\/text><text x=\"237.8\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 237.8 198.0)\">whitespace<\/text><rect x=\"273.4\" y=\"75.0\" width=\"38.4\" height=\"109.0\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>clause_reorder: 7.4pp<\/title><\/rect><text x=\"292.6\" y=\"71.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">7.4<\/text><text x=\"292.6\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 292.6 198.0)\">clause_reorder<\/text><rect x=\"328.2\" y=\"77.4\" width=\"38.4\" height=\"106.6\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>sentiment: 7.3pp<\/title><\/rect><text x=\"347.4\" y=\"73.4\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">7.3<\/text><text x=\"347.4\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 347.4 198.0)\">sentiment<\/text><rect x=\"383.0\" y=\"83.6\" width=\"38.4\" height=\"100.4\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>third_person: 6.8pp<\/title><\/rect><text x=\"402.2\" y=\"79.6\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">6.8<\/text><text x=\"402.2\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 402.2 198.0)\">third_person<\/text><rect x=\"437.8\" y=\"86.3\" width=\"38.4\" height=\"97.7\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>leading: 6.7pp<\/title><\/rect><text x=\"457.0\" y=\"82.3\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">6.7<\/text><text x=\"457.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 457.0 198.0)\">leading<\/text><rect x=\"492.6\" y=\"88.7\" width=\"38.4\" height=\"95.3\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>active_passive: 6.5pp<\/title><\/rect><text x=\"511.8\" y=\"84.7\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">6.5<\/text><text x=\"511.8\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 511.8 198.0)\">active_passive<\/text><rect x=\"547.4\" y=\"91.3\" width=\"38.4\" height=\"92.7\" rx=\"2\" fill=\"#ffd166\" opacity=\"0.9\"><title>typos: 6.3pp<\/title><\/rect><text x=\"566.6\" y=\"87.3\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">6.3<\/text><text x=\"566.6\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 566.6 198.0)\">typos<\/text><\/svg><\/div>\n  <table class=\"rf-tbl\"><tr><th>perturbation class<\/th><th>tier<\/th><th>mean |\u0394| pp<\/th><th>median pp<\/th><th>n cells<\/th><\/tr><tr><td style=\"text-align:left\">hypothetical<\/td><td style=\"text-align:center\">framing<\/td><td style=\"text-align:center\">8.2<\/td><td style=\"text-align:center\">6.0<\/td><td style=\"text-align:center\">69<\/td><\/tr><tr><td style=\"text-align:left\">politeness<\/td><td style=\"text-align:center\">register<\/td><td style=\"text-align:center\">8.1<\/td><td style=\"text-align:center\">6.0<\/td><td style=\"text-align:center\">138<\/td><\/tr><tr><td style=\"text-align:left\">formality<\/td><td style=\"text-align:center\">register<\/td><td style=\"text-align:center\">8.0<\/td><td style=\"text-align:center\">6.0<\/td><td style=\"text-align:center\">138<\/td><\/tr><tr><td style=\"text-align:left\">whitespace<\/td><td style=\"text-align:center\">orthographic<\/td><td style=\"text-align:center\">7.8<\/td><td style=\"text-align:center\">7.3<\/td><td style=\"text-align:center\">69<\/td><\/tr><tr><td style=\"text-align:left\">clause_reorder<\/td><td style=\"text-align:center\">syntactic<\/td><td style=\"text-align:center\">7.4<\/td><td style=\"text-align:center\">5.3<\/td><td style=\"text-align:center\">69<\/td><\/tr><tr><td style=\"text-align:left\">sentiment<\/td><td style=\"text-align:center\">affect<\/td><td style=\"text-align:center\">7.3<\/td><td style=\"text-align:center\">6.0<\/td><td style=\"text-align:center\">138<\/td><\/tr><tr><td style=\"text-align:left\">third_person<\/td><td style=\"text-align:center\">framing<\/td><td style=\"text-align:center\">6.8<\/td><td style=\"text-align:center\">5.9<\/td><td style=\"text-align:center\">69<\/td><\/tr><tr><td style=\"text-align:left\">leading<\/td><td style=\"text-align:center\">framing<\/td><td style=\"text-align:center\">6.7<\/td><td style=\"text-align:center\">4.4<\/td><td style=\"text-align:center\">69<\/td><\/tr><tr><td style=\"text-align:left\">active_passive<\/td><td style=\"text-align:center\">syntactic<\/td><td style=\"text-align:center\">6.5<\/td><td style=\"text-align:center\">4.1<\/td><td style=\"text-align:center\">69<\/td><\/tr><tr><td style=\"text-align:left\">typos<\/td><td style=\"text-align:center\">char-noise<\/td><td style=\"text-align:center\">6.3<\/td><td style=\"text-align:center\">5.0<\/td><td style=\"text-align:center\">69<\/td><\/tr><\/table>\n<\/div>\n\n<div class=\"rf-card\">\n  <div class=\"rf-h\">RQ3 \u00b7 Does model capability change susceptibility? (H1: larger = less affected) <span class=\"rf-badge\" style=\"background:#c0566a22;border:1px solid #c0566a;color:#c0566a\">Not supported<\/span><\/div>\n  <p>No significant relationship between capability (ECI) and noise-corrected susceptibility\n  (Spearman \u03c1=<b>0.21<\/b>, p=0.46, n=14; raw-susceptibility \u03c1=0.06,\n  p=0.83). Per-eval correlations are all non-significant. The point estimate is, if anything,\n  weakly <b>positive<\/b> \u2014 more-capable models are marginally <i>more<\/i> sensitive, the opposite of H1.\n  <b>Model capability does not buy robustness to phrasing<\/b> in this data.<\/p>\n  <div class=\"rf-charts\"><svg viewBox=\"0 0 560 260\" width=\"100%\" style=\"max-width:560px\"><text x=\"280.0\" y=\"16\" text-anchor=\"middle\" font-size=\"12\" fill=\"#e6e8ee\">Susceptibility vs model capability<\/text><line x1=\"52\" y1=\"208\" x2=\"534.0\" y2=\"208\" stroke=\"#2b3040\"/><line x1=\"52\" y1=\"52\" x2=\"52\" y2=\"208\" stroke=\"#2b3040\"/><text x=\"280.0\" y=\"252\" text-anchor=\"middle\" font-size=\"11\" fill=\"#9aa3b2\">capability (ECI)<\/text><text x=\"14\" y=\"130.0\" text-anchor=\"middle\" font-size=\"11\" fill=\"#9aa3b2\" transform=\"rotate(-90 14 130.0)\">noise-corrected susceptibility (pp)<\/text><text x=\"44\" y=\"56\" text-anchor=\"end\" font-size=\"10\" fill=\"#9aa3b2\">6.9<\/text><text x=\"44\" y=\"208\" text-anchor=\"end\" font-size=\"10\" fill=\"#9aa3b2\">-2.9<\/text><text x=\"52\" y=\"222\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">115<\/text><text x=\"534.0\" y=\"222\" text-anchor=\"end\" font-size=\"10\" fill=\"#9aa3b2\">157<\/text><line x1=\"52\" y1=\"162.0\" x2=\"534.0\" y2=\"162.0\" stroke=\"#2b3040\" stroke-dasharray=\"4 3\"/><circle cx=\"52.0\" cy=\"170.4\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>llama-3.1-8b-instruct: (115, -0.5)<\/title><\/circle><circle cx=\"171.4\" cy=\"186.6\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>llama-3.1-70b-instruct: (126, -1.5)<\/title><\/circle><circle cx=\"182.3\" cy=\"154.8\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>gpt-4o-mini: (127, 0.4)<\/title><\/circle><circle cx=\"247.4\" cy=\"52.0\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>llama-4-maverick: (133, 6.9)<\/title><\/circle><circle cx=\"290.9\" cy=\"208.0\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>deepseek-chat-v3-0324: (137, -2.9)<\/title><\/circle><circle cx=\"312.6\" cy=\"182.6\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>qwen3-235b-a22b: (139, -1.3)<\/title><\/circle><circle cx=\"323.4\" cy=\"158.0\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>gemini-2.5-flash: (140, 0.2)<\/title><\/circle><circle cx=\"388.6\" cy=\"159.8\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>gpt-5-mini: (146, 0.1)<\/title><\/circle><circle cx=\"399.4\" cy=\"168.1\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>claude-sonnet-4.6: (147, -0.4)<\/title><\/circle><circle cx=\"432.0\" cy=\"167.6\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>deepseek-v4-pro: (150, -0.3)<\/title><\/circle><circle cx=\"475.4\" cy=\"179.9\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>grok-4.20: (154, -1.1)<\/title><\/circle><circle cx=\"486.3\" cy=\"171.1\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>gemini-3.5-flash: (155, -0.6)<\/title><\/circle><circle cx=\"486.3\" cy=\"157.0\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>glm-5.2: (155, 0.3)<\/title><\/circle><circle cx=\"508.0\" cy=\"105.2\" r=\"4.5\" fill=\"#7aa2ff\" opacity=\"0.85\"><title>claude-opus-4.8: (157, 3.5)<\/title><\/circle><text x=\"534.0\" y=\"52\" text-anchor=\"end\" font-size=\"11\" fill=\"#ffd166\">Spearman \u03c1=0.21, p=0.46 (n=14)<\/text><\/svg><\/div>\n  <table class=\"rf-tbl\"><tr><th>model<\/th><th>ECI<\/th><th>family<\/th><th>corrected susceptibility pp<\/th><th>raw pp<\/th><th>mean max swing pp<\/th><th># evals q&lt;.05<\/th><\/tr><tr><td style=\"text-align:left\">llama-3.1-8b-instruct<\/td><td style=\"text-align:center\">115<\/td><td style=\"text-align:center\">llama<\/td><td style=\"text-align:center\">-0.5<\/td><td style=\"text-align:center\">4.7<\/td><td style=\"text-align:center\">24.3<\/td><td style=\"text-align:center\">0<\/td><\/tr><tr><td style=\"text-align:left\">llama-3.1-70b-instruct<\/td><td style=\"text-align:center\">126<\/td><td style=\"text-align:center\">llama<\/td><td style=\"text-align:center\">-1.5<\/td><td style=\"text-align:center\">3.9<\/td><td style=\"text-align:center\">12.3<\/td><td style=\"text-align:center\">0<\/td><\/tr><tr><td style=\"text-align:left\">gpt-4o-mini<\/td><td style=\"text-align:center\">127<\/td><td style=\"text-align:center\">gpt4<\/td><td style=\"text-align:center\">0.4<\/td><td style=\"text-align:center\">6.8<\/td><td style=\"text-align:center\">18.8<\/td><td style=\"text-align:center\">0<\/td><\/tr><tr><td style=\"text-align:left\">llama-4-maverick<\/td><td style=\"text-align:center\">133<\/td><td style=\"text-align:center\">llama<\/td><td style=\"text-align:center\">6.9<\/td><td style=\"text-align:center\">12.6<\/td><td style=\"text-align:center\">41.0<\/td><td style=\"text-align:center\">1<\/td><\/tr><tr><td style=\"text-align:left\">deepseek-chat-v3-0324<\/td><td style=\"text-align:center\">137<\/td><td style=\"text-align:center\">deepseek<\/td><td style=\"text-align:center\">-2.9<\/td><td style=\"text-align:center\">2.4<\/td><td style=\"text-align:center\">11.9<\/td><td style=\"text-align:center\">0<\/td><\/tr><tr><td style=\"text-align:left\">qwen3-235b-a22b<\/td><td style=\"text-align:center\">139<\/td><td style=\"text-align:center\">qwen<\/td><td style=\"text-align:center\">-1.3<\/td><td style=\"text-align:center\">4.9<\/td><td style=\"text-align:center\">20.1<\/td><td style=\"text-align:center\">0<\/td><\/tr><tr><td style=\"text-align:left\">gemini-2.5-flash<\/td><td style=\"text-align:center\">140<\/td><td style=\"text-align:center\">gemini<\/td><td style=\"text-align:center\">0.2<\/td><td style=\"text-align:center\">7.2<\/td><td style=\"text-align:center\">18.0<\/td><td style=\"text-align:center\">0<\/td><\/tr><tr><td style=\"text-align:left\">gpt-5-mini<\/td><td style=\"text-align:center\">146<\/td><td style=\"text-align:center\">gpt5<\/td><td style=\"text-align:center\">0.1<\/td><td style=\"text-align:center\">2.7<\/td><td style=\"text-align:center\">9.5<\/td><td style=\"text-align:center\">0<\/td><\/tr><tr><td style=\"text-align:left\">claude-sonnet-4.6<\/td><td style=\"text-align:center\">147<\/td><td style=\"text-align:center\">claude<\/td><td style=\"text-align:center\">-0.4<\/td><td style=\"text-align:center\">2.2<\/td><td style=\"text-align:center\">12.6<\/td><td style=\"text-align:center\">0<\/td><\/tr><tr><td style=\"text-align:left\">deepseek-v4-pro<\/td><td style=\"text-align:center\">150<\/td><td style=\"text-align:center\">deepseek<\/td><td style=\"text-align:center\">-0.3<\/td><td style=\"text-align:center\">7.4<\/td><td style=\"text-align:center\">26.0<\/td><td style=\"text-align:center\">0<\/td><\/tr><tr><td style=\"text-align:left\">grok-4.20<\/td><td style=\"text-align:center\">154<\/td><td style=\"text-align:center\">grok<\/td><td style=\"text-align:center\">-1.1<\/td><td style=\"text-align:center\">4.7<\/td><td style=\"text-align:center\">13.5<\/td><td style=\"text-align:center\">0<\/td><\/tr><tr><td style=\"text-align:left\">gemini-3.5-flash<\/td><td style=\"text-align:center\">155<\/td><td style=\"text-align:center\">gemini<\/td><td style=\"text-align:center\">-0.6<\/td><td style=\"text-align:center\">5.7<\/td><td style=\"text-align:center\">23.7<\/td><td style=\"text-align:center\">0<\/td><\/tr><tr><td style=\"text-align:left\">glm-5.2<\/td><td style=\"text-align:center\">155<\/td><td style=\"text-align:center\">glm<\/td><td style=\"text-align:center\">0.3<\/td><td style=\"text-align:center\">3.6<\/td><td style=\"text-align:center\">11.7<\/td><td style=\"text-align:center\">0<\/td><\/tr><tr><td style=\"text-align:left\">claude-opus-4.8<\/td><td style=\"text-align:center\">157<\/td><td style=\"text-align:center\">claude<\/td><td style=\"text-align:center\">3.5<\/td><td style=\"text-align:center\">7.5<\/td><td style=\"text-align:center\">19.8<\/td><td style=\"text-align:center\">0<\/td><\/tr><\/table>\n<\/div>\n\n<div class=\"rf-card\">\n  <div class=\"rf-h\">H3 \u00b7 Are model families hit by the same perturbation classes? <span class=\"rf-badge\" style=\"background:#c0566a22;border:1px solid #c0566a;color:#c0566a\">Not supported<\/span><\/div>\n  <p>Same-family models are <i>slightly<\/i> more alike in their tier-susceptibility profile than cross-family\n  pairs (within r=0.22 over 6 pairs vs across r=0.06\n  over 85 pairs), but the difference is <b>not significant<\/b> (Mann\u2013Whitney p=0.21)\n  and rests on only 6 within-family pairs. We <b>cannot conclude<\/b> families share a susceptibility\n  fingerprint; the profile looks largely idiosyncratic to the individual model. (Underpowered \u2014 see below.)<\/p>\n<\/div>\n\n<div class=\"rf-card\">\n  <div class=\"rf-h\">Do we have enough samples? <span class=\"rf-badge\" style=\"background:#d6a23322;border:1px solid #d6a233;color:#d6a233\">Mixed<\/span><\/div>\n  <p>The honest answer is <b>level-dependent<\/b>, and the limit is <b>base scenarios, not sample count<\/b>.\n  Each eval has only <b>4\u20136 base scenarios (items)<\/b>;\n  because the independent unit is the scenario (not the sampled generation), item-clustering deflates the\n  per-cell effective n to \u22484\u20139,\n  so the per-cell <b>minimum detectable effect is \u224823\u201336pp<\/b> \u2014\n  far above the typical observed effect (\u22484\u20139pp). 724 of 897 cells are formally underpowered.\n  Adding generations (this round already has 5) barely helps; <b>more diverse scenarios per eval<\/b> is what's needed.<\/p>\n  <div class=\"rf-charts\"><svg viewBox=\"0 0 560 230\" width=\"100%\" style=\"max-width:560px\"><text x=\"280.0\" y=\"16\" text-anchor=\"middle\" font-size=\"12\" fill=\"#e6e8ee\">Per-cell detectable effect (MDE) vs observed |\u0394| \u2014 MDE \u226b effect = underpowered<\/text><line x1=\"46\" y1=\"184\" x2=\"537.0\" y2=\"184\" stroke=\"#2b3040\"/><line x1=\"46\" y1=\"46\" x2=\"46\" y2=\"184\" stroke=\"#2b3040\"/><text x=\"38\" y=\"50\" text-anchor=\"end\" font-size=\"10\" fill=\"#9aa3b2\">41.3<\/text><text x=\"38\" y=\"184\" text-anchor=\"end\" font-size=\"10\" fill=\"#9aa3b2\">0<\/text><rect x=\"57.7\" y=\"64.0\" width=\"54.6\" height=\"120.0\" rx=\"2\" fill=\"#ffd166\" opacity=\"0.9\"><title>MASK \u00a6 MDE@80%: 35.9pp<\/title><\/rect><text x=\"85.0\" y=\"60.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">35.9<\/text><text x=\"85.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 85.0 198.0)\">MASK \u00a6 MDE@80%<\/text><rect x=\"135.7\" y=\"154.2\" width=\"54.6\" height=\"29.8\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>MASK \u00a6 obs |\u0394|: 8.9pp<\/title><\/rect><text x=\"163.0\" y=\"150.2\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">8.9<\/text><text x=\"163.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 163.0 198.0)\">MASK \u00a6 obs |\u0394|<\/text><rect x=\"213.7\" y=\"105.4\" width=\"54.6\" height=\"78.6\" rx=\"2\" fill=\"#ffd166\" opacity=\"0.9\"><title>ape \u00a6 MDE@80%: 23.5pp<\/title><\/rect><text x=\"241.0\" y=\"101.4\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">23.5<\/text><text x=\"241.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 241.0 198.0)\">ape \u00a6 MDE@80%<\/text><rect x=\"291.7\" y=\"169.1\" width=\"54.6\" height=\"14.9\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>ape \u00a6 obs |\u0394|: 4.4pp<\/title><\/rect><text x=\"319.0\" y=\"165.1\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">4.4<\/text><text x=\"319.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 319.0 198.0)\">ape \u00a6 obs |\u0394|<\/text><rect x=\"369.7\" y=\"107.0\" width=\"54.6\" height=\"77.0\" rx=\"2\" fill=\"#ffd166\" opacity=\"0.9\"><title>sycophancy \u00a6 MDE@80%: 23.0pp<\/title><\/rect><text x=\"397.0\" y=\"103.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">23.0<\/text><text x=\"397.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 397.0 198.0)\">sycophancy \u00a6 MDE@80%<\/text><rect x=\"447.7\" y=\"164.1\" width=\"54.6\" height=\"19.9\" rx=\"2\" fill=\"#7aa2ff\" opacity=\"0.9\"><title>sycophancy \u00a6 obs |\u0394|: 6.0pp<\/title><\/rect><text x=\"475.0\" y=\"160.1\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\">6.0<\/text><text x=\"475.0\" y=\"198.0\" text-anchor=\"middle\" font-size=\"10\" fill=\"#9aa3b2\" transform=\"rotate(20 475.0 198.0)\">sycophancy \u00a6 obs |\u0394|<\/text><\/svg><\/div>\n  <ul class=\"rf-plist\">\n    <li><b>Well powered \u2192 trust these:<\/b> the <i>absolute<\/i> paraphrase-sensitivity numbers (control floor\n    estimated from 13 models \u00d7 ~40\u2013120 control samples each) and the\n    population-level tier/class rankings (n=69\u2013276 cells/tier).<\/li>\n    <li><b>Under-powered \u2192 treat as bounded:<\/b> individual model\u00d7class effects below ~23pp; H2's tier gradient.\n    \"Not supported\" here = <i>no detectable effect at this power<\/i>, not proven zero.<\/li>\n    <li><b>Design-limited (n=14 models):<\/b> H1 &amp; H3 can only detect <i>strong<\/i> capability/family\n    relationships (|\u03c1|\u22730.5); a weak true effect would be invisible. These need more <i>models<\/i>, not samples.<\/li>\n  <\/ul>\n<\/div>\n\n<div class=\"rf-card rf-caveats\">\n  <div class=\"rf-h\">Method caveats<\/div>\n  <ul>\n    <li><b>Conservative effect sizes.<\/b> pooling |dose|\u22652 by sign scores each class at its <i>typical<\/i>,\n    not maximal, strength; degenerate control bands (rate 0/1, undefined noise floor) are excluded, not counted as signal.<\/li>\n    <li><b>Eval idiosyncrasies.<\/b> MASK has the largest paraphrase floor (~8.3pp)\n    and highest item-heterogeneity (so its effective n collapses most). <i>bias<\/i> &amp; <i>impossible_coding<\/i>\n    are not in the bulbasaur/charizard round, so they sit outside this grid.<\/li>\n    <li><b>Significance is gated.<\/b> every \u0394 is measured against the faithful-reproduction floor and BH-FDR'd\n    across the grid; we report signal, not raw movement.<\/li>\n  <\/ul>\n<\/div>\n\n<table class=\"rf-tbl\" style=\"margin-top:14px\"><tr><th>tier<\/th><th>class<\/th><th>mean |\u0394| pp<\/th><th>median pp<\/th><th>n cells<\/th><\/tr>\n<tr><td style=text-align:center>0<\/td><td style=text-align:left>orthographic<\/td><td style=text-align:center>7.8<\/td><td style=text-align:center>7.3<\/td><td style=text-align:center>69<\/td><\/tr><tr><td style=text-align:center>1<\/td><td style=text-align:left>char-noise<\/td><td style=text-align:center>6.3<\/td><td style=text-align:center>5.0<\/td><td style=text-align:center>69<\/td><\/tr><tr><td style=text-align:center>2<\/td><td style=text-align:left>syntactic<\/td><td style=text-align:center>7.0<\/td><td style=text-align:center>4.9<\/td><td style=text-align:center>138<\/td><\/tr><tr><td style=text-align:center>4<\/td><td style=text-align:left>register<\/td><td style=text-align:center>8.1<\/td><td style=text-align:center>6.0<\/td><td style=text-align:center>276<\/td><\/tr><tr><td style=text-align:center>5<\/td><td style=text-align:left>affect<\/td><td style=text-align:center>7.3<\/td><td style=text-align:center>6.0<\/td><td style=text-align:center>138<\/td><\/tr><tr><td style=text-align:center>6<\/td><td style=text-align:left>framing<\/td><td style=text-align:center>7.2<\/td><td style=text-align:center>5.6<\/td><td style=text-align:center>207<\/td><\/tr>\n<\/table>\n";   // research-findings tab body ("" if not computed; --findings to compute)
+/* compact formatters for the run-info table / subhead */
+function fmtTok(n){if(n==null)return "—";if(n>=1e6)return (n/1e6).toFixed(2)+"M";
+  if(n>=1e3)return (n/1e3).toFixed(0)+"k";return ""+n;}
+function fmtUSD(n){return "$"+(n==null?0:n).toFixed(2);}
+function fmtDur(s){if(s==null)return "—";const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),
+  sec=s%60;return h?h+"h "+m+"m":(m?m+"m "+sec+"s":sec+"s");}
+const svgNS = "http://www.w3.org/2000/svg";
+const palette = ["#C44E52","#4C72B0","#55A868","#8172B3","#CCB974","#64B5CD"];
+/* one signature colour per eval — drives the tab dot/accent, overview card and detail heading */
+const EVALPAL = ["#7aa2ff","#f2a65a","#5fd39b","#e87fb0","#c9a0ff","#5cc8d8"];
+function evalColor(key){const i=REPORTS.findIndex(r=>r.key===key);
+  return EVALPAL[(i<0?0:i)%EVALPAL.length];}
+const state = {};        // per-eval selected condition
+const metricState = {};       // per-eval selected chart-1 metric (when metric_options present)
+const doseCurveMetric = {};   // per-eval selected dose-response-curve metric
+const doseCatModel = {};      // per-eval selected model for the dose-by-category plot
+const detailState = {};  // per-eval selected {model,condition,dimension,dose,sampleIdx} for the detail panel
+const modelVis = {};     // per-eval {model: bool} — which models are shown in every graph (default all on)
+const condVis = {};      // per-eval {condition: bool} — optional condition visibility for chart 1
+
+function el(tag,attrs){const e=document.createElementNS(svgNS,tag);
+  for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
+function txt(svg,x,y,s,anchor,fill,size,rot){
+  const t=el("text",{x:x,y:y,"text-anchor":anchor,fill:fill,"font-size":size});
+  if(rot)t.setAttribute("transform","rotate("+rot+" "+x+" "+y+")");
+  t.textContent=s;svg.appendChild(t);return t;}
+function allModelsOf(r){return [...new Set(r.records.map(d=>d.model))];}
+/* visible models drive every graph; hidden ones are filtered out via the per-tab checkboxes. */
+function modelsOf(r){const v=modelVis[r.key];
+  return allModelsOf(r).filter(m=>!v||v[m]!==false);}
+function chartCondsOf(r){const conds=r.condition_order.filter(c=>r.records.some(d=>d.condition===c));
+  const v=condVis[r.key];return v?conds.filter(c=>v[c]!==false):[state[r.key]];}
+function shortCond(c){const s=String(c);return s.length>12?s.slice(0,11)+"…":s;}
+/* colours are keyed off the FULL model list so a model keeps its colour when others are toggled. */
+function colorMap(r){const m={};allModelsOf(r).forEach((x,i)=>m[x]=palette[i%palette.length]);return m;}
+/* Fill a .legend node with the model→colour swatches (+ optional note). Used under every
+   model-coloured graph so each chart carries its own model key, not just the first one. */
+function fillModelLegend(lg,r,note){
+  if(!lg)return; lg.innerHTML="";
+  const COLOR=colorMap(r), v=modelVis[r.key]||{}, all=allModelsOf(r), single=all.length<2;
+  if(lg.classList.contains("modelsel")){const t=document.createElement("span");
+    t.className="lglbl";t.textContent="models (click to toggle):";lg.appendChild(t);}
+  // EVERY model shows (so a hidden one can be clicked back on); hidden = dimmed + hollow swatch.
+  all.forEach(m=>{const off=v[m]===false;
+    const s=document.createElement("span");s.className="lg"+(off?" off":"");
+    s.setAttribute("data-model",m);   // links bar/point hover -> this swatch
+    s.innerHTML='<i style="background:'+COLOR[m]+';border-color:'+COLOR[m]+'"></i>'+m;
+    if(!single){s.title="click to "+(off?"show":"hide")+" "+m;
+      s.addEventListener("click",()=>toggleModel(r,m));}
+    lg.appendChild(s);});
+  if(note){const n=document.createElement("span");n.className="lgnote";
+    n.textContent=note;lg.appendChild(n);}
+}
+/* toggle one model's visibility, keeping >=1 visible, then re-render the eval's charts */
+function toggleModel(r,m){
+  const v=modelVis[r.key]=modelVis[r.key]||{}, on=v[m]!==false;
+  if(on&&modelsOf(r).length<=1)return;        // never hide the last visible model
+  v[m]=!on;
+  const page=document.getElementById("page-"+r.key);
+  if(page)rerenderEval(r,page);
+}
+/* re-draw every model-coloured chart + the sticky model legend after a visibility change */
+function rerenderEval(r,page){
+  if(r.axes)renderAxisGap(r,page); else renderChart(r,page);
+  renderCategoryChart(r,page);renderDoseCurves(r,page);
+  renderDoseResponse(r,page);renderVariation(r,page);renderProto(r,page);
+  fillModelLegend(page.querySelector(".modelsel"),r,null);
+}
+/* hovering a bar/point highlights that model's swatch in every legend on the page */
+function setLegendHi(page,m,on){page.querySelectorAll(".lg").forEach(s=>{
+  if(s.getAttribute("data-model")===m)s.classList.toggle("hi",on);});}
+/* Find the .legend that immediately follows innerNode's enclosing .chart and fill it. Each
+   chart's inner node has a unique class, so this targets the right legend even with many on
+   the page (host.querySelector(".legend") would always grab the first). */
+function modelLegendFor(innerNode,r,note){
+  // Per-chart MODEL legends are removed — the sticky header carries the single model
+  // legend. Keep ONLY the optional caption/note (e.g. "ctl = unperturbed reference").
+  if(!innerNode)return; const ch=innerNode.closest(".chart"); if(!ch)return;
+  const lg=ch.nextElementSibling;
+  if(lg&&lg.classList.contains("legend")){lg.innerHTML="";
+    if(note){const n=document.createElement("span");n.className="lgnote";n.textContent=note;lg.appendChild(n);}}
+}
+function mean(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:null;}
+/* mean + standard error (sample sd / sqrt n) over per-run % values */
+function stat(vals){const n=vals.length;if(!n)return{n:0,mean:null,se:0};
+  const m=vals.reduce((x,y)=>x+y,0)/n;
+  if(n<2)return{n:n,mean:m,se:0};
+  const v=vals.reduce((s,x)=>s+(x-m)*(x-m),0)/(n-1);
+  return{n:n,mean:m,se:Math.sqrt(v/n)};}
+/* pool the per-run % values across every record matching the filter */
+function pooledRuns(r,cond,model,pred){const out=[];
+  r.records.forEach(d=>{if(d.condition===cond&&d.model===model&&pred(d)&&Array.isArray(d.metric_runs))
+    out.push(...d.metric_runs);});return out;}
+const Z=1.96;
+
+/* ---------- summary table (model x condition) ---------- */
+/* subtle heatmap tint for a percentage cell: transparent at 0%, light red at 100%. */
+function pctBg(v){
+  if(v==null||isNaN(v))return"";
+  const a=(Math.max(0,Math.min(100,v))/100)*0.30;
+  return ' style="background:rgba(224,108,117,'+a.toFixed(3)+')"';
+}
+function summaryTable(r){
+  const models=modelsOf(r);
+  const conds=r.condition_order.filter(c=>r.records.some(d=>d.condition===c));
+  if(!models.length){return '<p class="empty">No results yet — run this eval, then regenerate.</p>';}
+  let h="<table class=sum><tr><th>model</th>";
+  conds.forEach(c=>h+="<th>"+c+"</th>");h+="</tr>";
+  models.forEach(m=>{h+="<tr><td>"+m+"</td>";
+    conds.forEach(c=>{const vs=r.records.filter(d=>d.model===m&&d.condition===c&&d.metric_mean!=null)
+        .map(d=>d.metric_mean);const mu=mean(vs);
+      h+="<td"+pctBg(mu)+">"+(mu!=null?mu.toFixed(1)+"%":"&mdash;")+"</td>";});
+    h+="</tr>";});
+  return h+"</table>";
+}
+
+/* ---------- optional honesty-breakdown table (per model; 2-level header) ----------
+   dp = decimal places for the percentages (default 0; the dp toggle passes 1). */
+function honestyTable(r,dp){
+  const s=r.summary;
+  if(!s||!s.rows||!s.metrics||!s.groups)return"";
+  dp=(dp==null?0:dp);
+  const groups=s.groups, mets=s.metrics;
+  let h="<table class=sum><tr><th rowspan=2>model</th>";
+  mets.forEach(mt=>h+="<th colspan="+groups.length+">"+mt.label+"</th>");
+  h+="</tr><tr>";
+  mets.forEach(()=>groups.forEach(g=>h+="<th>"+g+"</th>"));
+  h+="</tr>";
+  s.rows.forEach(row=>{
+    const nt=groups.map(g=>g+" "+(row.n[g]||0)).join(" · ");
+    h+="<tr><td>"+row.model+'<div style="color:var(--muted);font-size:10.5px">n: '+nt+"</div></td>";
+    mets.forEach(mt=>groups.forEach((g,gi)=>{
+      const c=(row.cells[mt.key]||[])[gi];
+      h+="<td"+(c?pctBg(c[0]):"")+">"+(c?(c[0].toFixed(dp)+" ± "+c[1].toFixed(dp)):"&mdash;")+"</td>";}));
+    h+="</tr>";
+  });
+  h+="</table>";
+  if(s.caption)h+='<div class="spread">'+s.caption+'</div>';
+  return h;
+}
+
+/* ---------- chart-1 metric selection (when r.metric_options present) ---------- */
+function selMetric(r){const o=r.metric_options;
+  if(!o||!o.length)return null;return metricState[r.key]||o[0].key;}
+function metricLabelOf(r){const o=r.metric_options;if(!o||!o.length)return r.metric_label;
+  const m=selMetric(r);const f=o.find(x=>x.key===m);return f?f.label:r.metric_label;}
+/* value of a record for a given metric key (or the headline metric if key is null/absent) */
+function recMetricVal(rec,mk){if(!rec)return null;
+  if(mk&&rec.metrics_mean)return (rec.metrics_mean[mk]!=null?rec.metrics_mean[mk]:null);
+  return rec.metric_mean;}
+/* bar height for chart 1: the selected breakdown metric if any, else the headline metric */
+function chartValOf(r,rec){return recMetricVal(rec,selMetric(r));}
+
+/* ---------- perturbation spread per model (the project's core question) ---------- */
+function spreadNote(r){
+  const models=modelsOf(r);if(!models.length)return"";
+  const parts=models.map(m=>{
+    const vs=r.records.filter(d=>d.model===m&&d.metric_mean!=null).map(d=>d.metric_mean);
+    if(vs.length<2)return null;
+    return m+": <b>"+(Math.max(...vs)-Math.min(...vs)).toFixed(0)+" pts</b>";
+  }).filter(Boolean);
+  if(!parts.length)return"";
+  return '<div class="spread">'+r.metric_label+' spread across perturbations &mdash; '+parts.join(" &middot; ")+'</div>';
+}
+
+/* ---------- interactive chart for one eval ---------- */
+function barKey(d){return [d.condition,d.dimension,d.model,d.dose].join("¦");}
+function setSel(sel,val){if(!sel)return false;val=String(val);
+  if([...sel.options].some(o=>o.value===val)){sel.value=val;return true;}return false;}
+/* control = the dose-0 reference: the dimension at tier -1 (the unmodified prompt, run as
+   repeats). Its value is the shared d=0 anchor for every other dimension's dose-response. */
+function controlVal(r,cond,model,mk){
+  const vs=r.records.filter(d=>d.condition===cond&&d.model===model&&d.tier===-1)
+    .map(d=>recMetricVal(d,mk)).filter(v=>v!=null);
+  return vs.length?mean(vs):null;
+}
+function controlStat(r,cond,model){   // for CI whiskers on the control d=0 point
+  return stat(pooledRuns(r,cond,model,d=>d.tier===-1));
+}
+
+function renderChart(r,host){
+  const conds=chartCondsOf(r);
+  const models=modelsOf(r), COLOR=colorMap(r);
+  const mk=selMetric(r);
+  const dimTier={};r.records.forEach(d=>dimTier[d.dimension]=d.tier);
+  // perturbation dimensions only — the control (tier -1) is no longer rendered as its own
+  // group; instead every group carries its own ctl bar (a copy of the dose-0 reference).
+  const dims=[...new Set(r.records.map(d=>d.dimension))]
+    .filter(d=>dimTier[d]!==-1).sort((a,b)=>dimTier[a]-dimTier[b]);
+  // per-dimension doses: the non-zero doses actually swept, PLUS a synthetic dose 0 = the
+  // control copy. Sorted ascending so the spectrum runs d-4..d4 with ctl in the middle
+  // (or ctl on the left when only non-negative doses were swept).
+  const dimDoses={};
+  dims.forEach(dim=>{
+    const ds=[...new Set(r.records.filter(d=>conds.includes(d.condition)&&d.dimension===dim
+      &&d.dose!==0).map(d=>d.dose))];
+    ds.push(0);
+    dimDoses[dim]=[...new Set(ds)].sort((a,b)=>a-b);
+  });
+  const look=(cond,dim,m,dose)=>r.records.find(d=>d.condition===cond&&d.dimension===dim&&d.model===m&&d.dose===dose);
+  const ctlRec=(cond,m)=>r.records.find(d=>d.condition===cond&&d.model===m&&d.tier===-1);
+  // 95% CI whiskers, but only for the headline metric: metric_runs holds the headline
+  // per-run values, so a selected breakdown metric (MASK lie/honest/evade) would mismatch.
+  const showCI=!(r.metric_options&&r.metric_options.length);
+  // Fixed-width layout: every bar is BARW wide and consecutive dimension groups are separated
+  // by a fixed GAP (~2 bar widths). Spacing is therefore uniform across dims and evals,
+  // regardless of how many bars a dimension carries — the old uniform groupW spread each dim
+  // over the same width, leaving big gaps after dims with few doses.
+  const BARW=24, GAP=BARW*2;
+  const grpBars=dims.map(dim=>conds.length*models.length*dimDoses[dim].length);
+  const grpX=[]; let acc=0;                          // left offset of each group within the plot
+  dims.forEach((dim,gi)=>{grpX[gi]=acc; acc+=grpBars[gi]*BARW+GAP;});
+  const left=54,right=16,top=18,bottom=92, H=440, plotH=H-top-bottom;
+  const plotW=Math.max(1,acc-GAP);                   // drop the trailing gap
+  const W=left+plotW+right;
+  const chart=host.querySelector(".chart"); chart.innerHTML="";
+  const svg=el("svg",{width:W,height:H,viewBox:"0 0 "+W+" "+H});
+  [0,25,50,75,100].forEach(v=>{const y=top+plotH*(1-v/100);
+    svg.appendChild(el("line",{x1:left,y1:y,x2:W-right,y2:y,stroke:"#2b3040"}));
+    txt(svg,left-8,y+4,v+"%","end","#9aa3b2",11);});
+  txt(svg,16,top+plotH/2,metricLabelOf(r),"middle","#9aa3b2",11,-90);
+  dims.forEach((dim,gi)=>{
+    let bi=0;
+    conds.forEach(cond=>{models.forEach(m=>{dimDoses[dim].forEach(dose=>{
+      const isCtl=(dose===0);
+      const rec=isCtl?ctlRec(cond,m):look(cond,dim,m,dose);
+      const cv=isCtl?controlVal(r,cond,m,mk):chartValOf(r,rec);
+      const val=(cv!=null)?cv:0;
+      const x=left+grpX[gi]+bi*BARW, y=top+plotH*(1-val/100), h=plotH*val/100;
+      // dose bars are solid; the ctl copy is rendered darker (dimmer) to set it apart.
+      const rect=el("rect",{x:x+1,y:y,width:Math.max(1,BARW-2),height:h,fill:COLOR[m],
+        "fill-opacity":(isCtl?0.45:0.95),class:"bar","data-model":m});
+      if(rec){rect.setAttribute("data-bk",barKey(rec));rect.style.cursor="pointer";
+        // tag the ctl copies so selecting one lights up every ctl bar (same reference) at once
+        if(isCtl)rect.setAttribute("data-ctl",cond+"¦"+m);
+        rect.addEventListener("click",()=>applySelection(r,rec,host));}
+      svg.appendChild(rect);
+      // subtle 95% CI whisker, drawn BEFORE the value label so the number sits on top
+      if(showCI&&cv!=null){
+        const st=isCtl?controlStat(r,cond,m)
+          :(rec&&Array.isArray(rec.metric_runs)&&rec.metric_runs.length>1?stat(rec.metric_runs):null);
+        if(st&&st.se>0){const cx=x+BARW/2;
+          const yA=top+plotH*(1-Math.min(100,cv+Z*st.se)/100);   // upper, clamped to 100
+          const yB=top+plotH*(1-Math.max(0,cv-Z*st.se)/100);     // lower, clamped to 0
+          const cap=Math.max(0,Math.min(2.5,BARW/2-1.5));
+          [[cx,yA,cx,yB],[cx-cap,yA,cx+cap,yA],[cx-cap,yB,cx+cap,yB]].forEach(c=>
+            svg.appendChild(el("line",{x1:c[0],y1:c[1],x2:c[2],y2:c[3],
+              stroke:"#e6e8ee","stroke-width":0.8,"stroke-opacity":0.32})));}
+      }
+      if(cv!=null)txt(svg,x+BARW/2,y-3,Math.round(val),"middle","#cfd3dd",9);
+      txt(svg,x+BARW/2,top+plotH+12,isCtl?"ctl":"d"+dose,"middle","#9aa3b2",9);
+      if(conds.length>1)txt(svg,x+BARW/2,top+plotH+24,shortCond(cond),"middle","#7f8694",7.5,-35);
+      bi++;
+    });});});
+    const gcx=left+grpX[gi]+grpBars[gi]*BARW/2;
+    txt(svg,gcx,top+plotH+32,dim,"middle","#e6e8ee",12);
+    txt(svg,gcx,top+plotH+47,"("+(TIERS[dimTier[dim]]||"?")+")","middle","#9aa3b2",10);
+  });
+  chart.appendChild(svg);
+  modelLegendFor(chart,r,"ctl = unperturbed reference (darker)");
+}
+
+/* ---------- per-axis demographic gap (reference-free factorial evals, e.g. bias) ----------
+   For an eval that supplies r.axes, the per-variation bar chart is replaced by this: one
+   group per axis, one bar per model, height = mean(hi level) − mean(lo level) in points of the
+   display cap. The experience profile is identical across personas, so any non-zero gap is
+   purely demographic. axisScope picks the runs that feed it (unperturbed control vs pooled). */
+const axisScope={};   // per-eval 'control' | 'pooled'
+/* pool the per-run % values across every persona whose axis[index] level matches `level` */
+function axisLevelRuns(r,model,level,index,controlOnly){
+  const out=[];
+  r.records.forEach(d=>{
+    if(d.model!==model||!Array.isArray(d.metric_runs))return;
+    if(controlOnly&&d.tier!==-1)return;
+    if(String(d.condition).split(r.axes.sep)[index]===level)out.push(...d.metric_runs);
+  });
+  return out;
+}
+function renderAxisGap(r,host){
+  const node=host.querySelector(".axisgap"); if(!node)return; node.innerHTML="";
+  const models=modelsOf(r), COLOR=colorMap(r), specs=r.axes.specs;
+  if(!models.length||!specs||!specs.length)return;
+  const controlOnly=(axisScope[r.key]||"control")==="control";
+  let lo=0,hi=0;
+  const cell=(spec,m)=>{
+    const a=stat(axisLevelRuns(r,m,spec.hi,spec.index,controlOnly));
+    const b=stat(axisLevelRuns(r,m,spec.lo,spec.index,controlOnly));
+    if(a.mean==null||b.mean==null)return null;
+    const dv=a.mean-b.mean, se=Math.sqrt(a.se*a.se+b.se*b.se);
+    lo=Math.min(lo,dv-Z*se); hi=Math.max(hi,dv+Z*se); return {dv:dv,se:se};
+  };
+  const data=specs.map(s=>models.map(m=>cell(s,m)));
+  if(hi-lo<1){hi+=2;lo-=2;} const pad=(hi-lo)*0.12; hi+=pad; lo-=pad;
+  const nBars=models.length;
+  const W=Math.max(460,specs.length*(nBars*30+50))+70, H=340;
+  const left=60,right=14,top=18,bottom=70, plotW=W-left-right, plotH=H-top-bottom;
+  const yOf=v=>top+plotH*(1-(v-lo)/(hi-lo));
+  const svg=el("svg",{width:W,height:H,viewBox:"0 0 "+W+" "+H});
+  for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4, y=yOf(v);
+    svg.appendChild(el("line",{x1:left,y1:y,x2:W-right,y2:y,stroke:"#2b3040"}));
+    txt(svg,left-8,y+4,(v>0?"+":"")+v.toFixed(1),"end","#9aa3b2",10);}
+  const y0=yOf(0);
+  svg.appendChild(el("line",{x1:left,y1:y0,x2:W-right,y2:y0,stroke:"#566","stroke-width":1.4}));
+  txt(svg,16,top+plotH/2,"salary gap (pts of cap)","middle","#9aa3b2",10.5,-90);
+  const groupW=plotW/specs.length, barW=(groupW*0.7)/nBars, padg=groupW*0.15;
+  specs.forEach((spec,gi)=>{
+    models.forEach((m,mi)=>{
+      const o=data[gi][mi]; if(!o)return;
+      const x=left+gi*groupW+padg+mi*barW, cx=x+barW/2;
+      const yt=Math.min(y0,yOf(o.dv)), h=Math.abs(yOf(o.dv)-y0);
+      svg.appendChild(el("rect",{x:x+1,y:yt,width:Math.max(1,barW-2),height:Math.max(1,h),
+        fill:COLOR[m],"fill-opacity":0.9}));
+      const yA=yOf(o.dv+Z*o.se), yB=yOf(o.dv-Z*o.se);
+      const ws={stroke:"#e6e8ee","stroke-width":0.8,"stroke-opacity":0.32};
+      svg.appendChild(el("line",Object.assign({x1:cx,y1:yA,x2:cx,y2:yB},ws)));
+      svg.appendChild(el("line",Object.assign({x1:cx-2.5,y1:yA,x2:cx+2.5,y2:yA},ws)));
+      svg.appendChild(el("line",Object.assign({x1:cx-2.5,y1:yB,x2:cx+2.5,y2:yB},ws)));
+      txt(svg,cx,(o.dv>=0?Math.min(yt,yA)-3:Math.max(yt+h,yB)+10),
+        (o.dv>0?"+":"")+o.dv.toFixed(1),"middle","#cfd3dd",8.5);
+    });
+    const gx=left+gi*groupW+groupW/2;
+    txt(svg,gx,top+plotH+20,spec.label,"middle","#e6e8ee",11.5);
+    txt(svg,gx,top+plotH+34,(spec.hi_disp||spec.hi)+" − "+(spec.lo_disp||spec.lo),
+      "middle","#9aa3b2",9.5);
+  });
+  node.appendChild(svg);
+  const lg=host.querySelector(".axisleg"); if(lg){lg.innerHTML="";
+    models.forEach(m=>{const s=document.createElement("span");s.className="lg";
+      s.innerHTML='<i style="background:'+COLOR[m]+'"></i>'+m;lg.appendChild(s);});
+    const n=document.createElement("span");n.className="lgnote";
+    n.textContent=controlOnly?"unperturbed (control) prompts only"
+      :"pooled across all perturbations";lg.appendChild(n);}
+}
+
+/* ---------- category sensitivity: signed Δ vs control, RANKED by effect, with 95% CIs ---------- */
+function renderCategoryChart(r,host){
+  const cond=state[r.key];
+  const models=modelsOf(r), COLOR=colorMap(r);
+  const dimTier={};r.records.forEach(d=>dimTier[d.dimension]=d.tier);
+  const cats=[...new Set(r.records.filter(d=>d.tier!==-1).map(d=>d.dimension))];
+  const host2=host.querySelector(".catchart");
+  if(!cats.length||!models.length){host2.innerHTML="";return;}
+  // per (cat,model): Δ = pooled(cat over doses).mean − pooled(control).mean; SEs add in quadrature
+  const ctrl={};models.forEach(m=>ctrl[m]=stat(pooledRuns(r,cond,m,d=>d.tier===-1)));
+  let lo=0,hi=0;
+  const cell=(c,m)=>{const base=ctrl[m]; if(base.mean==null)return null;
+    const s=stat(pooledRuns(r,cond,m,d=>d.dimension===c)); if(s.mean==null)return null;
+    const dv=s.mean-base.mean, se=Math.sqrt(s.se*s.se+base.se*base.se);
+    lo=Math.min(lo,dv-Z*se); hi=Math.max(hi,dv+Z*se); return {dv:dv,se:se};};
+  const data={};cats.forEach(c=>data[c]=models.map(m=>cell(c,m)));
+  const mag=c=>{const xs=data[c].filter(Boolean).map(o=>Math.abs(o.dv));return xs.length?mean(xs):-1;};
+  const ranked=[...cats].sort((a,b)=>mag(b)-mag(a));      // most impactful first
+  if(hi-lo<1){hi+=5;lo-=5;} const pad=(hi-lo)*0.12; hi+=pad; lo-=pad;
+  const nBars=models.length;
+  const W=Math.max(560, ranked.length*(nBars*26+46))+70, H=350;
+  const left=60,right=14,top=16,bottom=84, plotW=W-left-right, plotH=H-top-bottom;
+  const yOf=v=>top+plotH*(1-(v-lo)/(hi-lo));
+  host2.innerHTML="";
+  const svg=el("svg",{width:W,height:H,viewBox:"0 0 "+W+" "+H});
+  for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4, y=yOf(v);
+    svg.appendChild(el("line",{x1:left,y1:y,x2:W-right,y2:y,stroke:"#2b3040"}));
+    txt(svg,left-8,y+4,(v>0?"+":"")+v.toFixed(0),"end","#9aa3b2",10);}
+  const y0=yOf(0);
+  svg.appendChild(el("line",{x1:left,y1:y0,x2:W-right,y2:y0,stroke:"#566","stroke-width":1.4}));
+  txt(svg,16,top+plotH/2,"Δ "+r.metric_label+" vs control","middle","#9aa3b2",10.5,-90);
+  const groupW=plotW/ranked.length, barW=(groupW*0.7)/nBars, padg=groupW*0.15;
+  ranked.forEach((c,gi)=>{
+    models.forEach((m,mi)=>{
+      const o=data[c][mi]; const x=left+gi*groupW+padg+mi*barW, cx=x+barW/2;
+      if(o){const yt=Math.min(y0,yOf(o.dv)), h=Math.abs(yOf(o.dv)-y0);
+        svg.appendChild(el("rect",{x:x+1,y:yt,width:Math.max(1,barW-2),height:Math.max(1,h),
+          fill:COLOR[m],"fill-opacity":0.9}));
+        const yA=yOf(o.dv+Z*o.se), yB=yOf(o.dv-Z*o.se);     // 95% CI whisker (muted, as per-variation)
+        const ws={stroke:"#e6e8ee","stroke-width":0.8,"stroke-opacity":0.32};
+        svg.appendChild(el("line",Object.assign({x1:cx,y1:yA,x2:cx,y2:yB},ws)));
+        svg.appendChild(el("line",Object.assign({x1:cx-2.5,y1:yA,x2:cx+2.5,y2:yA},ws)));
+        svg.appendChild(el("line",Object.assign({x1:cx-2.5,y1:yB,x2:cx+2.5,y2:yB},ws)));
+        txt(svg,cx,(o.dv>=0?Math.min(yt,yA)-3:Math.max(yt+h,yB)+10),(o.dv>0?"+":"")+o.dv.toFixed(0),"middle","#cfd3dd",8.5);}
+    });
+    const gx=left+gi*groupW+groupW/2;
+    txt(svg,gx,top+plotH+20,c,"middle","#e6e8ee",11.5);
+    txt(svg,gx,top+plotH+34,"("+(TIERS[dimTier[c]]||"?")+")","middle","#9aa3b2",9.5);
+    txt(svg,gx,top+plotH+52,"#"+(gi+1),"middle","#7aa2ff",10);
+  });
+  host2.appendChild(svg);
+  modelLegendFor(host2,r);
+}
+
+/* ---------- dose-response curves: metric vs dose, one line per model ---------- */
+function renderDoseCurves(r, host) {
+  const cond = state[r.key];
+  const models = modelsOf(r), COLOR = colorMap(r);
+  const container = host.querySelector(".dosechart");
+  if (!container) return;
+  // include d=0 (the control anchor) plus every swept dose
+  const doses = [...new Set([0, ...r.records.map(d => d.dose)])].sort((a, b) => a - b);
+  if (doses.length < 2) { container.innerHTML = ''; return; }
+  // selected metric (lie/honest/evade/no-belief) when the eval offers them, else headline
+  const mk = (r.metric_options && r.metric_options.length)
+    ? (doseCurveMetric[r.key] || r.metric_options[0].key) : null;
+  const mlbl = mk ? ((r.metric_options.find(o => o.key === mk) || {}).label || r.metric_label)
+    : r.metric_label;
+  // d=0 = the control value; non-zero doses = mean metric across non-control dimensions
+  const getVal = (model, dose) => {
+    if (dose === 0) return controlVal(r, cond, model, mk);
+    const vs = r.records.filter(d =>
+      d.condition === cond && d.model === model && d.dose === dose && d.tier !== -1
+    ).map(d => recMetricVal(d, mk)).filter(v => v != null);
+    return vs.length ? mean(vs) : null;
+  };
+  const W = 560, H = 250;                          // wider right margin for model end-labels
+  const left = 54, right = 118, top = 18, bottom = 46;
+  const plotW = W - left - right, plotH = H - top - bottom;
+  // Auto-scale the y-axis to the data so small effects are legible: cap the axis at the max
+  // plotted value (+ headroom) instead of a fixed 0–100, rounded up to a "nice" tick.
+  const allVals = [];
+  models.forEach(m => doses.forEach(d => {const v = getVal(m, d); if (v != null) allVals.push(v);}));
+  const dataMax = allVals.length ? Math.max(...allVals) : 100;
+  const niceCeil = x => {                            // round up to 1/2/5 × 10^k
+    if (x <= 0) return 1;
+    const e = Math.pow(10, Math.floor(Math.log(x) / Math.LN10)), f = x / e;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e;
+  };
+  const yTop = Math.min(100, niceCeil(dataMax * 1.1));   // axis max, never above 100%
+  const dec = yTop < 10 ? 1 : 0;                          // show a decimal on tight axes
+  const xOf = i => left + i * plotW / Math.max(1, doses.length - 1);
+  const yOf = v => top + plotH * (1 - v / yTop);
+  const i0 = doses.indexOf(0);                      // the control anchor's x-index
+  container.innerHTML = '';
+  const svg = el('svg', {width: W, height: H, viewBox: '0 0 ' + W + ' ' + H});
+  [0, 1, 2, 3, 4].forEach(k => {
+    const v = yTop * k / 4, y = yOf(v);
+    svg.appendChild(el('line', {x1: left, y1: y, x2: W - right, y2: y, stroke: '#2b3040'}));
+    txt(svg, left - 8, y + 4, v.toFixed(dec) + '%', 'end', '#9aa3b2', 11);
+  });
+  txt(svg, 16, top + plotH / 2, mlbl, 'middle', '#9aa3b2', 11, -90);
+  doses.forEach((d, i) => {
+    txt(svg, xOf(i), top + plotH + 18, (d === 0 ? 'control' : 'dose ' + d), 'middle', '#e6e8ee', 11);
+    svg.appendChild(el('line', {x1: xOf(i), y1: top, x2: xOf(i), y2: top + plotH,
+      stroke: '#1e2330', 'stroke-dasharray': '3 3'}));
+  });
+  // distinct vertical guide at the control anchor (d=0)
+  if (i0 >= 0) {
+    svg.appendChild(el('line', {x1: xOf(i0), y1: top, x2: xOf(i0), y2: top + plotH,
+      stroke: '#566', 'stroke-width': 1.4}));
+    txt(svg, xOf(i0), top - 5, 'control', 'middle', '#9aa3b2', 9.5);
+  }
+  models.forEach(m => {
+    const pts = doses.map((d, i) => {
+      const v = getVal(m, d); return v != null ? {x: xOf(i), y: v} : null;
+    }).filter(Boolean);
+    if (pts.length < 2) return;
+    for (let i = 0; i < pts.length - 1; i++) {
+      svg.appendChild(el('path', {
+        d: `M${pts[i].x} ${yOf(pts[i].y)} L${pts[i+1].x} ${yOf(pts[i+1].y)}`,
+        stroke: COLOR[m], fill: 'none', 'stroke-width': '2.2', 'data-model': m,
+      }));
+    }
+    pts.forEach(p => {
+      svg.appendChild(el('circle', {cx: p.x, cy: yOf(p.y), r: 4.5, fill: COLOR[m], 'data-model': m}));
+      txt(svg, p.x, yOf(p.y) - 9, p.y.toFixed(dec) + '%', 'middle', '#cfd3dd', 9);
+    });
+    const last = pts[pts.length - 1];              // model label at the line's end (as on the slope chart)
+    txt(svg, last.x + 8, yOf(last.y) + 4, m, 'start', COLOR[m], 10);
+  });
+  container.appendChild(svg);
+  modelLegendFor(container,r);
+}
+
+/* ---------- dose–response: metric vs dose, one line per category, faceted by model ---------- */
+const DOSEPAL=["#9aa3b2","#4C72B0","#55A868","#C44E52","#8172B3","#CCB974","#64B5CD","#E377C2","#B07F3F","#17BECF"];
+function catColors(r){const dimTier={};r.records.forEach(d=>dimTier[d.dimension]=d.tier);
+  const dims=[...new Set(r.records.map(d=>d.dimension))].sort((a,b)=>dimTier[a]-dimTier[b]);
+  const cp={};dims.forEach((d,i)=>cp[d]=DOSEPAL[i%DOSEPAL.length]);return {cp:cp,dims:dims};}
+function renderDoseResponse(r,host){
+  const cond=state[r.key];
+  const wrap=host.querySelector(".dosewrap"); if(!wrap)return; wrap.innerHTML="";
+  const models=modelsOf(r), {cp}=catColors(r);
+  const m=doseCatModel[r.key]||models[0];   // ONE plot, for the selected model
+  const cats=[...new Set(r.records.filter(d=>d.tier!==-1).map(d=>d.dimension))];  // non-control dims
+  // x covers 0 (the shared control anchor) plus every swept dose
+  const doses=[...new Set([0,...r.records.map(d=>d.dose)])].sort((a,b)=>a-b);
+  if(!models.length||!cats.length){return;}
+  const dmin=Math.min(...doses), dmax=Math.max(...doses);
+  const W=Math.max(440,(dmax-dmin+1)*120)+70, H=300;
+  const left=50,right=16,top=26,bottom=38, plotW=W-left-right, plotH=H-top-bottom;
+  const xOf=d=>left+(dmax===dmin?plotW/2:plotW*(d-dmin)/(dmax-dmin));
+  const yOf=v=>top+plotH*(1-v/100);
+  const svg=el("svg",{width:W,height:H,viewBox:"0 0 "+W+" "+H});
+  [0,25,50,75,100].forEach(v=>{const y=yOf(v);
+    svg.appendChild(el("line",{x1:left,y1:y,x2:W-right,y2:y,stroke:"#2b3040"}));
+    txt(svg,left-6,y+4,v+"%","end","#9aa3b2",9.5);});
+  txt(svg,16,top+plotH/2,r.metric_label,"middle","#9aa3b2",10.5,-90);
+  doses.forEach(d=>txt(svg,xOf(d),top+plotH+18,(d===0?"control":"d"+d),"middle","#9aa3b2",10));
+  txt(svg,left+plotW/2,top-12,m,"middle","#e6e8ee",12);
+  // dashed guide at the control anchor (d=0)
+  svg.appendChild(el("line",{x1:xOf(0),y1:top,x2:xOf(0),y2:top+plotH,stroke:"#2b3040","stroke-dasharray":"3 3"}));
+  const cv0=controlVal(r,cond,m), cs0=controlStat(r,cond,m);
+  cats.forEach(dim=>{
+    const dpts=doses.filter(d=>d!==0).map(d=>{
+      const s=stat(pooledRuns(r,cond,m,x=>x.dimension===dim&&x.dose===d));
+      return s.mean==null?null:{d:d,m:s.mean,se:s.se};}).filter(Boolean);
+    if(!dpts.length)return;
+    // prepend the shared control value as the d=0 point of this dimension's curve
+    const pts=(cv0!=null?[{d:0,m:cv0,se:cs0.se}]:[]).concat(dpts).sort((a,b)=>a.d-b.d);
+    let path="";pts.forEach((p,i)=>{path+=(i?" L":"M")+xOf(p.d)+" "+yOf(p.m);});
+    svg.appendChild(el("path",{d:path,fill:"none",stroke:cp[dim],"stroke-width":2,"stroke-opacity":0.95}));
+    pts.forEach(p=>{svg.appendChild(el("circle",{cx:xOf(p.d),cy:yOf(p.m),r:2.8,fill:cp[dim]}));
+      if(p.se>0){const yA=yOf(Math.min(100,p.m+Z*p.se)), yB=yOf(Math.max(0,p.m-Z*p.se));
+        svg.appendChild(el("line",{x1:xOf(p.d),y1:yA,x2:xOf(p.d),y2:yB,stroke:cp[dim],"stroke-opacity":0.45}));}});
+  });
+  // mark the control anchor itself
+  if(cv0!=null){svg.appendChild(el("circle",{cx:xOf(0),cy:yOf(cv0),r:4,fill:"#e6e8ee",stroke:"#11141c","stroke-width":1}));
+    txt(svg,xOf(0),yOf(cv0)-9,"ctrl "+cv0.toFixed(0),"middle","#e6e8ee",9);}
+  wrap.appendChild(svg);
+  const lg=host.querySelector(".doselegend"); if(lg){lg.innerHTML="";
+    cats.forEach(dim=>{const s=document.createElement("span");s.className="lg";
+      s.innerHTML='<i style="background:'+cp[dim]+'"></i>'+dim;lg.appendChild(s);});
+    const c=document.createElement("span");c.className="lg";
+    c.innerHTML='<i style="background:#e6e8ee"></i>control (d=0 anchor)';lg.appendChild(c);}
+}
+
+/* ---------- word-level git-style diff (baseline -> varied) ---------- */
+function wordDiff(a,b){
+  const A=(a||"").split(/(\s+)/), B=(b||"").split(/(\s+)/);
+  const n=A.length,m=B.length;
+  const dp=Array.from({length:n+1},()=>new Int32Array(m+1));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)
+    dp[i][j]=A[i]===B[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+  const out=[];let i=0,j=0;
+  while(i<n&&j<m){
+    if(A[i]===B[j]){out.push(["=",A[i]]);i++;j++;}
+    else if(dp[i+1][j]>=dp[i][j+1]){out.push(["-",A[i]]);i++;}
+    else{out.push(["+",B[j]]);j++;}}
+  while(i<n)out.push(["-",A[i++]]);
+  while(j<m)out.push(["+",B[j++]]);
+  return out;
+}
+function baselineFor(r,rec){
+  if(r.baselines&&r.baselines[rec.condition])return r.baselines[rec.condition];
+  const ctrl=r.records.find(d=>d.condition===rec.condition&&d.tier===-1);  // control variation
+  return ctrl?ctrl.prompt:(rec.prompt||"");
+}
+function renderDiffInto(node,baseline,varied){
+  node.innerHTML="";
+  const parts=wordDiff(baseline,varied);
+  if(!parts.some(p=>p[0]!=="=")){
+    node.innerHTML='<span class="nochange">No textual change from the baseline prompt.</span>';return;}
+  parts.forEach(([op,tok])=>{
+    if(op==="="){node.appendChild(document.createTextNode(tok));return;}
+    const s=document.createElement("span");s.className=(op==="+"?"ins":"del");
+    s.textContent=tok;node.appendChild(s);});
+}
+
+function block(title,body){const w=document.createElement("div");w.className="block";
+  const t=document.createElement("div");t.className="blocktitle";t.textContent=title;
+  const b=document.createElement("div");b.className="blockbody";b.textContent=body;
+  w.appendChild(t);w.appendChild(b);return w;}
+
+/* ---------- interactive Variation-detail panel (model/condition/dimension/dose/sample
+   are selectable; the user steps through individual pooled samples) ---------- */
+function findRec(r,sel){return r.records.find(d=>d.model===sel.model&&d.condition===sel.condition
+  &&d.dimension===sel.dimension&&d.dose===sel.dose);}
+function detailDefaults(r){const rec=r.records[0];
+  return{model:rec.model,condition:rec.condition,dimension:rec.dimension,dose:rec.dose,sampleIdx:0};}
+/* coerce a desired selection onto a real record, fixing up dimension/dose/sample if needed */
+function normalizeSel(r,sel){
+  let recs=r.records.filter(d=>d.model===sel.model&&d.condition===sel.condition);
+  if(!recs.length)recs=r.records.filter(d=>d.condition===sel.condition);
+  if(!recs.length)recs=r.records.slice();
+  let dimRecs=recs.filter(d=>d.dimension===sel.dimension);
+  if(!dimRecs.length){dimRecs=recs;sel.dimension=dimRecs[0].dimension;}
+  let rec=dimRecs.find(d=>d.dose===sel.dose);
+  if(!rec){rec=dimRecs.slice().sort((a,b)=>a.dose-b.dose)[0];sel.dose=rec.dose;}
+  sel.model=rec.model;sel.condition=rec.condition;sel.dimension=rec.dimension;sel.dose=rec.dose;
+  const ns=(rec.samples||[]).length||1;
+  if(sel.sampleIdx==null||sel.sampleIdx<0||sel.sampleIdx>=ns)sel.sampleIdx=0;
+  return rec;
+}
+function syncBar(r,page){const sel=detailState[r.key];const rec=sel&&findRec(r,sel);
+  // a control selection has no single bar — light up every ctl copy for that condition+model;
+  // otherwise highlight every bar matching the selected key (normally exactly one).
+  const isCtl=rec&&rec.tier===-1;
+  const ctlKey=isCtl?(rec.condition+"¦"+rec.model):null;
+  const bk=rec?barKey(rec):null;
+  page.querySelectorAll("rect.bar").forEach(x=>{
+    const match=isCtl?(x.getAttribute("data-ctl")===ctlKey)
+                     :(bk&&x.getAttribute("data-bk")===bk);
+    if(match){x.setAttribute("stroke","#fff");x.setAttribute("stroke-width","2");}
+    else x.setAttribute("stroke","none");});}
+function mkSel(label,opts,cur,fmt,on){
+  const wrap=document.createElement("label");wrap.className="chip";
+  wrap.innerHTML="<b>"+label+":</b> ";
+  const s=document.createElement("select");s.className="dsel";
+  opts.forEach(o=>{const op=document.createElement("option");op.value=String(o);
+    op.textContent=fmt?fmt(o):o;if(String(o)===String(cur))op.selected=true;s.appendChild(op);});
+  s.addEventListener("change",()=>on(s.value));wrap.appendChild(s);return wrap;}
+/* sample picker: ‹ prev / next › buttons around a dropdown. With a single sample
+   there's nothing to pick, so just show static "sample: 1 / 1" text (no dropdown). */
+function mkSample(nSamp,cur,onIdx){
+  const wrap=document.createElement("span");wrap.className="chip";
+  wrap.innerHTML="<b>sample:</b> ";
+  if(nSamp<=1){wrap.appendChild(document.createTextNode("1 / 1"));return wrap;}
+  const prev=document.createElement("button");prev.className="navbtn";prev.textContent="‹";
+  prev.title="previous sample";prev.disabled=cur<=0;
+  const s=document.createElement("select");s.className="dsel";
+  for(let i=0;i<nSamp;i++){const op=document.createElement("option");op.value=String(i);
+    op.textContent="#"+(i+1)+" / "+nSamp;if(i===cur)op.selected=true;s.appendChild(op);}
+  const next=document.createElement("button");next.className="navbtn";next.textContent="›";
+  next.title="next sample";next.disabled=cur>=nSamp-1;
+  prev.addEventListener("click",e=>{e.preventDefault();if(cur>0)onIdx(cur-1);});
+  next.addEventListener("click",e=>{e.preventDefault();if(cur<nSamp-1)onIdx(cur+1);});
+  s.addEventListener("change",()=>onIdx(+s.value));
+  wrap.appendChild(prev);wrap.appendChild(s);wrap.appendChild(next);return wrap;}
+/* ---------- shareable permalink to one displayed example ----------
+   id = eval:model:condition:dimension:dose:sample. "🔗 copy link" sits on the
+   detail-panel selector row; the "go to example" box (bottom of page) + an #ex=… URL
+   navigate straight to it. normalizeSel() coerces a stale id onto the nearest cell. */
+const RF_SEP=":";
+function exampleId(r,sel){return [r.key,sel.model,sel.condition,sel.dimension,sel.dose,sel.sampleIdx].join(RF_SEP);}
+function mkCopyLink(r,sel){
+  const b=document.createElement("button");b.className="navbtn";b.textContent="🔗 copy link";
+  b.style.marginLeft="10px";const id=exampleId(r,sel);
+  b.title="copy a sharable id for this example:\n"+id+"\npaste it into the “go to example” box at the bottom of the page";
+  b.addEventListener("click",e=>{e.preventDefault();
+    const done=()=>{b.textContent="✓ copied";b.style.color="#2ea06b";
+      setTimeout(()=>{b.textContent="🔗 copy link";b.style.color="";},1300);};
+    if(navigator.clipboard&&navigator.clipboard.writeText)
+      navigator.clipboard.writeText(id).then(done,()=>{rfFallbackCopy(id);done();});
+    else{rfFallbackCopy(id);done();}
+    if(history&&history.replaceState)history.replaceState(null,"","#ex="+encodeURIComponent(id));});
+  return b;}
+function rfFallbackCopy(t){const ta=document.createElement("textarea");ta.value=t;
+  ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+  try{document.execCommand("copy");}catch(_){}document.body.removeChild(ta);}
+function rfGoTo(str){
+  if(!str)return false;str=String(str).trim();
+  if(str.indexOf("#")===0)str=str.slice(1);
+  if(str.indexOf("ex=")===0)str=decodeURIComponent(str.slice(3));
+  const p=str.split(RF_SEP);if(p.length<2)return false;
+  const r=REPORTS.find(x=>x.key===p[0]);if(!r)return false;
+  activate(p[0]);const page=document.getElementById("page-"+p[0]);if(!page)return false;
+  detailState[p[0]]={model:p[1],condition:p[2],dimension:p[3],
+    dose:(p[4]!=null&&p[4]!=="")?+p[4]:0,sampleIdx:(p[5]!=null&&p[5]!=="")?+p[5]:0};
+  renderVariation(r,page);syncBar(r,page);
+  const a=page.querySelector(".vsel");if(a)a.scrollIntoView({behavior:"smooth",block:"center"});
+  return true;}
+function buildGotoBox(){
+  const box=document.getElementById("rf-goto");if(!box||box.dataset.built)return;box.dataset.built="1";
+  box.innerHTML='<span class="lbl">🔗 go to example:</span>'+
+    '<input id="rf-goto-in" placeholder="eval:model:condition:dimension:dose:sample" spellcheck="false">'+
+    '<button id="rf-goto-go" class="navbtn">go</button><span id="rf-goto-msg"></span>';
+  const go=()=>{const ok=rfGoTo(document.getElementById("rf-goto-in").value);
+    const m=document.getElementById("rf-goto-msg");
+    m.textContent=ok?"✓":"— not found";m.style.color=ok?"#2ea06b":"#c0566a";};
+  document.getElementById("rf-goto-go").addEventListener("click",go);
+  document.getElementById("rf-goto-in").addEventListener("keydown",e=>{if(e.key==="Enter")go();});}
+/* ONE headline selector (model/dimension/dose/sample) drives BOTH the diff and the detail.
+   Populates .vsel (selectors), .diffbaseline/.diffbody-v (diff) and .detail (detail). */
+function renderVariation(r,page){
+  if(!r.records.length)return;
+  const sel=detailState[r.key]||(detailState[r.key]=detailDefaults(r));
+  const rec=normalizeSel(r,sel);
+  const samp=(rec.samples||[])[sel.sampleIdx]||{};
+  // ---- unified selector row ----
+  const vs=page.querySelector(".vsel");
+  if(vs){vs.innerHTML="";
+    const models=[...new Set(r.records.map(d=>d.model))];
+    const conds=r.condition_order.filter(c=>r.records.some(d=>d.condition===c));
+    const dimTier={};r.records.forEach(d=>dimTier[d.dimension]=d.tier);
+    const dims=[...new Set(r.records.filter(d=>d.condition===sel.condition).map(d=>d.dimension))]
+      .sort((a,b)=>dimTier[a]-dimTier[b]);
+    const doses=[...new Set(r.records.filter(d=>d.model===sel.model&&d.condition===sel.condition
+      &&d.dimension===sel.dimension).map(d=>d.dose))].sort((a,b)=>a-b);
+    const nSamp=(rec.samples||[]).length||1;
+    const re=()=>{renderVariation(r,page);syncBar(r,page);};
+    // Don't reset sampleIdx when switching model/condition/dimension/dose — keep the
+    // same sample index; normalizeSel() clamps it only if the new cell has fewer samples.
+    vs.appendChild(mkSel("model",models,sel.model,null,v=>{sel.model=v;re();}));
+    if(conds.length>1)vs.appendChild(mkSel("condition",conds,sel.condition,null,
+      v=>{sel.condition=v;re();}));
+    vs.appendChild(mkSel("dimension",dims,sel.dimension,v=>v+" ("+(TIERS[dimTier[v]]||"?")+")",
+      v=>{sel.dimension=v;re();}));
+    vs.appendChild(mkSel("dose",doses,sel.dose,v=>"d"+v,v=>{sel.dose=+v;re();}));
+    vs.appendChild(mkSample(nSamp,sel.sampleIdx,i=>{sel.sampleIdx=i;renderVariation(r,page);}));
+    vs.appendChild(mkCopyLink(r,sel));   // 🔗 sharable example id (see the "go to example" box)
+  }
+  // ---- diff: this sample's item's untouched prompt -> its perturbed prompt ----
+  const bl=samp.baseline||baselineForRec(r,rec,sel.condition)||"";
+  const be=page.querySelector(".diffbaseline"); if(be)be.textContent=bl||"(no baseline available)";
+  const bv=page.querySelector(".diffbody-v"); if(bv)renderDiffInto(bv,bl,samp.prompt||rec.prompt||"");
+  // ---- detail for the selected sample ----
+  const d=page.querySelector(".detail"); if(d){d.innerHTML="";
+    const chips=document.createElement("div");chips.className="meta";
+    chips.innerHTML='<span class="chip"><b>'+r.metric_label+' (bar mean):</b> '+
+      (rec.metric_mean!=null?rec.metric_mean+"%":"—")+" (n="+rec.n_runs+")</span>"+
+      '<span class="chip"><b>tier:</b> '+rec.tier+" · "+(TIERS[rec.tier]||"?")+"</span>"+
+      '<span class="chip"><b>this sample:</b> '+(samp.metric!=null?samp.metric+"%":"—")+
+      (samp.item_id?" · item "+samp.item_id:"")+"</span>";
+    const extra=(r.items_extra&&samp.item_id&&r.items_extra[samp.item_id])||rec.rep_extra||[];
+    // Promote the arm's SYSTEM prompt to the top. For some evals (e.g. APE) the condition's
+    // whole difference lives in the system prompt — the perturbed user message is identical
+    // across conditions, so the prompt diff shows nothing; surfacing the system prompt here is
+    // the only place the persuade-vs-baseline (or pressure-vs-control) difference is visible.
+    const isSys=e=>e&&typeof e[0]==="string"&&/system prompt/i.test(e[0]);
+    const sysblk=extra.find(isSys), others=extra.filter(e=>!isSys(e));
+    // ordered: 1) system prompt, 2) user prompt, 3) model response,
+    // 4) honesty judge result, 5) everything else (remaining context + metadata chips)
+    if(sysblk&&sysblk[1]!=null&&String(sysblk[1]).length)
+      d.appendChild(block(sysblk[0],String(sysblk[1])));
+    d.appendChild(block("User prompt (varied user message)",samp.prompt||rec.prompt||""));
+    d.appendChild(block("Model response · sample "+(sel.sampleIdx+1)+" of "+
+      ((rec.samples||[]).length||rec.n_runs),(samp.response!=null?samp.response:rec.rep_response)||"(empty)"));
+    d.appendChild(block(r.judge_name+" · this sample",
+      r.metric_label+" (this sample): "+(samp.metric!=null?samp.metric+"%":"—")+
+      "\nraw output: "+(samp.judge_raw||rec.rep_judge_raw||"")));
+    others.forEach(function(e){if(e&&e[1]!=null&&String(e[1]).length)d.appendChild(block(e[0],String(e[1])));});
+    d.appendChild(chips);
+  }
+}
+
+/* single source of truth: point everything (bar highlight, the model/category/
+   dose dropdowns, the diff, the detail panel) at one record. Called both by a
+   bar click and by a dropdown change, so the two stay in sync. */
+function applySelection(r,rec,page){
+  if(!rec)return;
+  detailState[r.key]={model:rec.model,condition:rec.condition,dimension:rec.dimension,
+    dose:rec.dose,sampleIdx:0};
+  renderVariation(r,page);
+  syncBar(r,page);
+}
+
+/* ---------- per-condition diff picker (model × category × dose) ---------- */
+// Baseline for a specific varied record, most-specific first:
+//   1. an explicit per-condition baseline from the eval's report.py (the true
+//      untouched prompt, e.g. sycophancy),
+//   2. the record's OWN item control variation (rep_baseline) — needed when a bar
+//      pools many items so the diff stays within one item (e.g. MASK),
+//   3. fall back to any control record for the condition (single-item evals).
+function baselineForRec(r,rec,cond){
+  if(r.baselines&&r.baselines[cond])return r.baselines[cond];
+  if(rec&&rec.rep_baseline!=null&&String(rec.rep_baseline).length)return rec.rep_baseline;
+  const ctrl=r.records.find(d=>d.condition===cond&&d.tier===-1);
+  return ctrl?ctrl.prompt:"";
+}
+function wireDiff(r,page){
+  const mSel=page.querySelector(".dsel-model"), cSel=page.querySelector(".dsel-cat"),
+        dSel=page.querySelector(".dsel-dose"), base=page.querySelector(".diffbaseline"),
+        body=page.querySelector(".diffbody-v");
+  if(!mSel||!cSel||!dSel||!body)return;
+  const cond=state[r.key];
+  const recs=r.records.filter(d=>d.condition===cond&&d.tier!==-1);   // exclude control
+  const dimTier={};r.records.forEach(d=>dimTier[d.dimension]=d.tier);
+  const models=[...new Set(recs.map(d=>d.model))];
+  const cats=[...new Set(recs.map(d=>d.dimension))].sort((a,b)=>dimTier[a]-dimTier[b]);
+  const doses=[...new Set(recs.map(d=>d.dose))].sort((a,b)=>a-b);
+  const fill=(sel,vals,fmt)=>{const cur=sel.value;sel.innerHTML="";
+    vals.forEach(v=>{const o=document.createElement("option");o.value=String(v);
+      o.textContent=fmt?fmt(v):v;sel.appendChild(o);});
+    if(vals.map(String).includes(cur))sel.value=cur;};
+  fill(mSel,models); fill(cSel,cats); fill(dSel,doses,v=>"d"+v);
+  base.textContent=baselineForRec(r,null,cond)||"(no baseline available)";  // overwritten per-selection by pick()
+  const pick=()=>{
+    const rec=recs.find(d=>d.model===mSel.value&&d.dimension===cSel.value&&d.dose===+dSel.value);
+    if(rec){applySelection(r,rec,page);return;}
+    body.innerHTML='<span class="nochange">No variation for this '+
+      'model / category / dose combination.</span>';
+    const det=page.querySelector(".detail");
+    if(det)det.innerHTML='<span class="hint">No variation for this combination.</span>';
+    page.querySelectorAll("rect.bar").forEach(x=>x.setAttribute("stroke","none"));};
+  mSel.onchange=cSel.onchange=dSel.onchange=pick; pick();
+}
+
+/* ============================================================================
+   PROTOTYPE / experimental views — summarise the SPREAD each perturbation class
+   introduces, normalise it by the control noise floor, and compare the fragility
+   fingerprint across the model class. Clearly grouped + captioned as prototypes.
+   ============================================================================ */
+function popsd(a){const n=a.length;if(n<2)return 0;const m=a.reduce((x,y)=>x+y,0)/n;
+  return Math.sqrt(a.reduce((s,x)=>s+(x-m)*(x-m),0)/n);}
+function dimsByTier(r){const dt={};r.records.forEach(d=>dt[d.dimension]=d.tier);
+  return [...new Set(r.records.filter(d=>d.tier!==-1).map(d=>d.dimension))]
+    .sort((a,b)=>dt[a]-dt[b]||(a<b?-1:1));}
+function dimDelta(r,cond,model,dim){
+  const base=stat(pooledRuns(r,cond,model,d=>d.tier===-1));
+  const s=stat(pooledRuns(r,cond,model,d=>d.dimension===dim));
+  if(base.mean==null||s.mean==null)return null;
+  return {dv:s.mean-base.mean,se:Math.sqrt(s.se*s.se+base.se*base.se)};}
+function heatColor(t){t=Math.max(0,Math.min(1,t));
+  const a=[31,36,50], b=[196,78,82];
+  const c=a.map((x,i)=>Math.round(x+(b[i]-x)*t));return "rgb("+c[0]+","+c[1]+","+c[2]+")";}
+
+function renderFragHeat(r,host){
+  const node=host.querySelector(".fragheat"); if(!node)return; node.innerHTML="";
+  const cond=state[r.key], models=modelsOf(r);
+  const tiers=[...new Set(r.records.filter(d=>d.tier>=0).map(d=>d.tier))].sort((a,b)=>a-b);
+  if(!models.length||!tiers.length)return;
+  const cell=(m,t)=>{const ctlVals=pooledRuns(r,cond,m,d=>d.tier===-1);
+    const ctlSpread=ctlVals.length?Math.max(...ctlVals)-Math.min(...ctlVals):0;
+    const vs=r.records.filter(d=>d.condition===cond&&d.model===m&&d.tier===t
+      &&d.metric_mean!=null).map(d=>d.metric_mean);
+    if(!vs.length)return null;
+    const spread=Math.max(...vs)-Math.min(...vs);
+    return ctlSpread>0?spread/ctlSpread:null;};
+  let vmax=0; const data={};
+  models.forEach(m=>{data[m]={};tiers.forEach(t=>{const v=cell(m,t);data[m][t]=v;
+    if(v!=null)vmax=Math.max(vmax,v);});});
+  if(vmax<=0)vmax=1;
+  const cw=92,ch=34,left=148,top=44,right=64;
+  const W=left+tiers.length*cw+right,H=top+models.length*ch+18;
+  const svg=el("svg",{width:W,height:H,viewBox:"0 0 "+W+" "+H});
+  tiers.forEach((t,ci)=>{const x=left+ci*cw+cw/2;
+    txt(svg,x,top-22,"t"+t,"middle","#9aa3b2",10.5);
+    txt(svg,x,top-9,(TIERS[t]||"?"),"middle","#7f8694",9);});
+  models.forEach((m,ri)=>{const y=top+ri*ch;
+    txt(svg,left-10,y+ch/2+4,m,"end","#e6e8ee",11);
+    tiers.forEach((t,ci)=>{const x=left+ci*cw,v=data[m][t];
+      svg.appendChild(el("rect",{x:x+1,y:y+1,width:cw-3,height:ch-3,rx:4,
+        fill:v==null?"#11141c":heatColor(v/vmax)}));
+      if(v!=null)txt(svg,x+cw/2,y+ch/2+4,v.toFixed(1)+"x","middle",
+        v/vmax>0.55?"#fff":"#cfd3dd",10.5);});});
+  const ky=top+models.length*ch+2;
+  for(let i=0;i<=20;i++)svg.appendChild(el("rect",{x:left+i*5,y:ky,width:5,height:7,
+    fill:heatColor(i/20)}));
+  txt(svg,left-6,ky+7,"0","end","#9aa3b2",9);
+  txt(svg,left+20*5+6,ky+7,vmax.toFixed(1)+"x ctl spread","start","#9aa3b2",9);
+  node.appendChild(svg);
+}
+
+function renderSigNoise(r,host){
+  const node=host.querySelector(".signoise"); if(!node)return; node.innerHTML="";
+  const cond=state[r.key], models=modelsOf(r), COLOR=colorMap(r);
+  const dims=dimsByTier(r); if(!dims.length||!models.length)return;
+  // σ = the control noise floor's bootstrap RATE sd (sweep_stats), NOT popsd of
+  // individual control samples (that's the per-sample sd ~sqrt(p(1-p)), ~7x too
+  // big, and made every real effect vanish). Fall back to popsd if stats absent.
+  const fl=(r.significance&&r.significance.floor)||{};
+  const floorSd=m=>{const f=fl[m+""+cond]; return (f&&f.sd>0)?f.sd:null;};
+  const noise={};models.forEach(m=>noise[m]=floorSd(m)??popsd(pooledRuns(r,cond,m,d=>d.tier===-1)));
+  // strongest verdict among a dimension's dose-cells for one model (cells judged
+  // per-dose in sweep_stats; the panel pools doses, so surface the best).
+  const VRANK={signal:3,tentative:2,noise:1,underpowered:0};
+  const dimVerdict=(dim,m)=>{let best=null,br=-1;r.records.forEach(d=>{
+    if(d.condition===cond&&d.model===m&&d.dimension===dim&&d.sig){
+      const k=VRANK[d.sig.verdict]; if(k>br){br=k;best=d.sig.verdict;}}});return best;};
+  let lo=-2,hi=2;
+  const z=(dim,m)=>{const n=noise[m]; if(!(n>0))return null;
+    const d=dimDelta(r,cond,m,dim); if(!d)return null;
+    const v=d.dv/n; lo=Math.min(lo,v);hi=Math.max(hi,v); return v;};
+  const data={};dims.forEach(c=>data[c]=models.map(m=>z(c,m)));
+  const mag=c=>{const xs=data[c].filter(v=>v!=null).map(Math.abs);return xs.length?mean(xs):-1;};
+  const ranked=[...dims].sort((a,b)=>mag(b)-mag(a));
+  lo=Math.floor(lo)-1;hi=Math.ceil(hi)+1;
+  const nB=models.length,W=Math.max(560,ranked.length*(nB*24+40))+70,H=360;
+  const left=58,right=14,top=18,bottom=82,plotW=W-left-right,plotH=H-top-bottom;
+  const yOf=v=>top+plotH*(1-(v-lo)/(hi-lo));
+  const svg=el("svg",{width:W,height:H,viewBox:"0 0 "+W+" "+H});
+  svg.appendChild(el("rect",{x:left,y:yOf(2),width:plotW,height:Math.max(0,yOf(-2)-yOf(2)),
+    fill:"#9aa3b2","fill-opacity":0.10}));
+  const gridStart=Math.ceil(lo/4)*4,gridEnd=Math.floor(hi/4)*4;
+  for(let v=gridStart;v<=gridEnd;v+=4){
+    const y=yOf(v), major=(v===0||Math.abs(v)===2);
+    svg.appendChild(el("line",{x1:left,y1:y,x2:W-right,y2:y,
+      stroke:v===0?"#566":"#2b3040",
+      "stroke-opacity":v===0?1:0.55,"stroke-dasharray":v===0?"":"4 3"}));
+    txt(svg,left-8,y+4,(v>0?"+":"")+v+"σ","end",v===0?"#9aa3b2":"#6b7280",9.5);}
+  txt(svg,16,top+plotH/2,"effect vs control (σ of noise floor)","middle","#9aa3b2",10,-90);
+  // opacity by verdict (sweep_stats), falling back to |z|>=2 when stats absent.
+  const VOP={signal:0.95,tentative:0.7,noise:0.32,underpowered:0.18};
+  const groupW=plotW/ranked.length,barW=(groupW*0.7)/nB,padg=groupW*0.15,y0=yOf(0);
+  ranked.forEach((c,gi)=>{models.forEach((m,mi)=>{const v=data[c][mi];
+    if(v==null)return;const x=left+gi*groupW+padg+mi*barW;
+    const yt=Math.min(y0,yOf(v)),h=Math.abs(yOf(v)-y0);
+    const vd=dimVerdict(c,m), op=(vd!=null?VOP[vd]:(Math.abs(v)>=2?0.95:0.4));
+    svg.appendChild(el("rect",{x:x+1,y:yt,width:Math.max(1,barW-2),height:Math.max(1,h),
+      fill:COLOR[m],"fill-opacity":op,
+      stroke:vd==="signal"?"#e6e8ee":"none","stroke-width":vd==="signal"?1.2:0}));
+    txt(svg,x+barW/2,(v>=0?yt-3:yt+h+10),(v>0?"+":"")+v.toFixed(1),"middle","#cfd3dd",8.5);});
+    const gx=left+gi*groupW+groupW/2;
+    txt(svg,gx,top+plotH+18,c,"middle","#e6e8ee",10.5);
+    txt(svg,gx,top+plotH+32,"("+(TIERS[(r.records.find(d=>d.dimension===c)||{}).tier]||"?")+")","middle","#9aa3b2",9);
+    txt(svg,gx,top+plotH+48,"#"+(gi+1),"middle","#7aa2ff",9.5);});
+  node.appendChild(svg);
+  // verdict tally + legend (clustering + BH-FDR honest)
+  const vc=(r.significance&&r.significance.verdicts)||{};
+  const order=["signal","tentative","noise","underpowered"];
+  if(order.some(k=>vc[k])){
+    const cap=el("div",{class:"subtle",style:"margin-top:6px;font-size:11px"});
+    cap.innerHTML="cells: "+order.filter(k=>vc[k]).map(k=>
+      '<b style="opacity:'+VOP[k]+'">'+k+"</b> "+vc[k]).join(" &middot; ")+
+      " &mdash; <i>signal</i>=CI excludes 0 &amp; survives BH-FDR; <i>tentative</i>=CI excludes 0, fails FDR; "+
+      "<i>noise</i>/<i>underpowered</i>=CI covers 0. σ = bootstrap control-rate sd.";
+    node.appendChild(cap);
+  }
+  modelLegendFor(node,r);
+}
+
+function renderSlope(r,host){
+  const node=host.querySelector(".slopechart"); if(!node)return; node.innerHTML="";
+  const cond=state[r.key], models=modelsOf(r), COLOR=colorMap(r);
+  const dims=dimsByTier(r); if(dims.length<2||!models.length)return;
+  const data={};let lo=100,hi=0;
+  models.forEach(m=>{data[m]=dims.map(dim=>{const s=stat(pooledRuns(r,cond,m,d=>d.dimension===dim));
+    if(s.mean!=null){lo=Math.min(lo,s.mean);hi=Math.max(hi,s.mean);}return s.mean;});});
+  if(hi<lo){lo=0;hi=100;}if(hi-lo<1){hi+=5;lo-=5;}
+  lo=Math.max(0,lo-(hi-lo)*0.1);hi=Math.min(100,hi+(hi-lo)*0.1);
+  const W=Math.max(560,dims.length*96)+60,H=320;
+  const left=54,right=120,top=18,bottom=72,plotW=W-left-right,plotH=H-top-bottom;
+  const xOf=i=>left+(dims.length<2?plotW/2:plotW*i/(dims.length-1));
+  const yOf=v=>top+plotH*(1-(v-lo)/(hi-lo));
+  const svg=el("svg",{width:W,height:H,viewBox:"0 0 "+W+" "+H});
+  for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4,y=yOf(v);
+    svg.appendChild(el("line",{x1:left,y1:y,x2:W-right,y2:y,stroke:"#2b3040"}));
+    txt(svg,left-8,y+4,v.toFixed(0)+"%","end","#9aa3b2",10);}
+  txt(svg,16,top+plotH/2,r.metric_label,"middle","#9aa3b2",10,-90);
+  dims.forEach((dim,i)=>{txt(svg,xOf(i),top+plotH+16,dim,"end","#e6e8ee",9.5,-30);
+    svg.appendChild(el("line",{x1:xOf(i),y1:top,x2:xOf(i),y2:top+plotH,
+      stroke:"#1e2330","stroke-dasharray":"3 3"}));});
+  models.forEach(m=>{const pts=data[m].map((v,i)=>v==null?null:{x:xOf(i),y:yOf(v),v:v}).filter(Boolean);
+    if(pts.length<2)return;let path="";pts.forEach((p,i)=>path+=(i?" L":"M")+p.x+" "+p.y);
+    svg.appendChild(el("path",{d:path,fill:"none",stroke:COLOR[m],"stroke-width":2.2,"stroke-opacity":0.9,"data-model":m}));
+    pts.forEach(p=>svg.appendChild(el("circle",{cx:p.x,cy:p.y,r:3.4,fill:COLOR[m],"data-model":m})));
+    const last=pts[pts.length-1];txt(svg,last.x+8,last.y+4,m,"start",COLOR[m],10);});
+  node.appendChild(svg);
+  modelLegendFor(node,r);
+}
+
+function renderViolin(r,host){
+  const node=host.querySelector(".violinchart"); if(!node)return; node.innerHTML="";
+  const cond=state[r.key], m=protoModel(r); if(!m)return;
+  const COLOR=colorMap(r)[m]||"#7aa2ff";
+  const series=[{dim:"control",vals:pooledRuns(r,cond,m,d=>d.tier===-1)}]
+    .concat(dimsByTier(r).map(dim=>({dim:dim,vals:pooledRuns(r,cond,m,d=>d.dimension===dim)})))
+    .filter(s=>s.vals.length>=5);
+  if(series.length<2)return;
+  const all=series.flatMap(s=>s.vals);
+  let ymin=Math.min(...all),ymax=Math.max(...all);
+  if(ymax-ymin<1){ymax+=5;ymin-=5;}const pad=(ymax-ymin)*0.08;ymin-=pad;ymax+=pad;
+  const colW=80,left=54,top=22,bottom=78,W=left+series.length*colW+16,H=320,plotH=H-top-bottom;
+  const yOf=v=>top+plotH*(1-(v-ymin)/(ymax-ymin));
+  const svg=el("svg",{width:W,height:H,viewBox:"0 0 "+W+" "+H});
+  for(let k=0;k<=4;k++){const v=ymin+(ymax-ymin)*k/4,y=yOf(v);
+    svg.appendChild(el("line",{x1:left,y1:y,x2:W-16,y2:y,stroke:"#2b3040"}));
+    txt(svg,left-8,y+4,v.toFixed(0),"end","#9aa3b2",10);}
+  txt(svg,16,top+plotH/2,r.metric_label,"middle","#9aa3b2",10,-90);
+  txt(svg,left+(W-left-16)/2,top-9,m,"middle","#e6e8ee",11);
+  const NB=18;
+  series.forEach((s,si)=>{const cx=left+si*colW+colW/2,halfW=colW*0.40;
+    const bins=new Array(NB).fill(0);
+    s.vals.forEach(v=>{let b=Math.floor((v-ymin)/(ymax-ymin)*NB);if(b<0)b=0;if(b>=NB)b=NB-1;bins[b]++;});
+    const bmax=Math.max(...bins)||1,pts=[];
+    for(let b=0;b<NB;b++){const v=ymin+(b+0.5)/NB*(ymax-ymin),y=yOf(v),w=halfW*bins[b]/bmax;
+      pts.push([cx-w,y,cx+w]);}
+    let path="";pts.forEach((p,i)=>path+=(i?" L":"M")+p[0]+" "+p[1]);
+    for(let i=pts.length-1;i>=0;i--)path+=" L"+pts[i][2]+" "+pts[i][1];path+=" Z";
+    const isCtl=s.dim==="control";
+    svg.appendChild(el("path",{d:path,fill:isCtl?"#9aa3b2":COLOR,
+      "fill-opacity":0.32,stroke:isCtl?"#9aa3b2":COLOR,"stroke-opacity":0.75}));
+    const mu=mean(s.vals);
+    svg.appendChild(el("line",{x1:cx-halfW,y1:yOf(mu),x2:cx+halfW,y2:yOf(mu),
+      stroke:"#fff","stroke-opacity":0.85,"stroke-width":1.4}));
+    txt(svg,cx,H-bottom+34,s.dim,"end","#e6e8ee",9.5,-32);});
+  node.appendChild(svg);
+}
+
+function renderPole(r,host){
+  const node=host.querySelector(".polechart"); if(!node)return; node.innerHTML="";
+  const cond=state[r.key], m=protoModel(r); if(!m)return;
+  const dims=dimsByTier(r).filter(dim=>r.records.some(d=>d.dimension===dim&&d.dose<0));
+  if(!dims.length){node.innerHTML='<p class="subtle">No signed-axis (bidirectional) dimensions in this eval.</p>';return;}
+  const base=stat(pooledRuns(r,cond,m,d=>d.tier===-1));
+  const eff=(dim,neg)=>{const s=stat(pooledRuns(r,cond,m,
+      d=>d.dimension===dim&&(neg?d.dose<0:d.dose>0)));
+    return (s.mean==null||base.mean==null)?null:{dv:s.mean-base.mean,se:s.se};};
+  const data=dims.map(dim=>({dim:dim,neg:eff(dim,true),pos:eff(dim,false)}));
+  let lo=0,hi=0;data.forEach(d=>[d.neg,d.pos].forEach(o=>{if(o){lo=Math.min(lo,o.dv);hi=Math.max(hi,o.dv);}}));
+  if(hi-lo<1){hi+=5;lo-=5;}const pad=(hi-lo)*0.12;hi+=pad;lo-=pad;
+  const W=Math.max(480,dims.length*120)+60,H=300;
+  const left=58,right=14,top=18,bottom=74,plotW=W-left-right,plotH=H-top-bottom;
+  const yOf=v=>top+plotH*(1-(v-lo)/(hi-lo));
+  const svg=el("svg",{width:W,height:H,viewBox:"0 0 "+W+" "+H});
+  for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4,y=yOf(v);
+    svg.appendChild(el("line",{x1:left,y1:y,x2:W-right,y2:y,stroke:"#2b3040"}));
+    txt(svg,left-8,y+4,(v>0?"+":"")+v.toFixed(0),"end","#9aa3b2",10);}
+  const y0=yOf(0);svg.appendChild(el("line",{x1:left,y1:y0,x2:W-right,y2:y0,stroke:"#566"}));
+  txt(svg,16,top+plotH/2,"Δ "+r.metric_label+" vs control","middle","#9aa3b2",10,-90);
+  txt(svg,left+plotW/2,top-6,m,"middle","#e6e8ee",11);
+  const groupW=plotW/dims.length,barW=groupW*0.26,gap=groupW*0.06;
+  const NEG="#7aa2ff",POS="#f2a65a";
+  data.forEach((d,gi)=>{const gx=left+gi*groupW+groupW/2;
+    [[d.neg,-1,NEG],[d.pos,1,POS]].forEach(([o,side,col])=>{if(!o)return;
+      const x=gx+side*gap+(side<0?-barW:0);
+      const yt=Math.min(y0,yOf(o.dv)),h=Math.abs(yOf(o.dv)-y0);
+      svg.appendChild(el("rect",{x:x,y:yt,width:barW,height:Math.max(1,h),fill:col,"fill-opacity":0.9}));
+      txt(svg,x+barW/2,(o.dv>=0?yt-3:yt+h+10),(o.dv>0?"+":"")+o.dv.toFixed(0),"middle","#cfd3dd",8.5);});
+    txt(svg,gx,top+plotH+18,d.dim,"middle","#e6e8ee",10.5);});
+  txt(svg,left+8,top+10,"■ − pole","start",NEG,10);txt(svg,left+78,top+10,"■ + pole","start",POS,10);
+  node.appendChild(svg);
+}
+function protoModel(r){const ms=modelsOf(r);
+  const sel=doseCatModel[r.key];return (sel&&ms.includes(sel))?sel:ms[0];}
+function renderProto(r,page){renderFragHeat(r,page);renderSigNoise(r,page);renderSlope(r,page);
+  renderViolin(r,page);renderPole(r,page);}
+
+/* ---------- build eval detail page ---------- */
+function buildEvalPage(r){
+  const page=document.createElement("div");page.className="page";page.id="page-"+r.key;
+  page.style.setProperty("--ec",evalColor(r.key));
+  const conds=r.condition_order.filter(c=>r.records.some(d=>d.condition===c));
+  state[r.key]=conds[0];
+  const has=r.records.length>0;
+  let ctrl="";
+  // Multi-condition evals: checkbox set (every condition is drawn in the per-variation chart
+  // at once, so all data is visible). The first STILL-CHECKED condition drives the per-condition
+  // charts below (category sensitivity / dose-response / prototypes). Axis-gap evals (bias)
+  // have no meaningful condition toggle — their "conditions" are demographic personas,
+  // summarised by the per-axis gap chart instead — so they get no condition control.
+  if(conds.length>1&&!r.axes){
+    condVis[r.key]={};conds.forEach(c=>condVis[r.key][c]=true);
+    ctrl='<div class="controls condvis">conditions (all shown; first checked drives the '+
+      'per-condition charts): '+
+      conds.map(c=>'<label><input type="checkbox" class="condvis-cb" value="'+c+
+        '" checked> '+c+"</label>").join("")+"</div>";
+  }
+  let metricCtrl="";
+  if(r.metric_options&&r.metric_options.length){
+    metricState[r.key]=r.metric_options[0].key;
+    metricCtrl='<div class="controls">metric: <select class="metric-sel dsel">'+
+      r.metric_options.map((o,i)=>'<option value="'+o.key+'"'+(i===0?" selected":"")+'>'+
+        o.label+'</option>').join("")+
+      '</select> <span style="font-style:italic">(first chart only)</span></div>';}
+  let doseCurveCtrl="";
+  if(r.metric_options&&r.metric_options.length){
+    doseCurveMetric[r.key]=r.metric_options[0].key;
+    doseCurveCtrl='<div class="controls">metric: <select class="dosecurve-metric dsel">'+
+      r.metric_options.map((o,i)=>'<option value="'+o.key+'"'+(i===0?" selected":"")+'>'+
+        o.label+'</option>').join("")+'</select></div>';}
+  const allModels=[...new Set(r.records.map(d=>d.model))];
+  if(allModels.length)doseCatModel[r.key]=allModels[0];
+  modelVis[r.key]={};allModels.forEach(m=>modelVis[r.key][m]=true);
+  // STICKY HEADER (filled once the page mounts): the clickable model-visibility legend
+  // (.modelsel) PLUS the single-model picker (.dosecat-model) that drives the per-model
+  // charts (dose-by-category, experimental views). Both stay pinned while you scroll.
+  let modelCtrl="";
+  if(allModels.length>1){
+    const pick='<div class="modelpick">dose-by-category &amp; per-model charts use: '+
+      '<select class="dosecat-model dsel">'+
+      allModels.map((m,i)=>'<option value="'+m+'"'+(i===0?" selected":"")+'>'+m+'</option>').join("")+
+      '</select></div>';
+    modelCtrl='<div class="stickybar"><div class="legend modelsel"></div>'+pick+'</div>';}
+  let doseCatCtrl="";   // the picker now lives in the sticky header (modelCtrl) above
+  const head1=(r.metric_options&&r.metric_options.length)?"Per-variation breakdown":
+    ("Per-variation "+r.metric_label);
+  // Section blocks, declared separately so the page order is explicit and easy to change.
+  const barBlock=
+    '<h3 class="sech">'+head1+'</h3>'+
+    '<p class="subtle">Each bar is one perturbed prompt; click it for the full prompt, '+
+    'response, judgement and its diff. Grouped by perturbation dimension, coloured by model'+
+    (true?', shaded by dose':'')+'.'+
+    ((r.metric_options&&r.metric_options.length)?'':
+      ' Whiskers = 95% CI of the bar mean (normal-approx over the pooled runs).')+'</p>'+
+    metricCtrl+
+    '<div class="chart"></div><div class="legend"></div>';
+  // Axis-gap chart — replaces the per-variation bar chart for reference-free factorial evals
+  // (bias). One group per demographic axis, one bar per model = the salary gap between the
+  // axis's two levels. A scope toggle picks unperturbed (control) vs pooled-over-perturbations.
+  const axisBlock=r.axes?(
+    '<h3 class="sech">Demographic salary gap by axis</h3>'+
+    '<p class="subtle">Each bar is the salary GAP between an axis&rsquo;s two levels '+
+    '('+r.axes.specs.map(s=>(s.hi_disp||s.hi)+'&minus;'+(s.lo_disp||s.lo)).join(', ')+
+    '), in points of the $'+Math.round(r.axes.cap/1000)+'k display cap, per model. '+
+    'Positive = the first level is quoted more. The experience profile is identical across '+
+    'personas, so any non-zero gap is demographic. Whiskers = 95% CI; a bar whose CI crosses '+
+    'zero isn&rsquo;t distinguishable from no bias.</p>'+
+    '<div class="controls"><label><input type="radio" name="axsc-'+r.key+'" value="control" '+
+    'checked> control (unperturbed)</label> <label><input type="radio" name="axsc-'+r.key+
+    '" value="pooled"> pooled over perturbations</label></div>'+
+    '<div class="chart"><div class="axisgap"></div></div><div class="legend axisleg"></div>'
+  ):"";
+  const chart1Block=r.axes?axisBlock:barBlock;
+  const variationBlock=
+    '<h3 class="sech">Prompt variations</h3>'+
+    '<p class="subtle">Pick a model, dimension, dose and sample &mdash; every pooled sample is '+
+    'browsable. The diff shows what the rewriter changed from that sample&rsquo;s untouched '+
+    'prompt; the detail shows the sample in full. (Or click any bar above.)</p>'+
+    '<div class="vsel meta"></div>'+
+    '<div class="block"><div class="blocktitle">Untouched prompt (this sample&rsquo;s item)</div>'+
+    '<div class="diffbody diffbaseline"></div></div>'+
+    '<div class="block"><div class="blocktitle">Diff &rarr; selected variation</div>'+
+    '<div class="difflegend"><span class="del">red</span> = removed &middot; '+
+    '<span class="ins">green</span> = added, relative to the untouched prompt</div>'+
+    '<div class="diffbody diffbody-v"></div></div>'+
+    '<h3 class="sech">Variation detail</h3>'+
+    '<div class="detail"></div>';
+  const doseBlock=
+    '<h3 class="sech">Dose–response curves</h3>'+
+    '<p class="subtle">Mean metric across all perturbation categories at each dose, one line '+
+    'per model. Steeper slope = stronger sensitivity to perturbation intensity.</p>'+
+    doseCurveCtrl+
+    '<div class="chart"><div class="dosechart"></div></div><div class="legend"></div>'+
+    // sentinel: from here down the charts are single-model, so the sticky header swaps
+    // the visibility legend for the model picker once this scrolls under it.
+    '<div class="permodel-anchor"></div>'+
+    '<h3 class="sech">Dose&ndash;response by category</h3>'+
+    '<p class="subtle">'+r.metric_label+' as perturbation dose rises (0&rarr;max), one line per '+
+    'category, for the selected model. Higher / steeper lines = categories that shift behaviour '+
+    'more; error bars = 95% CI; dashed grey = control reference.</p>'+
+    doseCatCtrl+
+    '<div class="chart"><div class="dosewrap"></div></div><div class="legend doselegend"></div>';
+  const catBlock=
+    '<h3 class="sech">Category sensitivity &mdash; which perturbations move '+r.metric_label+' most</h3>'+
+    '<p class="subtle">Signed Δ vs the control variation (pooled over doses), per model, '+
+    '<b>ranked by effect size</b> (#1 = most impactful). Whiskers = 95% CI; a bar whose CI '+
+    'crosses zero isn&rsquo;t yet distinguishable from no effect.</p>'+
+    '<div class="chart"><div class="catchart"></div></div><div class="legend"></div>';
+  const protoBlock=
+    '<h3 class="sech" style="margin-top:30px">Experimental views <span style="font-weight:400;'+
+    'color:var(--muted);font-size:12px">(prototype)</span></h3>'+
+    '<p class="subtle">Five angles on the spread each perturbation <i>class</i> introduces and '+
+    'whether the pattern holds across the model class. Driven by the condition'+
+    (allModels.length>1?' and model':'')+' selector'+
+    (allModels.length>1?'s':'')+' above; the single-model views (distribution, pole asymmetry) '+
+    'follow the dose-by-category model picker.</p>'+
+    '<div class="sech" style="font-size:13.5px;margin-top:14px">1 &middot; Fragility heatmap '+
+    '&mdash; spread per tier / control spread</div>'+
+    '<p class="subtle">Each cell = '+r.metric_label+' spread (max&minus;min of bar means) the '+
+    'tier&rsquo;s perturbations introduce, divided by that model&rsquo;s control per-run spread.</p>'+
+    '<div class="chart"><div class="fragheat"></div></div>'+
+    '<div class="sech" style="font-size:13.5px;margin-top:18px">2 &middot; Signal vs noise '+
+    '&mdash; effect in control-σ units</div>'+
+    '<p class="subtle">Δ vs control in units of the noise floor&rsquo;s σ &mdash; now the '+
+    '<b>bootstrap control-rate σ</b> (resampled over items), not the per-sample spread. Bars are '+
+    'shaded by the clustering- and FDR-honest verdict from <code>sweep_stats</code> '+
+    '(solid+outlined = <i>signal</i>, survives BH-FDR; faded = <i>noise/underpowered</i>); the '+
+    '±2σ band is the rough jitter floor. Counts and definitions are under the chart.</p>'+
+    '<div class="chart"><div class="signoise"></div></div><div class="legend"></div>'+
+    '<div class="sech" style="font-size:13.5px;margin-top:18px">3 &middot; Cross-model fingerprint '+
+    '&mdash; final percent slope chart</div>'+
+    '<p class="subtle">Final '+r.metric_label+' per dimension, one line per model. A rising curve '+
+    'from early tiers to later tiers means stronger perturbation classes move the final metric upward.</p>'+
+    '<div class="chart"><div class="slopechart"></div></div><div class="legend"></div>'+
+    '<div class="sech" style="font-size:13.5px;margin-top:18px">5 &middot; Per-run distribution '+
+    '&mdash; violins</div>'+
+    '<p class="subtle">Pooled per-run scores per dimension (selected model). Bimodal shapes = a '+
+    'class that <i>flips</i> some runs rather than nudging them all &mdash; hidden by the mean. '+
+    'White tick = mean; grey = control.</p>'+
+    '<div class="chart"><div class="violinchart"></div></div>'+
+    '<div class="sech" style="font-size:13.5px;margin-top:18px">6 &middot; Pole asymmetry '+
+    '&mdash; signed-axis dimensions</div>'+
+    '<p class="subtle">For each bidirectional axis, the two poles&rsquo; effect vs control. '+
+    'Mirror-image bars = symmetric; lopsided = one pole moves behaviour more.</p>'+
+    '<div class="chart"><div class="polechart"></div></div>';
+  // requested order: bar chart, prompt variations, category sensitivity, dose-response, prototypes
+  const charts=has?(ctrl+chart1Block+variationBlock+catBlock+doseBlock+protoBlock)
+    :'<p class="empty">No results yet — run this eval, then regenerate this page.</p>';
+  const topTable=r.summary
+    ?('<div class="controls"><label><input type="checkbox" class="dp-toggle"> '+
+      'show 1 decimal place</label></div><div class="hontable">'+honestyTable(r,0)+'</div>')
+    :summaryTable(r);
+  page.innerHTML='<h2>'+r.title+'</h2><p class="sub">'+r.blurb+'</p>'+
+    modelCtrl+topTable+spreadNote(r)+charts;
+  // hover a bar/point/legend-square -> highlight that model's swatch in the legend.
+  // closest() resolves the data-model from a hovered sub-element (e.g. the legend <i>
+  // square, or a bar's child) so the whole shape is hoverable, not just its exact node.
+  page.addEventListener("mouseover",e=>{const t=e.target&&e.target.closest&&e.target.closest("[data-model]");if(t)setLegendHi(page,t.getAttribute("data-model"),true);});
+  page.addEventListener("mouseout", e=>{const t=e.target&&e.target.closest&&e.target.closest("[data-model]");if(t)setLegendHi(page,t.getAttribute("data-model"),false);});
+  if(has)setTimeout(()=>{
+    if(r.axes)renderAxisGap(r,page); else renderChart(r,page);
+    renderCategoryChart(r,page);renderDoseCurves(r,page);
+    renderDoseResponse(r,page);renderVariation(r,page);renderProto(r,page);
+    fillModelLegend(page.querySelector(".modelsel"),r,null);   // populate the sticky model selector
+    page.querySelectorAll('input[name="axsc-'+r.key+'"]').forEach(rb=>
+      rb.addEventListener("change",()=>{if(rb.checked){axisScope[r.key]=rb.value;
+        renderAxisGap(r,page);}}));
+    const ms=page.querySelector(".metric-sel");
+    if(ms)ms.addEventListener("change",()=>{metricState[r.key]=ms.value;renderChart(r,page);});
+    const dcm=page.querySelector(".dosecurve-metric");
+    if(dcm)dcm.addEventListener("change",()=>{doseCurveMetric[r.key]=dcm.value;renderDoseCurves(r,page);});
+    const dcmod=page.querySelector(".dosecat-model");
+    if(dcmod)dcmod.addEventListener("change",()=>{doseCatModel[r.key]=dcmod.value;
+      renderDoseResponse(r,page);renderProto(r,page);});
+    const dpt=page.querySelector(".dp-toggle");
+    if(dpt)dpt.addEventListener("change",()=>{const ht=page.querySelector(".hontable");
+      if(ht)ht.innerHTML=honestyTable(r,dpt.checked?1:0);});},0);
+  page.querySelectorAll(".condvis-cb").forEach(cb=>
+    cb.addEventListener("change",()=>{condVis[r.key][cb.value]=cb.checked;
+      // the first still-checked condition drives the per-condition charts below
+      const firstOn=conds.find(c=>condVis[r.key][c]);
+      if(firstOn)state[r.key]=firstOn;
+      renderChart(r,page);renderCategoryChart(r,page);renderDoseCurves(r,page);
+      renderDoseResponse(r,page);renderVariation(r,page);renderProto(r,page);}));
+  // model visibility is toggled by clicking the swatches in the sticky .modelsel legend
+  // (see fillModelLegend/toggleModel) — no separate checkbox row anymore.
+  return page;
+}
+
+/* ---------- overview ---------- */
+/* trim the eval blurb to its first sentence for the compact overview card */
+function shortBlurb(b){if(!b)return"";const m=String(b).match(/^[^.]*\./);
+  let s=m?m[0]:String(b);if(s.length>150)s=s.slice(0,147)+"…";return s.trim();}
+
+/* per-eval range chart: one row per model, a coloured bar spanning the metric's
+   gentlest->harshest value across perturbations, with a dot at the mean. The bar
+   length IS the robustness story — wider = the eval result depends more on phrasing. */
+function overviewChart(r,color){
+  const wrap=document.createElement("div");wrap.className="ovchart";
+  const rows=modelsOf(r).map(m=>{
+    const vs=r.records.filter(d=>d.model===m&&d.metric_mean!=null).map(d=>d.metric_mean);
+    return vs.length?{m:m,min:Math.min(...vs),max:Math.max(...vs),mean:mean(vs)}:null;
+  }).filter(Boolean);
+  if(!rows.length){wrap.innerHTML='<p class="empty">No results yet — run this eval, then regenerate.</p>';
+    return wrap;}
+  const rowH=40, top=8, bottom=20, W=320, left=8, right=42;
+  const H=top+rows.length*rowH+bottom, x0=left, x1=W-right, axisY=top+rows.length*rowH;
+  const sx=v=>x0+(x1-x0)*Math.max(0,Math.min(100,v))/100;
+  const svg=el("svg",{width:"100%",viewBox:"0 0 "+W+" "+H,preserveAspectRatio:"xMidYMid meet"});
+  [0,50,100].forEach(v=>{const x=sx(v);
+    svg.appendChild(el("line",{x1:x,y1:top,x2:x,y2:axisY,stroke:"#232836","stroke-dasharray":"2 4"}));
+    txt(svg,x,axisY+13,v+"%","middle","#6b7280",9);});
+  rows.forEach((row,i)=>{
+    const yl=top+i*rowH+12, yt=top+i*rowH+27;
+    txt(svg,x0,yl,row.m,"start","#cfd3dd",11.5);
+    svg.appendChild(el("line",{x1:x0,y1:yt,x2:x1,y2:yt,stroke:"#2b3040","stroke-width":3,"stroke-linecap":"round"}));
+    svg.appendChild(el("line",{x1:sx(row.min),y1:yt,x2:sx(row.max),y2:yt,stroke:color,
+      "stroke-width":6,"stroke-linecap":"round","stroke-opacity":0.5}));
+    svg.appendChild(el("circle",{cx:sx(row.mean),cy:yt,r:4.5,fill:color}));
+    txt(svg,x1+6,yt+4,Math.round(row.mean)+"%","start","#9aa3b2",10.5);
+  });
+  wrap.appendChild(svg);return wrap;
+}
+
+/* ---------- run-info table (tokens / estimated cost / timing per run) ---------- */
+function runsTable(snap){
+  const rs=(snap&&snap.run_stats)||[];if(!rs.length)return"";
+  let ti=0,to=0,tc=0,ts=0,partial=false,rows="";
+  rs.forEach(r=>{ti+=r.input;to+=r.output;tc+=r.est_cost;ts+=r.samples;if(!r.cost_known)partial=true;
+    rows+="<tr><td>"+r.run+"</td><td>"+r.eval+"</td><td>"+((r.models||[]).join(", "))+"</td>"+
+      "<td>"+r.samples.toLocaleString()+"</td><td>"+fmtTok(r.input)+"</td><td>"+fmtTok(r.output)+"</td>"+
+      "<td>"+(r.cost_known?fmtUSD(r.est_cost):"~"+fmtUSD(r.est_cost)+"+")+"</td>"+
+      "<td>"+fmtDur(r.elapsed_s)+"</td></tr>";});
+  const totalCost=(partial?"~":"")+fmtUSD(tc)+(partial?"+":"");
+  return '<h3 class="sech" style="margin-top:4px">Runs in this view</h3>'+
+    '<p class="subtle">Token usage and a rough API-cost <b>estimate</b> per run (tokens &times; an '+
+    'editable price table; the judge model is included). "~&hellip;+" flags a partial total (an '+
+    'unpriced model). Samples = dataset &times; epochs; the rewriter&rsquo;s own generation calls '+
+    'aren&rsquo;t counted here.</p>'+
+    '<table class="sum"><tr><th>run</th><th>eval</th><th>model(s)</th><th>samples</th>'+
+    '<th>in tok</th><th>out tok</th><th>est. cost</th><th>elapsed</th></tr>'+rows+
+    '<tr><td><b>total</b></td><td></td><td></td><td><b>'+ts.toLocaleString()+'</b></td><td><b>'+
+    fmtTok(ti)+'</b></td><td><b>'+fmtTok(to)+'</b></td><td><b>'+totalCost+'</b></td><td></td></tr>'+
+    '</table>';
+}
+
+/* ---------- robustness vs capability (ECI) ---------- */
+/* prompt-variation effect for one (eval, model): mean |metric - control| over EVERY
+   perturbed cell (all dimensions x doses), pooled across conditions. Directionless,
+   in the eval's own metric units (0-100). */
+function effectFor(r,m){
+  const conds=r.condition_order.filter(c=>r.records.some(d=>d.condition===c));
+  const diffs=[];
+  conds.forEach(c=>{
+    const ctl=stat(pooledRuns(r,c,m,d=>d.tier===-1)).mean;
+    if(ctl==null)return;
+    r.records.forEach(d=>{
+      if(d.condition===c&&d.model===m&&d.tier!==-1&&d.metric_mean!=null)
+        diffs.push(Math.abs(d.metric_mean-ctl));
+    });
+  });
+  return diffs.length?mean(diffs):null;
+}
+function pearson(xs,ys){const n=xs.length;if(n<2)return null;
+  const mx=mean(xs),my=mean(ys);let sxy=0,sxx=0,syy=0;
+  for(let i=0;i<n;i++){const dx=xs[i]-mx,dy=ys[i]-my;sxy+=dx*dy;sxx+=dx*dx;syy+=dy*dy;}
+  return (sxx>0&&syy>0)?sxy/Math.sqrt(sxx*syy):null;}
+
+function buildRobustness(){
+  const page=document.createElement("div");page.className="page";page.id="page-__robust";
+  const allM=new Set();REPORTS.forEach(r=>allModelsOf(r).forEach(m=>allM.add(m)));
+  const models=[...allM].filter(m=>MODEL_ECI[m]!=null);
+  page.innerHTML="<h2>Robustness vs capability</h2><p class=sub>Prompt-variation effect "+
+    "(y: mean |&Delta;| of the metric vs the control prompt, in metric points) against "+
+    "capability (x: Epoch Capabilities Index). Small coloured dots are per eval; the large "+
+    "dot is the eval-balanced average per model. Caveats: a model pinned near 0/100% on an "+
+    "eval looks artificially robust (floor/ceiling), and per-model n is small.</p>";
+  if(models.length<2){const p=document.createElement("p");p.className="empty";
+    p.textContent="Need at least 2 models with an ECI in this run set.";page.appendChild(p);return page;}
+  const perEval={}, avg=[];
+  models.forEach(m=>{const es=[];
+    REPORTS.forEach(r=>{const e=effectFor(r,m);
+      if(e!=null){es.push(e);(perEval[r.key]=perEval[r.key]||[]).push({m:m,x:MODEL_ECI[m],y:e});}});
+    if(es.length)avg.push({m:m,x:MODEL_ECI[m],y:mean(es)});});
+  if(avg.length<2){const p=document.createElement("p");p.className="empty";
+    p.textContent="Not enough data to plot.";page.appendChild(p);return page;}
+  const W=900,H=560,L=66,Rm=200,T=24,B=58;
+  let allY=avg.map(p=>p.y);REPORTS.forEach(r=>(perEval[r.key]||[]).forEach(p=>allY.push(p.y)));
+  const xsAll=avg.map(p=>p.x);
+  const xmin=Math.min(...xsAll)-4,xmax=Math.max(...xsAll)+4;
+  const ymax=Math.max(1,...allY)*1.12,ymin=0;
+  const PX=x=>L+(x-xmin)/(xmax-xmin)*(W-L-Rm);
+  const PY=y=>H-B-(y-ymin)/(ymax-ymin)*(H-T-B);
+  const svg=el("svg",{viewBox:"0 0 "+W+" "+H,width:"100%",style:"max-width:1000px"});
+  const ystep=ymax<=5?1:ymax<=12?2:ymax<=30?5:10;
+  for(let y=0;y<=ymax;y+=ystep){const py=PY(y);
+    svg.appendChild(el("line",{x1:L,y1:py,x2:W-Rm,y2:py,stroke:"#222838","stroke-width":1}));
+    txt(svg,L-8,py+4,y.toFixed(0),"end","#8a93a6",12);}
+  const xstep=(xmax-xmin)<=22?5:10;
+  for(let x=Math.ceil(xmin/xstep)*xstep;x<=xmax;x+=xstep){const px=PX(x);
+    svg.appendChild(el("line",{x1:px,y1:T,x2:px,y2:H-B,stroke:"#1b2130","stroke-width":1}));
+    txt(svg,px,H-B+18,x.toFixed(0),"middle","#8a93a6",12);}
+  txt(svg,(L+(W-Rm))/2,H-12,"Epoch Capabilities Index (ECI) →","middle","#c7ccd6",13);
+  txt(svg,18,(T+(H-B))/2,"prompt-variation effect  (mean |Δ| vs control)","middle","#c7ccd6",13,-90);
+  REPORTS.forEach(r=>{const col=evalColor(r.key);
+    (perEval[r.key]||[]).forEach(p=>svg.appendChild(
+      el("circle",{cx:PX(p.x),cy:PY(p.y),r:3.5,fill:col,"fill-opacity":0.5})));});
+  const xs=avg.map(p=>p.x),ys=avg.map(p=>p.y),pr=pearson(xs,ys);
+  if(pr!=null){const mx=mean(xs),my=mean(ys);let sxy=0,sxx=0;
+    for(let i=0;i<xs.length;i++){sxy+=(xs[i]-mx)*(ys[i]-my);sxx+=(xs[i]-mx)*(xs[i]-mx);}
+    const slope=sxx>0?sxy/sxx:0,b=my-slope*mx;
+    const cy1=Math.max(ymin,Math.min(ymax,slope*xmin+b)),cy2=Math.max(ymin,Math.min(ymax,slope*xmax+b));
+    svg.appendChild(el("line",{x1:PX(xmin),y1:PY(cy1),x2:PX(xmax),y2:PY(cy2),
+      stroke:"#9aa3b2","stroke-width":1.5,"stroke-dasharray":"6 4"}));
+    txt(svg,W-Rm-6,T+14,"Pearson r = "+pr.toFixed(2),"end","#c7ccd6",13);}
+  avg.forEach(p=>{
+    svg.appendChild(el("circle",{cx:PX(p.x),cy:PY(p.y),r:6,fill:"#e6e8ee",stroke:"#0e1116","stroke-width":1.5}));
+    txt(svg,PX(p.x)+10,PY(p.y)+4,p.m+" ("+p.y.toFixed(1)+")","start","#c7ccd6",11);});
+  let ly=T+8;txt(svg,W-Rm+16,ly,"per eval:","start","#8a93a6",12);ly+=18;
+  REPORTS.forEach(r=>{const col=evalColor(r.key);
+    svg.appendChild(el("circle",{cx:W-Rm+22,cy:ly-4,r:4,fill:col,"fill-opacity":0.6}));
+    txt(svg,W-Rm+32,ly,r.title,"start","#c7ccd6",11.5);ly+=17;});
+  ly+=6;
+  svg.appendChild(el("circle",{cx:W-Rm+22,cy:ly-4,r:5,fill:"#e6e8ee",stroke:"#0e1116","stroke-width":1.3}));
+  txt(svg,W-Rm+32,ly,"model average","start","#c7ccd6",11.5);
+  const box=document.createElement("div");box.style.margin="10px 0";box.appendChild(svg);
+  page.appendChild(box);
+  return page;
+}
+
+function buildOverview(){
+  const page=document.createElement("div");page.className="page active";page.id="page-__overview";
+  const cards=document.createElement("div");cards.className="cards";
+  REPORTS.forEach(r=>{
+    const col=evalColor(r.key);
+    const c=document.createElement("div");c.className="evalcard";c.style.setProperty("--ec",col);
+    c.innerHTML="<h3>"+r.title+"</h3><div class=blurb>"+shortBlurb(r.blurb)+"</div>";
+    c.appendChild(overviewChart(r,col));
+    const cap=document.createElement("div");cap.className="ovcap";
+    cap.innerHTML="bar = "+r.metric_label+" range across perturbations · dot = mean · "+
+      "wider = less robust";
+    c.appendChild(cap);
+    const open=document.createElement("span");open.className="open";open.dataset.k=r.key;
+    open.innerHTML="view details →";
+    c.appendChild(open);
+    cards.appendChild(c);
+  });
+  page.innerHTML="<h2>Overview</h2><p class=sub>Each eval’s headline metric and how far it "+
+    "moves under prompt perturbations. The bar spans the gentlest→harshest variation per "+
+    "model; a wider bar means the eval result depends more on phrasing.</p>"+
+    runsTable(CURSNAP);
+  page.appendChild(cards);
+  page.querySelectorAll(".open").forEach(s=>s.addEventListener("click",()=>activate(s.dataset.k)));
+  return page;
+}
+
+/* ---------- tabs ---------- */
+function activate(key){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.k===key));
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  const pg=document.getElementById("page-"+key);if(pg)pg.classList.add("active");
+  updateStickyMode();
+}
+/* Sticky-header context swap: above the per-model section the header shows the model
+   visibility legend; once the .permodel-anchor scrolls under the sticky bar (i.e. the
+   single-model charts are in view) it swaps to the single-model picker instead. */
+function updateStickyMode(){
+  const bar=document.querySelector(".page.active .stickybar"); if(!bar)return;
+  const anchor=document.querySelector(".page.active .permodel-anchor");
+  let on=false;
+  if(anchor){const b=bar.getBoundingClientRect(),a=anchor.getBoundingClientRect();
+    on=a.top<=b.bottom+2;}
+  bar.classList.toggle("permodel",on);
+}
+function buildTabs(){
+  const tabs=document.getElementById("tabs"), pages=document.getElementById("pages");
+  tabs.innerHTML="";pages.innerHTML="";
+  const ov=document.createElement("div");ov.className="tab active";ov.dataset.k="__overview";
+  ov.style.setProperty("--ec","#9aa3b2");   // neutral grey, distinct from any eval hue
+  ov.textContent="Overview";ov.addEventListener("click",()=>activate("__overview"));
+  tabs.appendChild(ov);
+  pages.appendChild(buildOverview());
+  // research-findings tab (RQ1-3 / H1-3) — present only when findings were computed
+  // (reporting.py --findings). Static HTML embedded in FINDINGS_HTML; no recompute here.
+  if(FINDINGS_HTML){
+    const ft=document.createElement("div");ft.className="tab";ft.dataset.k="__findings";
+    ft.style.setProperty("--ec","#ffd166");ft.textContent="★ Research Findings";
+    ft.addEventListener("click",()=>activate("__findings"));
+    tabs.appendChild(ft);
+    const fp=document.createElement("div");fp.className="page";fp.id="page-__findings";
+    fp.innerHTML=FINDINGS_HTML;pages.appendChild(fp);
+  }
+  // robustness-vs-capability tab — only when some model in this set has an ECI
+  if(REPORTS.some(r=>allModelsOf(r).some(m=>MODEL_ECI[m]!=null))){
+    const rt=document.createElement("div");rt.className="tab";rt.dataset.k="__robust";
+    rt.style.setProperty("--ec","#9aa3b2");
+    rt.textContent="Robustness vs capability";
+    rt.addEventListener("click",()=>activate("__robust"));
+    tabs.appendChild(rt);
+    pages.appendChild(buildRobustness());
+  }
+  REPORTS.forEach(r=>{
+    const col=evalColor(r.key);
+    const t=document.createElement("div");t.className="tab";t.dataset.k=r.key;
+    t.style.setProperty("--ec",col);
+    t.textContent=r.title;t.addEventListener("click",()=>activate(r.key));
+    tabs.appendChild(t);
+    pages.appendChild(buildEvalPage(r));
+  });
+}
+
+/* ---------- global run-snapshot tabs (swap the whole report between run sets) ---------- */
+function fmtRuns(snap){return (snap.runs&&snap.runs.length)?snap.runs.join(" + "):"all runs";}
+function renderSnapshot(i){
+  const snap=SNAPSHOTS[i];if(!snap)return;
+  CURSNAP=snap;
+  REPORTS=snap.reports||[];
+  // each snapshot reuses the same eval keys, so reset per-eval UI state on every swap
+  [state,metricState,doseCurveMetric,doseCatModel,detailState,modelVis,condVis,axisScope].forEach(o=>{
+    for(const k in o)delete o[k];});
+  const gt=document.getElementById("gentime");
+  if(gt)gt.textContent="Generated "+snap.generated;
+  const sh=document.getElementById("subhead");
+  if(sh){const rs=snap.run_stats||[];let ti=0,to=0,tc=0,partial=false;
+    rs.forEach(r=>{ti+=r.input;to+=r.output;tc+=r.est_cost;if(!r.cost_known)partial=true;});
+    const sum=rs.length?(" &middot; "+fmtTok(ti+to)+" tokens &middot; "+(partial?"~":"")+
+      fmtUSD(tc)+(partial?"+":"")+" est. API cost"):"";
+    sh.innerHTML="Runs in this view: <b>"+fmtRuns(snap)+"</b>"+sum;}
+  document.querySelectorAll(".snaptab").forEach((t,j)=>t.classList.toggle("active",j===i));
+  buildTabs();
+  const nE=REPORTS.length, nB=REPORTS.reduce((a,r)=>a+r.records.length,0);
+  const foot=document.getElementById("foot");
+  if(foot)foot.textContent="Generated by reporting.py — "+nE+" eval(s), "+nB+
+    " variation cells · active set: "+fmtRuns(snap)+" · "+snap.generated;
+}
+function buildSnapTabs(){
+  const host=document.getElementById("snaptabs");if(!host)return;host.innerHTML="";
+  if(SNAPSHOTS.length<=1){host.style.display="none";return;}   // single run set: no need to swap
+  const lbl=document.createElement("span");lbl.className="lbl";lbl.textContent="run set:";
+  host.appendChild(lbl);
+  SNAPSHOTS.forEach((snap,i)=>{const t=document.createElement("div");t.className="snaptab";
+    t.textContent=fmtRuns(snap);t.title="Generated "+snap.generated;
+    t.addEventListener("click",()=>renderSnapshot(i));host.appendChild(t);});
+}
+/* The snapshot data lives in a gzipped sidecar (DATA_URL), fetched + inflated here so
+   the HTML itself stays tiny. DecompressionStream handles the gzip; we read the raw
+   bytes and fall back to plain JSON in case a CDN already decoded the .gz transparently. */
+async function loadSnapshots(){
+  const res=await fetch(DATA_URL,{cache:"no-cache"});
+  if(!res.ok)throw new Error("HTTP "+res.status+" fetching "+DATA_URL);
+  const buf=await res.arrayBuffer();
+  try{
+    const stream=new Blob([buf]).stream().pipeThrough(new DecompressionStream("gzip"));
+    return JSON.parse(await new Response(stream).text());
+  }catch(e){
+    return JSON.parse(new TextDecoder().decode(buf));   // already-inflated fallback
+  }
+}
+(async function boot(){
+  try{
+    SNAPSHOTS=await loadSnapshots();
+  }catch(e){
+    const p=document.getElementById("pages");
+    if(p)p.innerHTML='<p style="padding:2em;color:#b00">Failed to load report data ('+
+      (e&&e.message||e)+'). The page must be served over http(s) — open it via a web '+
+      'server, not a file:// path.</p>';
+    return;
+  }
+  buildSnapTabs();
+  renderSnapshot(SNAPSHOTS.length?SNAPSHOTS.length-1:0);   // show the most recent snapshot
+  buildGotoBox();
+  window.addEventListener("scroll",updateStickyMode,{passive:true});
+  window.addEventListener("resize",updateStickyMode,{passive:true});
+  setTimeout(updateStickyMode,0);   // initial state once the active page is laid out
+  if(location.hash&&location.hash.indexOf("ex=")>=0)setTimeout(()=>rfGoTo(location.hash),80);
+})();
+</script>
+</body></html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Handling Player Input</title>
+  <meta name="description" content="AJ Weeks - Personal Website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+  <script>
+    (function () {
+      var theme = 'light';
+
+      try {
+        var storedTheme = localStorage.getItem('theme');
+        if (storedTheme === 'light' || storedTheme === 'dark') {
+          theme = storedTheme;
+        } else {
+          theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+      } catch (error) {
+        theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.style.colorScheme = theme;
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <header>
+    <div class="site-title">
+      <a href="/">AJ Weeks</a>
+    </div>
+    <div class="theme-toggle-wrap">
+      <span class="theme-icon" aria-hidden="true">
+        <svg class="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M320 32C328.4 32 336.3 36.4 340.6 43.7L396.1 136.3L500.9 110C509.1 108 517.8 110.4 523.7 116.3C529.6 122.2 532 131 530 139.1L503.7 243.8L596.4 299.3C603.6 303.6 608.1 311.5 608.1 319.9C608.1 328.3 603.7 336.2 596.4 340.5L503.7 396.1L530 500.8C532 509 529.6 517.7 523.7 523.6C517.8 529.5 509 532 500.9 530L396.2 503.7L340.7 596.4C336.4 603.6 328.5 608.1 320.1 608.1C311.7 608.1 303.8 603.7 299.5 596.4L243.9 503.7L139.2 530C131 532 122.4 529.6 116.4 523.7C110.4 517.8 108 509 110 500.8L136.2 396.1L43.6 340.6C36.4 336.2 32 328.4 32 320C32 311.6 36.4 303.7 43.7 299.4L136.3 243.9L110 139.1C108 130.9 110.3 122.3 116.3 116.3C122.3 110.3 131 108 139.2 110L243.9 136.2L299.4 43.6L301.2 41C305.7 35.3 312.6 31.9 320 31.9z"/></svg>
+        <svg class="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576C388.8 576 451.3 548.8 497.3 504.6C504.6 497.6 506.7 486.7 502.6 477.5C498.5 468.3 488.9 462.6 478.8 463.4C473.9 463.8 469 464 464 464C362.4 464 280 381.6 280 280C280 207.9 321.5 145.4 382.1 115.2C391.2 110.7 396.4 100.9 395.2 90.8C394 80.7 386.6 72.5 376.7 70.3C358.4 66.2 339.4 64 320 64z"/></svg>
+      </span>
+      <div class="theme-switcher">
+        <input type="checkbox" id="theme-toggle">
+        <label for="theme-toggle" class="sr-only">Toggle dark theme</label>
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+
+
+<article lang="en">
+  <header>
+    <h1>Handling Player Input</h1>
+    <time class="post-meta" datetime="2019-02-04">Feb 4, 2019</time>
+    
+  </header>
+
+  <div class="post-content">
+    <p>As I've added more and more game mechanics to <a class="underline" href="https://ajweeks.com/FlexEngine">Flex</a>, I've experimented with different input methods a player can use to interact with the world besides the typical 'Press E to interact' (spinning a valve by <a class="underline" href="https://www.youtube.com/watch?v=_6wftcZg1jg">rotating a joystick</a> is one alternative method). So far I've added support for keyboard, mouse, and XBOX controllers, but I will likely further expand the number of supported devices in the future (midi keyboards anyone?). The code I have been using to handle each input method is quite messy and needed to be cleaned up. This post will cover the process I went through to get where I'm at today with the system.</p>
+<p>To see why I felt this change was necessary, take a look at how I was checking for a jump input:</p>
+<pre><code class="language-c++">if (g_InputManager-&gt;IsGamepadButtonPressed(m_Index, GamepadButton::A) ||
+    (g_InputManager-&gt;bPlayerUsingKeyboard[m_Index] &amp;&amp;
+     g_InputManager-&gt;GetKeyPressed(KeyCode::KEY_SPACE)))
+{
+    // ...
+}
+</code></pre>
+<p>Clearly not good in a number of ways:</p>
+<p><strong>1.</strong> <strong>The player can not edit keybindings</strong>. This is the <em>first</em> item on the &quot;basic&quot; category on the great <a class="underline" href="https://gameaccessibilityguidelines.com/">Game Accessibility Guidelines</a>, so I'd say it's a necessary feature to have if you have any desire to cater toward disabled gamers, plus it's a useful feature for able gamers alike.</p>
+<p><strong>2.</strong> That's simply <strong>too much code</strong> for catching an action event, and it will only grow longer as more input methods are added. This will inevitably lead to typos and copy-paste errors.</p>
+<p><strong>3.</strong> <strong>Single events could be handled multiple times</strong> by different systems leading to, for example, the player walking forward when 'W' was pressed, even when a text box showing above the play area already handled the keypress.</p>
+<h4>Abstraction</h4>
+<p>To get around the first two issues noted above, we can add a layer of abstraction between the usage code and the input events. (It's the <a class="underline" href="https://en.wikipedia.org/wiki/Fundamental_theorem_of_software_engineering">Fundamental theorem of software engineering</a> after all!)</p>
+<p>Once a mapping exists between game-specific-actions (like <code class="inline">MOVE_FORWARD</code> and <code class="inline">INTERACT</code>) and inputs (like <code class="inline">KeyCode::KEY_W</code> and <code class="inline">GamepadButton::A</code>), the usage code can be simplified to just check for an <code class="inline">Action</code> and players will be able to remap keys as they like.</p>
+<p>To implement this mapping, I created an enumeration which defines all possible actions that can be taken in-game. I also created an <code class="inline">InputBinding</code> struct which holds all necessary info about which actual inputs each action maps to. The mapping process is then simply indexing into the list using an <code class="inline">Action</code> as the index.</p>
+<pre><code class="language-c++">enum class Action
+{
+  MOVE_LEFT,
+  MOVE_RIGHT,
+  MOVE_FORWARD,
+  MOVE_BACKWARD,
+  INTERACT,
+  // ...
+  _NONE
+};
+
+struct InputBinding
+{
+  KeyCode keyCode = KeyCode::_NONE;
+  MouseButton mouseButton = MouseButton::_NONE;
+  MouseAxis mouseAxis = MouseAxis::_NONE;
+  GamepadButton gamepadButton = GamepadButton::_NONE;
+  GamepadAxis gamepadAxis = GamepadAxis::_NONE;
+  bool bNegative = false;
+};
+
+InputBinding m_InputBindings[(i32)Action::_NONE + 1];
+</code></pre>
+<p>Now, rather than that mess shown earlier, we can catch jump event as follows:</p>
+<pre><code class="language-c++">if (g_InputManager-&gt;GetActionPressed(Action::JUMP))
+{
+    // ...
+}
+</code></pre>
+<p>For the curious, see how <code class="inline">GetActionPressed</code> is implemented <a class="underline" href="https://gist.github.com/ajweeks/49179473bd576aa669cc88fd06848ed3">here</a>.</p>
+<p>This system addresses the first two issues noted above, but to solve the third problem (event handling duplication) we'll need go deeper.</p>
+<h4>Callbacks</h4>
+<p>In order to allow one system to &quot;consume&quot; an event, thereby preventing other systems from also handling it, I added a callback system for each event type.</p>
+<p>To allow an event caller to call member functions on miscellaneous types, I created an abstract class that contains one virtual function. The event caller can maintain a list of listeners using this abstract type, and call the function without knowing anything about the subclass that implements it and keeps a reference to the object which the member function should be called on. The syntax is a little strange, but it works.</p>
+<pre><code class="language-c++">enum class EventReply
+{
+  CONSUMED,
+  UNCONSUMED
+};
+
+class ICallbackMouseButton
+{
+public:
+  virtual EventReply Execute(MouseButton button, KeyAction action) = 0;
+};
+
+template&lt;typename T&gt;
+class MouseButtonEventCallback : public ICallbackMouseButton
+{
+public:
+  using CallbackFunction = EventReply(T::*)(MouseButton, KeyAction);
+
+  MouseButtonEventCallback(T* obj, CallbackFunction fun) :
+    mObject(obj),
+    mFunction(fun)
+  {
+  }
+
+  virtual EventReply Execute(MouseButton button, KeyAction action) override
+  {
+    return (mObject-&gt;*mFunction)(button, action);
+  }
+private:
+  CallbackFunction mFunction;
+  T* mObject;
+};
+</code></pre>
+<p>The trickiest part about that code was the <code class="inline">using</code> declaration syntax, but luckily I know a <a class="underline" href="https://twitter.com/simon_coenen">template wizard</a> who helped me out.</p>
+<p>I defined similar classes for mouse move &amp; keyboard events, but I'll leave them out for the sake of brevity.</p>
+<p>To register a callback, a system has to define a function matching the signature of the callback, as well as an instance of the subclassed callback object. This instance takes the type of the listener as a template argument, which is how it's able to call the member function you point it towards.</p>
+<pre><code class="language-c++">EventReply OnMouseButtonEvent(MouseButton button, KeyAction action);
+MouseButtonEventCallback&lt;DebugCamera&gt; mouseButtonCallback;
+</code></pre>
+<p>Because the callback object has no default constructor you must initialize it in the constructor of the listener. You must also bind and unbind at the appropriate times:</p>
+<pre><code class="language-c++">DebugCamera::DebugCamera() :
+  mouseButtonCallback(this, &amp;DebugCamera::OnMouseButtonEvent)
+{
+}
+
+void DebugCamera::Initialize()
+{
+  g_InputManager-&gt;BindMouseButtonEventCallback(&amp;mouseButtonCallback);
+}
+
+void DebugCamera::Destroy()
+{
+  g_InputManager-&gt;UnbindMouseButtonEventCallback(&amp;mouseButtonCallback);
+}
+
+EventReply DebugCamera::OnMouseButtonEvent(MouseButton button, KeyAction action)
+{
+  if (button == MouseButton::LEFT &amp;&amp; action == KeyAction::PRESS)
+  {
+    // ...
+    return EventReply::CONSUMED;
+  }
+  return EventReply::UNCONSUMED;
+}
+</code></pre>
+<p>The binding/unbinding functions simply add and remove entries into the list of listeners.</p>
+<pre><code class="language-c++">std::vector&lt;ICallbackMouseButton*&gt; m_MouseButtonCallbacks;
+</code></pre>
+<p>When an event is generated, the event caller can iterate over the listeners until one listener consumes it, at which point the propagation stops.</p>
+<pre><code class="language-c++">// Called by OS callback on mouse button press
+void InputManager::MouseButtonCallback(MouseButton mouseButton,
+  KeyAction action, i32 mods)
+{
+  // ...
+
+  for (auto iter = m_MouseButtonCallbacks.rbegin();
+       iter != m_MouseButtonCallbacks.rend();
+       ++iter)
+  {
+    if ((*iter)-&gt;Execute(mouseButton, action) == EventReply::CONSUMED)
+    {
+      break;
+    }
+  }
+}
+</code></pre>
+<p>This system nicely handles the third issue I noted at the start, but it ignores the first issue! To solve all three, I added yet another callback, this time for <code class="inline">Action</code> events. Determining when to call these took a bit of fiddling, especially since I wanted to keep the other callbacks. This was made more complex by the priority system I had since added which determines the order in which the callbacks are called. Priority is determined simply by an integer specified at event bind-time. (<a class="underline" href="https://github.com/ajweeks/FlexEngine/commit/7ccf1d00dc0961ac08fd9af5f516cb9ec8b44a52#diff-1b7a63e8c012c6ad34c6d9677f5b0781">diff</a>) You can find the code in its entirety on <a class="underline" href="https://github.com/ajweeks/FlexEngine/commits/development">GitHub</a> if you'd like to dig through it further.</p>
+<h4>Conclusion</h4>
+<p>I would prefer to be able to store the callback objects in the event caller classes so that each listener doesn't require an extra member, but I don't believe that's possible without a reflection system (which I'm not keen enough on to bother implementing). Maybe one of these days someone will release a <a class="underline" href="https://github.com/BSVino/JaiPrimer/blob/master/JaiPrimer.md">decent programming language with reflection support...</a></p>
+<p>While implementing this system I was very wary of compile times, and knowing that templates and modern C++ classes are <a class="underline" href="https://zeuxcg.org/2019/01/17/is-c-fast/">known</a> for being slow in several senses, I tried to keep things as simple as I could. However, I think there's still some work to be done in that regard. With that said, this system feels like a big step forward and I've been really enjoying cleaning up the old code to use it.</p>
+
+  </div>
+
+  
+
+  <div class="footnotes-section"></div>
+
+  
+  
+  
+  
+
+  
+  
+
+  
+  
+
+  
+
+  
+</article>
+
+  </main>
+
+  <footer>
+    <div class="footer-nav">
+      <a href="/professional-experience/">Professional Experience</a>
+      <a href="/writings">Writings</a>
+      <a href="/games/">Games</a>
+      
+    </div>
+    <ul class="footer-social">
+      <li>
+        <a href="https://x.com/_ajweeks_" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" class="footer-social-link">
+          <span class="footer-social-icon footer-social-icon-x"></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/ajweeks" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="footer-social-link">
+          <span class="footer-social-icon footer-social-icon-github"></span>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.lesswrong.com/users/ajweeks" target="_blank" rel="noopener noreferrer" aria-label="LessWrong" class="footer-social-link">
+          <span class="footer-social-icon footer-social-icon-lesswrong">LW</span>
+        </a>
+      </li>
+    </ul>
+    <p class="built-with">Built with 11ty.</p>
+  </footer>
+
+  <script>
+    const toggleCheckbox = document.getElementById('theme-toggle');
+    if (toggleCheckbox) {
+      const currentTheme =
+        document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+
+      // Keep toggle UI in sync with the theme pre-applied in the inline head script.
+      toggleCheckbox.checked = currentTheme === 'dark';
+
+      toggleCheckbox.addEventListener('change', (event) => {
+        const newTheme = event.target.checked ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        document.documentElement.style.colorScheme = newTheme;
+
+        try {
+          localStorage.setItem('theme', newTheme);
+        } catch (error) {
+          // Ignore storage failures (private mode, blocked storage, etc.).
+        }
+      });
+    }
+  </script>
+
+  <script>
+    // Footnote processing (supports legacy [1] + [1]: ... and markdown-it-footnote)
+    (() => {
+      const main = document.querySelector('main');
+      if (!main) return;
+
+      const refSelector = [
+        'a.footnote-ref[href^="#footnote-"]',
+        'a.footnote-ref[href^="#fn"]',
+        'sup.footnote-ref > a[href^="#fn"]'
+      ].join(', ');
+
+      function findRefs() {
+        return Array.from(main.querySelectorAll(refSelector));
+      }
+
+      function buildLegacyFootnotes() {
+        const footnotes = Array.from(main.querySelectorAll('sup'))
+          .map((sup) => {
+            const match = sup.textContent.trim().match(/^\[(\d+)\]$/);
+            return match ? { number: match[1], element: sup } : null;
+          })
+          .filter(Boolean);
+
+        if (!footnotes.length) return;
+
+        // Parse definitions from paragraph HTML so inline links are preserved.
+        const footnoteDefs = {};
+        const defNodesToRemove = [];
+
+        Array.from(main.querySelectorAll('p')).forEach((p) => {
+          const html = p.innerHTML.trim();
+          const match = html.match(/^\[(\d+)\]:\s*/);
+          if (!match) return;
+
+          footnoteDefs[match[1]] = html.slice(match[0].length).trim();
+          defNodesToRemove.push(p);
+        });
+
+        defNodesToRemove.forEach((node) => node.remove());
+
+        const footnotesSection = main.querySelector('.footnotes-section');
+        footnotesSection.innerHTML = '';
+
+        const footnotesTitle = document.createElement('h3');
+        footnotesTitle.textContent = 'Footnotes';
+        footnotesSection.appendChild(footnotesTitle);
+
+        const footnotesList = document.createElement('ol');
+        footnotesList.className = 'footnotes-list';
+
+        footnotes.forEach(({ number, element }) => {
+          const footnoteLink = document.createElement('a');
+          footnoteLink.href = `#footnote-${number}`;
+          footnoteLink.className = 'footnote-ref';
+          footnoteLink.id = `ref-${number}`;
+          footnoteLink.textContent = number;
+
+          element.innerHTML = '';
+          element.appendChild(footnoteLink);
+
+          const footnoteItem = document.createElement('li');
+          footnoteItem.id = `footnote-${number}`;
+          footnoteItem.setAttribute('data-footnote-number', number);
+
+          const content = footnoteDefs[number] || `<em>Footnote ${number} content goes here</em>`;
+          footnoteItem.innerHTML = `${content} <a href="#ref-${number}" class="footnote-backref">↩</a>`;
+          footnotesList.appendChild(footnoteItem);
+        });
+
+        footnotesSection.appendChild(footnotesList);
+        if (!footnotesSection.parentNode) main.appendChild(footnotesSection);
+      }
+
+      function getFootnoteItem(ref) {
+        const href = ref.getAttribute('href') || '';
+        if (!href.startsWith('#')) return null;
+        return document.getElementById(decodeURIComponent(href.slice(1)));
+      }
+
+      let refs = findRefs();
+      if (!refs.length) {
+        buildLegacyFootnotes();
+        refs = findRefs();
+      }
+      if (!refs.length) return;
+
+      const bubble = document.createElement('div');
+      bubble.className = 'footnote-hover-bubble';
+      document.body.appendChild(bubble);
+
+      let hideTimer = null;
+
+      function cancelHide() {
+        if (hideTimer) {
+          clearTimeout(hideTimer);
+          hideTimer = null;
+        }
+      }
+
+      let hideDelayMs = 250;
+      function scheduleHide() {
+        cancelHide();
+        hideTimer = setTimeout(() => {
+          bubble.classList.remove('is-visible');
+          hideTimer = null;
+        }, hideDelayMs);
+      }
+
+      function hideBubble() {
+        cancelHide();
+        bubble.classList.remove('is-visible');
+      }
+
+      function positionBubble(ref) {
+        const r = ref.getBoundingClientRect();
+        const b = bubble.getBoundingClientRect();
+        let top = window.scrollY + r.top - b.height - 10;
+        if (top < window.scrollY + 8) top = window.scrollY + r.bottom + 10;
+        let left = window.scrollX + r.left + r.width / 2 - b.width / 2;
+        left = Math.max(window.scrollX + 8, Math.min(left, window.scrollX + window.innerWidth - b.width - 8));
+        bubble.style.top = `${top}px`;
+        bubble.style.left = `${left}px`;
+      }
+
+      function showBubble(ref) {
+        const item = getFootnoteItem(ref);
+        if (!item) return;
+
+        const clone = item.cloneNode(true);
+        clone.querySelectorAll('.footnote-backref, .reversefootnote').forEach((el) => el.remove());
+
+        // markdown-it-footnote wraps content in <p>; unwrap for cleaner bubble rendering
+        const firstP = clone.querySelector('p');
+        bubble.innerHTML = firstP ? firstP.innerHTML.trim() : clone.innerHTML.trim();
+        if (!bubble.innerHTML) return;
+
+        bubble.classList.add('is-visible');
+        positionBubble(ref);
+      }
+
+      refs.forEach((ref, i) => {
+        if (!ref.id) ref.id = `ref-${i + 1}`;
+
+        // In markdown-it output the <sup> has class="footnote-ref"; move styling to the <a>
+        // so the full circular area is hoverable/clickable.
+        const supWrapper = ref.closest('sup.footnote-ref');
+        if (supWrapper && supWrapper.firstElementChild === ref) {
+          supWrapper.classList.remove('footnote-ref');
+        }
+        ref.classList.add('footnote-ref');
+
+        // Normalize markdown-it default "[1]" label to "1".
+        let label = ref.textContent.trim();
+        const labelMatch = label.match(/^\[(.+)\]$/);
+        if (labelMatch) {
+          label = labelMatch[1];
+          ref.textContent = label;
+        }
+
+        // markdown-it can emit secondary refs like "1:1", "1:2".
+        // For bottom list numbering, keep only the primary index ("1").
+        const primaryLabel = label.split(':')[0];
+
+        const item = getFootnoteItem(ref);
+        if (item) {
+          // Show explicit index marker in bottom list (same style as legacy mode).
+          item.setAttribute('data-footnote-number', primaryLabel);
+        }
+        if (item && !item.querySelector('.footnote-backref, .reversefootnote')) {
+          const back = document.createElement('a');
+          back.href = `#${ref.id}`;
+          back.className = 'footnote-backref';
+          back.textContent = '↩';
+          item.appendChild(document.createTextNode(' '));
+          item.appendChild(back);
+        }
+
+        ref.addEventListener('mouseenter', () => {
+          cancelHide();
+          showBubble(ref);
+        });
+        ref.addEventListener('mouseleave', scheduleHide);
+        ref.addEventListener('focus', () => {
+          cancelHide();
+          showBubble(ref);
+        });
+        ref.addEventListener('blur', scheduleHide);
+        ref.addEventListener('click', (e) => {
+          e.preventDefault();
+          hideBubble();
+          const target = getFootnoteItem(ref);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      bubble.addEventListener('mouseenter', cancelHide);
+      bubble.addEventListener('mouseleave', scheduleHide);
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('a.footnote-ref, .footnote-hover-bubble')) hideBubble();
+      });
+
+      // Hide on scroll/resize (do not reposition)
+      document.addEventListener('scroll', hideBubble, { passive: true });
+      window.addEventListener('resize', hideBubble);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+---
+permalink: /feed.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AJ Weeks — Writings</title>
+    <link>https://ajweeks.com/</link>
+    <description>New writings from AJ Weeks</description>
+    <language>en-us</language>
+    <lastBuildDate>{{ page.date.toUTCString() }}</lastBuildDate>
+    <atom:link href="https://ajweeks.com/feed.xml" rel="self" type="application/rss+xml" />
+
+    {% for post in collections.post | dedupeTranslations | reverse %}
+      {% set postYear = post.date.getFullYear() %}
+      {% if postYear >= 2026 %}
+    <item>
+      <title>{{ post.data.title | escape }}</title>
+      <link>https://ajweeks.com{{ post.url }}</link>
+      <guid isPermaLink="true">https://ajweeks.com{{ post.url }}</guid>
+      <pubDate>{{ post.date.toUTCString() }}</pubDate>
+      {% if post.data.description %}<description>{{ post.data.description | escape }}</description>{% endif %}
+    </item>
+      {% endif %}
+    {% endfor %}
+  </channel>
+</rss>

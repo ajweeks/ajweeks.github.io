@@ -1,0 +1,29 @@
+---
+layout: base.njk
+title: Old Writings
+---
+
+<h1>Old Writings</h1>
+<p class="subtitle">Posts from before 2026</p>
+
+<section aria-labelledby="old-writings-list-title">
+  <h2 id="old-writings-list-title" class="sr-only">Archived posts list</h2>
+  {% set hasOldPosts = false %}
+  <ul class="post-list">
+    {% for post in collections.post | dedupeTranslations | reverse %}
+      {% set postYear = post.date.getFullYear() %}
+      {% if postYear < 2026 %}
+        {% set hasOldPosts = true %}
+      <li>
+        <time class="post-meta" datetime="{{ post.date | dateISO }}">{{ post.date | postDate }}</time>
+        <a href="{{ post.url }}">{{ post.data.title }}</a>
+      </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+  {% if not hasOldPosts %}
+  <p>No archived posts yet.</p>
+  {% endif %}
+</section>
+
+<p><a href="/writings/" class="subdued-link">← Back to recent writings</a></p>

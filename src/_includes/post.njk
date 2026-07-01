@@ -1,0 +1,82 @@
+---
+layout: base.njk
+---
+
+{% set translations = collections.post | translationsFor(translationKey) %}
+
+<article lang="{{ lang or 'en' }}">
+  <header>
+    <h1>{{ title }}</h1>
+    <time class="post-meta" datetime="{{ date | dateISO }}">{{ date | postDate }}</time>
+    {% if translations.length > 1 %}
+      <p class="post-translations">
+        Available in:
+        {% for t in translations %}
+          {% if t.url == page.url %}<span class="post-translations-current">{{ t.data.lang | languageName }}</span>{% else %}<a href="{{ t.url }}">{{ t.data.lang | languageName }}</a>{% endif %}{% if not loop.last %} · {% endif %}
+        {% endfor %}
+      </p>
+    {% endif %}
+  </header>
+
+  <div class="post-content">
+    {{ content | safe }}
+  </div>
+
+  {# <hr class="section-divider"> #}
+
+  <div class="footnotes-section"></div>
+
+  {% set previousPost = collections.post | getPreviousCollectionItem(page) %}
+  {% set nextPost = collections.post | getNextCollectionItem(page) %}
+  {% if translationKey %}
+    {% set _idx = 0 %}
+    {% for p in collections.post %}
+      {% if p.url == page.url %}{% set _idx = loop.index0 %}{% endif %}
+    {% endfor %}
+    {% set previousPost = null %}
+    {% for p in collections.post %}
+      {% if loop.index0 < _idx and (not p.data.translationKey or p.data.translationKey != translationKey) %}
+        {% set previousPost = p %}
+      {% endif %}
+    {% endfor %}
+    {% set nextPost = null %}
+    {% for p in collections.post %}
+      {% if loop.index0 > _idx and not nextPost and (not p.data.translationKey or p.data.translationKey != translationKey) %}
+        {% set nextPost = p %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% set isOldPost = date.getFullYear() < 2026 %}
+
+  {% set showPreviousPost = false %}
+  {% if previousPost and previousPost.date %}
+    {% set showPreviousPost = (previousPost.date.getFullYear() < 2026) == isOldPost %}
+  {% endif %}
+
+  {% set showNextPost = false %}
+  {% if nextPost and nextPost.date %}
+    {% set showNextPost = (nextPost.date.getFullYear() < 2026) == isOldPost %}
+  {% endif %}
+
+  {% if showPreviousPost or showNextPost %}
+    <div class="post-navigation">
+      {% if showPreviousPost %}
+        <a href="{{ previousPost.url }}" class="prev-post">← {{ previousPost.data.title }}</a>
+      {% else %}
+        <span></span>
+      {% endif %}
+      {% if showNextPost %}
+        <a href="{{ nextPost.url }}" class="next-post">{{ nextPost.data.title }} →</a>
+      {% else %}
+        <span></span>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {# {% set postYear = date.getFullYear() %}
+  {% if postYear < 2026 %}
+    <p class="back-link-wrapper"><a href="/old-writings/" class="subdued-link">← Back to old writings</a></p>
+  {% else %}
+    <p class="back-link-wrapper"><a href="/writings/" class="subdued-link">← Back to writings</a></p>
+  {% endif %} #}
+</article>

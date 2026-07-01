@@ -1,0 +1,21 @@
+---
+layout: base.njk
+title: Professional Experience
+permalink: /professional-experience/
+---
+
+<h1>Professional Experience</h1>
+
+<ul class="experience-list">
+  {% for exp in collections.experience | reverse %}
+  <li>
+    <a href="{{ exp.url }}" class="experience-item">
+      <span class="exp-title">{{ exp.data.title }}</span>
+      <span class="exp-role">{{ exp.data.role }}</span>
+      <span class="exp-date">{{ exp.data.period }}</span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+<p style="font-size: 12pt">See more details in my <a href="/AJ-Weeks_CV.pdf">CV</a></p>

@@ -1,0 +1,10 @@
+---
+layout: page.njk
+title: Utterly Request Account Removal
+permalink: /utterly-request-account-removal/
+author: AJ Weeks
+---
+
+## Utterly account removal
+
+If you wish to close your account and delete all user data, navigate to the settings page in the app and select "Delete Account".

@@ -1,0 +1,18 @@
+---
+layout: base.njk
+title: Writings
+---
+
+<h1>Writings</h1>
+
+<ul class="post-list">
+  {% for post in collections.post | dedupeTranslations | reverse %}
+    {% set postYear = post.date.getFullYear() %}
+    {% if postYear >= 2026 %}
+    <li>
+      <time class="post-meta">{{ post.date | postDate }}</time>
+      <a href="{{ post.url }}">{{ post.data.title }}</a>
+    </li>
+    {% endif %}
+  {% endfor %}
+</ul>

@@ -1,0 +1,17 @@
+---
+layout: base.njk
+---
+<article>
+    <header>
+        <h1>{{ title }}</h1>
+        <p class="post-meta">{{ period }}</p>
+    </header>
+
+    <div class="post-content">
+        {{ content | safe }}
+    </div>
+</article>
+
+<hr style="margin: 3rem 0; border: 0; border-top: 1px solid var(--border-color);">
+
+<p><a href="/professional-experience/">← Back to experiences</a></p>
