@@ -672,7 +672,7 @@ var ParticleGenerator = (function () {
         }
     }
     ParticleGenerator.prototype.remove = function (particle) {
-        this.particles.splice(this.particles.indexOf(particle));
+        this.particles.splice(this.particles.indexOf(particle), 1);
     };
     ParticleGenerator.prototype.update = function () {
         for (var p in this.particles) {
@@ -788,7 +788,7 @@ var Camera = (function () {
     };
     Camera.prototype.shake = function (amountX, amountY) {
         this.shakeX += (Math.random() * (amountX / 2) + (amountX / 2));
-        this.shakeY += (Math.random() * (amountY / 2) + (amountX / 2));
+        this.shakeY += (Math.random() * (amountY / 2) + (amountY / 2));
     };
     return Camera;
 }());
