@@ -544,6 +544,7 @@ body.sitemap .post-list li {
   color: var(--subdued-link-color);
 }
 
+/* 
 .post-content > p:first-of-type::first-letter {
   float: left;
   font-family: var(--font-family-ui);
@@ -552,6 +553,7 @@ body.sitemap .post-list li {
   margin-right: 0.08em;
   color: var(--accent-soft);
 }
+*/
 
 .footnotes-section h3 {
   font-size: 1.1rem;

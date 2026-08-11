@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Writings</title>
-  <meta name="description" content="AJ Weeks - Personal Website">
+  <title>Reproducing Circuit Breakers</title>
+  <meta name="description" content="Reproducing the paper &#39;Improving Alignment and Robustness with Circuit Breakers&#39; by Zou et al. (2024).">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
@@ -51,75 +51,73 @@
 
   <main>
     
-<h1>Writings</h1>
 
-<ul class="post-list">
+
+<article lang="en">
+  <header>
+    <h1>Reproducing Circuit Breakers</h1>
+    <time class="post-meta" datetime="2026-08-10">Aug 10, 2026</time>
+    
+  </header>
+
+  <div class="post-content">
+    <h5><em>1 week research mini-sprint</em></h5>
+<img src="/assets/img/circuit-breakers-header.png" width="100%">
+<p>Here I describe my reproduction of the Representation Rerouting (RR) defensive LLM fine-tuning technique first introduced in <sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>. I then provide a brief overview of my attempts to understand and illustrate how the technique works on a mechanical level.</p>
+<p>The Representation Rerouting (RR) technique consists of fine-tuning a model such that, on harmful content, its internal representations are pushed away from the original model's while on benign content it is left untouched. This fine-tuning results in harmful generations collapsing into gibberish mid-output. On Llama-3-8B this approach cuts attack success rate (ASR) from <strong>38%</strong> to <strong>4%</strong> (on the paper's own eval suite) — but has a documented side effect: the fine-tuned model also refuses many benign requests.</p>
+<p>My primary goal with this project was to learn more about the direction that the circuit breaker learns to push harmful representations into. To do this, I first reproduced the RR fine-tuning technique on Llama-3-8B and confirmed that the model correctly refused direct harmful requests, and short-circuited on prefill attacks where the base model complies. Across five replayed HarmBench attack suites the ASR on my fine-tuned model was 1.42, nearly identical to the released fine-tuned model's 1.59 (in comparison to the base model's 20.23, where lower is better). I also fine-tuned and tested Mistral-7B-Instruct-v0.2 to have two model families, and generally found consistent results for both models.</p>
+<p>The biggest finding of this project was that benign prompts which the fine-tuned model wrongly refuses are pushed along the same direction as genuinely harmful content (cosine 0.91 vs 0.96). Since 0.96 is how well harmful prompts agree with their own average, 0.91 is close to indistinguishable. This shows that this undesirable over-refusal comes from an existing mechanism, firing overly eagerly on harmless inputs that happen to look harmful (e.g., <em>&quot;How can I <strong>kill</strong> a Python process?&quot;</em>). I also discovered that this direction is new and close to orthogonal to the base model's harmfulness axis (cosine 0.01), while a probe trained on my fine-tuned model is nearly parallel to it (0.98).</p>
+<p>Adding this direction causes the model to refuse safe prompts which it otherwise answers. Adding a random vector of the same magnitude however leads to gibberish. Deleting the direction, however, has no effect. This indicates that it is informationally useful, but not solely responsible for the refusal or short circuiting behaviour.</p>
+<p>In summary, RR picks a new internal direction and pushes representations along it. This direction is new, and orthogonal to the harmfullness direction. The push along this direction is how the circuit breaker works, the problem is that the same push sometimes happens for benign content that appears harmful. The most interesting next question to ask is which benign prompts in particular trigger this false refusal, and how the base model can be better trained to reduce the frequency of that happening, or how the circuit breaker mechanism itself can be made more robust to this shortcoming.</p>
+<p>Find all source code here: <sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup></p>
+<hr>
+<h3>Automated research assistant</h3>
+<p>Beyond my technical findings, this project was additionally a test of how autonomous today's frontier models can be when acting as research assistants. I let Claude Code (mostly Opus 5) run for hours at a time with my specified goals and access to an A100. It did an okay job overall, but produced a lot of results and made some weak and downright false claims. For my next project I will rein back the amount of freedom I give to models, instead giving them specific tasks so there is less room for veering off track. Today's models are shockingly good at troubleshooting technical problems and getting <em>something</em> running, though they still lack a lot of &quot;common sense&quot; and research taste and are very prone to reward hacking <sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup>.</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p><a href="https://arxiv.org/abs/2406.04313" target="_blank" rel="noopener">Improving Alignment and Robustness with Circuit Breakers, Zou et al.</a> <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p><a href="https://github.com/ajweeks/circuit-breakers" target="_blank" rel="noopener">https://github.com/ajweeks/circuit-breakers</a> <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p><a href="https://www.lesswrong.com/posts/rKC4xJFkxm6cNq4i9/reward-hacking-is-becoming-more-sophisticated-and-deliberate" target="_blank" rel="noopener">https://www.lesswrong.com/posts/rKC4xJFkxm6cNq4i9/reward-hacking-is-becoming-more-sophisticated-and-deliberate</a> <a href="#fnref3" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+
+  </div>
+
+  
+
+  <div class="footnotes-section"></div>
+
+  
+  
+  
+  
+
+  
   
     
-    
-    <li>
-      <time class="post-meta">Aug 10, 2026</time>
-      <a href="/posts/2026-07-29-circuit-breakers/">Reproducing Circuit Breakers</a>
-    </li>
-    
   
-    
-    
-    <li>
-      <time class="post-meta">May 22, 2026</time>
-      <a href="/posts/2026-05-22-barriers-to-a-prosperous-future/">Barriers to a Prosperous Future</a>
-    </li>
-    
+
   
-    
-    
   
-    
-    
+
   
-    
-    
+    <div class="post-navigation">
+      
+        <a href="/posts/2026-05-22-barriers-to-a-prosperous-future/" class="prev-post">← Barriers to a Prosperous Future</a>
+      
+      
+        <span></span>
+      
+    </div>
   
-    
-    
+
   
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-</ul>
+</article>
+
   </main>
 
   <footer>
