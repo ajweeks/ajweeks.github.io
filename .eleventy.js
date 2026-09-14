@@ -29,7 +29,6 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy(".htaccess");
     eleventyConfig.addPassthroughCopy("utterly-privacy-policy.html");
     eleventyConfig.addPassthroughCopy("src/arena/**");
-    eleventyConfig.addPassthroughCopy("src/utterly");
     
     // Copy all game assets (exclude .html/.md templates, which Eleventy renders
     // via their permalinks — copying them verbatim causes duplicate, broken
