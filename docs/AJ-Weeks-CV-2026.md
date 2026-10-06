@@ -1,21 +1,25 @@
 # AJ Weeks
 
-**Stockholm, Sweden** • Lidköpingsvägen 51, 121 39  
+**Stockholm, Sweden**  
 **Phone:** (+46) 724 06 47 97 • **Email:** [contact@ajweeks.com](mailto:contact@ajweeks.com)
 
 ---
 
 ### Summary
-With eight years of experience as a graphics programmer and a strong passion for understanding things at their core, I am transitioning into technical AI safety. I bring a high quality bar and strong problem-solving abilities.
+Engineer with eight years of graphics programming, now working full-time on technical AI safety: ARENA alumnus, research team lead in the Heron AI Security Research Fellowship, and organizer of the Stockholm AI Safety community. I bring deep GPU and systems expertise and a high quality bar to interpretability and evaluation work.
 
 ---
 
 ### Work Experience
 
-#### **Independent Research** | *Technical AI Safety Researcher*  
-*May 2026 – Present | Stockholm, Sweden*  
-- Full-time studies of technical alignment approaches.
-- Will participate in ARENA 8.0.
+#### **Heron AI Security Research Fellowship** | *Research Lead*  
+*Sept 2026 – Present | Online*  
+- Leading a three-month research project on fine-tuning open-weight LLMs to more accurately predict their future adherence to arbitrary policies.
+
+#### **Independent AI Safety Research**
+*May 2026 – Sept 2026*
+- Full-time studies of technical AI safety
+- Partcipant in ARENA 8.0.
 
 #### **Electronic Arts** | *Rendering Engineer*  
 *Jan 2024 – May 2026 | Stockholm, Sweden*  
@@ -45,11 +49,16 @@ With eight years of experience as a graphics programmer and a strong passion for
 
 #### **Flex Engine** *(2017 – 2023)*  
 - Custom game engine built from scratch (C++, Vulkan).
-- Features a physically-based renderer supporting advanced features, a physics solver, audio engine, UI renderer, and more (GitHub).
+- Features a physically-based renderer supporting advanced features, a physics solver, audio engine, UI renderer, and more ([GitHub](https://github.com/ajweeks/FlexEngine)).
 
 ---
 
 ### Education & Training
+
+#### **ARENA 8.0 – Participant** | *In-person at LISA*  
+*June 2026 | London, England*  
+- 5-week program covering transformers, interpretability, fine-tuning, RL, and evals.
+- [In Other Words](https://www.lesswrong.com/posts/SZk2PGk6GXmKfGpGL/in-other-words-the-influence-of-prompt-variation-on): 5-day project on the influence of prompt variation on alignment evals.
 
 #### **Technical AI Safety Course – Participant** | *BlueDot Impact*  
 *May 2026 | Online*  
