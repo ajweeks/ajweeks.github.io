@@ -35,7 +35,7 @@ Other team members:
 
 <!-- Wrap video in 16:9-forced empty div -->
 <div style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
-  <div class="sketchfab-embed-wrapper"><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://sketchfab.com/models/2a7e8a1306dd4537acbbb0610e97c63c/embed?autospin=0.2&amp;autostart=0&amp;transparent=0&amp;ui_related=0" frameborder="0" allowvr allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" onmousewheel=""></iframe>
+  <div class="sketchfab-embed-wrapper"><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://sketchfab.com/models/2a7e8a1306dd4537acbbb0610e97c63c/embed?autospin=0.2&amp;autostart=0&amp;transparent=0&amp;ui_related=0" frameborder="0" allowvr allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
 
 <p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">

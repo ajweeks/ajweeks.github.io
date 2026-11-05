@@ -23,6 +23,7 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("src/_headers");
     eleventyConfig.addPassthroughCopy("assets");
     eleventyConfig.addPassthroughCopy("AJ-Weeks_CV.pdf");
+    eleventyConfig.addPassthroughCopy("AJ-Weeks-CV-2026.md");
     eleventyConfig.addPassthroughCopy("CNAME");
     eleventyConfig.addPassthroughCopy("robots.txt");
     eleventyConfig.addPassthroughCopy("logo.ico");

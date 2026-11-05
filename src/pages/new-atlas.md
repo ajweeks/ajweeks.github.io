@@ -15,7 +15,7 @@ New Atlas is a real-time strategy game I made with **five other team members** o
 
  In New Atlas you control a small army of units through a 1920's era city in search for *luma* - the city's most valuable natural resource. The substance has been used for years as a power source, but recently a variant of it was discovered that, when consumed, gives you super-human speed. Use your specialist units strategically to break down those who stand in your way, while your regular units blast through them in hoards.
 
- <div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/252341564?title=0&byline=0&portrait=0" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/219208002?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Unreal Engine 4 Particle Scene - Breakdown"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
 
 <p></p>
 
