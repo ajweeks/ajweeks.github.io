@@ -20,14 +20,12 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("src/css");
     eleventyConfig.addPassthroughCopy("src/js");
     eleventyConfig.addPassthroughCopy("src/images");
-    eleventyConfig.addPassthroughCopy("src/_headers");
     eleventyConfig.addPassthroughCopy("assets");
     eleventyConfig.addPassthroughCopy("AJ-Weeks_CV.pdf");
     eleventyConfig.addPassthroughCopy("AJ-Weeks-CV-2026.md");
     eleventyConfig.addPassthroughCopy("CNAME");
     eleventyConfig.addPassthroughCopy("robots.txt");
     eleventyConfig.addPassthroughCopy("logo.ico");
-    eleventyConfig.addPassthroughCopy(".htaccess");
     eleventyConfig.addPassthroughCopy("utterly-privacy-policy.html");
     eleventyConfig.addPassthroughCopy("src/arena/**");
     
