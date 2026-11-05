@@ -16,17 +16,17 @@ And the new TypeScript version's source can be found here: [github.com/ajweeks/m
 
 Here are some screenshots from the new TypeScript version:
 <div width="100%">
-  <a data-fancybox="gallery" href="/assets/img/mirrors-ts-01.png"><img src="/assets/img/mirrors-ts-01.png" width="32%"></a>
-  <a data-fancybox="gallery" href="/assets/img/mirrors-ts-02.png"><img src="/assets/img/mirrors-ts-02.png" width="32%"></a>
-  <a data-fancybox="gallery" href="/assets/img/mirrors-ts-03.png"><img src="/assets/img/mirrors-ts-03.png" width="32%"></a>
+  <a data-fancybox="gallery" href="/assets/img/mirrors-ts-01.webp"><img src="/assets/img/mirrors-ts-01.webp" width="32%"></a>
+  <a data-fancybox="gallery" href="/assets/img/mirrors-ts-02.webp"><img src="/assets/img/mirrors-ts-02.webp" width="32%"></a>
+  <a data-fancybox="gallery" href="/assets/img/mirrors-ts-03.webp"><img src="/assets/img/mirrors-ts-03.webp" width="32%"></a>
 </div>
 <br />
 
 And here are some screenshots from the original Java version:
 <div width="100%">
-  <a data-fancybox="gallery" href="/assets/img/mirrors-01.png"><img src="/assets/img/mirrors-01.png" width="32%"></a>
-  <a data-fancybox="gallery" href="/assets/img/mirrors-02.png"><img src="/assets/img/mirrors-02.png" width="32%"></a>
-  <a data-fancybox="gallery" href="/assets/img/mirrors-03.png"><img src="/assets/img/mirrors-03.png" width="32%"></a>
+  <a data-fancybox="gallery" href="/assets/img/mirrors-01.webp"><img src="/assets/img/mirrors-01.webp" width="32%"></a>
+  <a data-fancybox="gallery" href="/assets/img/mirrors-02.webp"><img src="/assets/img/mirrors-02.webp" width="32%"></a>
+  <a data-fancybox="gallery" href="/assets/img/mirrors-03.webp"><img src="/assets/img/mirrors-03.webp" width="32%"></a>
 </div>
 <br />
 

@@ -12,8 +12,8 @@ I then found Sascha Willems’ fantastic <a class="underline" href="https://gith
 There is small issue in my Vulkan renderer currently; everything is flipped horizontally relative to the OpenGL renderer. This is caused by the coordinate system Vulkan uses by default being different from the one OpenGL uses - it shouldn’t be terribly difficult to fix though.
 
 <div width="100%">
-  <a data-fancybox="gallery" href="/assets/img/rendering-engine-02.png"><img src="/assets/img/rendering-engine-02.png" width="49%"></a>
-  <a data-fancybox="gallery" href="/assets/img/rendering-engine-03.png"><img src="/assets/img/rendering-engine-03.png" width="49%"></a>
+  <a data-fancybox="gallery" href="/assets/img/rendering-engine-02.webp"><img src="/assets/img/rendering-engine-02.webp" width="49%"></a>
+  <a data-fancybox="gallery" href="/assets/img/rendering-engine-03.webp"><img src="/assets/img/rendering-engine-03.webp" width="49%"></a>
   <span class="caption">Vulkan and OpenGL rendering the same scene</span>
 </div>
 

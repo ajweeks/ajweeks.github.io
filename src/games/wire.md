@@ -12,9 +12,9 @@ Live the life of a telephone operator in the mid twentieth century, connecting t
 **Download the game here**: [electric-jammers.itch.io/slappin-stackers](https://electric-jammers.itch.io/slappin-stackers)
 
 <div width="100%">
-  <a data-fancybox="gallery" href="/assets/img/wire-01.jpg"><img src="/assets/img/wire-01.jpg" width="32%"></a>
-  <a data-fancybox="gallery" href="/assets/img/wire-02.jpg"><img src="/assets/img/wire-02.jpg" width="32%"></a>
-  <a data-fancybox="gallery" href="/assets/img/wire-03.jpg"><img src="/assets/img/wire-03.jpg" width="32%"></a>
+  <a data-fancybox="gallery" href="/assets/img/wire-01.webp"><img src="/assets/img/wire-01.webp" width="32%"></a>
+  <a data-fancybox="gallery" href="/assets/img/wire-02.webp"><img src="/assets/img/wire-02.webp" width="32%"></a>
+  <a data-fancybox="gallery" href="/assets/img/wire-03.webp"><img src="/assets/img/wire-03.webp" width="32%"></a>
 </div>
 <p></p>
 

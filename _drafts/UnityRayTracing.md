@@ -7,7 +7,7 @@ permalink: /blog/:year/:month/:day/:title/
 author: AJ Weeks
 ---
 
-<!-- <a data-fancybox="gallery" href="/assets/img/ssao-final-01.jpg"><img width="100%" src="/assets/img/ssao-final-01.jpg" /></a> -->
+<!-- <a data-fancybox="gallery" href="/assets/img/ssao-final-01.webp"><img width="100%" src="/assets/img/ssao-final-01.webp" /></a> -->
 
 Unity recently added support for Ray Tracing in their High Definition Render Pipeline (HDRP), however there is no documentation for how to use it, so I thought I would collect some notes here that I learnt while experimenting with it for anyone wanting to give it a go.
 

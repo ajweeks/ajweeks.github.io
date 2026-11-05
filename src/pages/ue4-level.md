@@ -18,15 +18,15 @@ A modular approach was taken to reduce the amount of time needed to fill out the
 <iframe width="560" height="315" src="https://www.youtube.com/embed/c2PWnRBDugg" frameborder="0" allowfullscreen></iframe>
 </div>
 
-<img src="/assets/img/LE_final_01.jpg" width="100%"><br />
-<img src="/assets/img/LE_final_02.jpg" width="100%"><br />
-<img src="/assets/img/LE_final_03.jpg" width="100%"><br />
-<img src="/assets/img/LE_final_04.jpg" width="100%"><br />
-<img src="/assets/img/LE_final_05.jpg" width="100%"><br />
-<img src="/assets/img/LE_final_06.jpg" width="100%"><br />
-<img src="/assets/img/LE_final_07.jpg" width="100%"><br />
-<img src="/assets/img/LE_final_breakdown_01.jpg" width="100%"><br />
-<img src="/assets/img/LE_final_breakdown_02.jpg" width="100%"><br />
+<img src="/assets/img/LE_final_01.webp" width="100%"><br />
+<img src="/assets/img/LE_final_02.webp" width="100%"><br />
+<img src="/assets/img/LE_final_03.webp" width="100%"><br />
+<img src="/assets/img/LE_final_04.webp" width="100%"><br />
+<img src="/assets/img/LE_final_05.webp" width="100%"><br />
+<img src="/assets/img/LE_final_06.webp" width="100%"><br />
+<img src="/assets/img/LE_final_07.webp" width="100%"><br />
+<img src="/assets/img/LE_final_breakdown_01.webp" width="100%"><br />
+<img src="/assets/img/LE_final_breakdown_02.webp" width="100%"><br />
 
 <br />
 

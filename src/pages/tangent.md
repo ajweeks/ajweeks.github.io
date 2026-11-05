@@ -26,9 +26,9 @@ Tangent is a single-player racing game I made in about **one week**. It utilizes
 </div>
 
 <div>
-  <a data-fancybox="gallery" href="/assets/img/tangent-menu.jpg"><img src="/assets/img/tangent-menu.jpg" width="100%"></a>
-  <a data-fancybox="gallery" href="/assets/img/tangent-01.jpg"><img src="/assets/img/tangent-01.jpg" width="49%"></a>
-  <a data-fancybox="gallery" href="/assets/img/tangent-04.jpg"><img src="/assets/img/tangent-04.jpg" width="49%" style="float: right"></a>
-  <a data-fancybox="gallery" href="/assets/img/tangent-02.jpg"><img src="/assets/img/tangent-02.jpg" width="49%"></a>
-  <a data-fancybox="gallery" href="/assets/img/tangent-03.jpg"><img src="/assets/img/tangent-03.jpg" width="49%" style="float: right"></a>
+  <a data-fancybox="gallery" href="/assets/img/tangent-menu.webp"><img src="/assets/img/tangent-menu.webp" width="100%"></a>
+  <a data-fancybox="gallery" href="/assets/img/tangent-01.webp"><img src="/assets/img/tangent-01.webp" width="49%"></a>
+  <a data-fancybox="gallery" href="/assets/img/tangent-04.webp"><img src="/assets/img/tangent-04.webp" width="49%" style="float: right"></a>
+  <a data-fancybox="gallery" href="/assets/img/tangent-02.webp"><img src="/assets/img/tangent-02.webp" width="49%"></a>
+  <a data-fancybox="gallery" href="/assets/img/tangent-03.webp"><img src="/assets/img/tangent-03.webp" width="49%" style="float: right"></a>
 </div>

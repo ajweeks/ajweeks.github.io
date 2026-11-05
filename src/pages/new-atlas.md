@@ -19,17 +19,17 @@ New Atlas is a real-time strategy game I made with **five other team members** o
 
 <p></p>
 
-<a data-fancybox="gallery" href="/assets/img/new-atlas-poster.jpg"><img src="/assets/img/new-atlas-poster.jpg" width="100%"></a>
-<a data-fancybox="gallery" href="/assets/img/new-atlas-01.jpg"><img src="/assets/img/new-atlas-01.jpg" width="100%"></a>
-<a data-fancybox="gallery" href="/assets/img/new-atlas-07.jpg"><img src="/assets/img/new-atlas-07.jpg" width="100%"></a>
-<a data-fancybox="gallery" href="/assets/img/new-atlas-06.jpg"><img src="/assets/img/new-atlas-06.jpg" width="100%"></a>
-<a data-fancybox="gallery" href="/assets/img/new-atlas-03.jpg"><img src="/assets/img/new-atlas-03.jpg" width="100%"></a>
-<a data-fancybox="gallery" href="/assets/img/new-atlas-05.jpg"><img src="/assets/img/new-atlas-05.jpg" width="100%"></a>
-<a data-fancybox="gallery" href="/assets/img/new-atlas-08.jpg"><img src="/assets/img/new-atlas-08.jpg" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/new-atlas-poster.webp"><img src="/assets/img/new-atlas-poster.webp" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/new-atlas-01.webp"><img src="/assets/img/new-atlas-01.webp" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/new-atlas-07.webp"><img src="/assets/img/new-atlas-07.webp" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/new-atlas-06.webp"><img src="/assets/img/new-atlas-06.webp" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/new-atlas-03.webp"><img src="/assets/img/new-atlas-03.webp" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/new-atlas-05.webp"><img src="/assets/img/new-atlas-05.webp" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/new-atlas-08.webp"><img src="/assets/img/new-atlas-08.webp" width="100%"></a>
 
 
-<a data-fancybox="gallery" href="/assets/img/new-atlas-UI-01.jpg"><img src="/assets/img/new-atlas-UI-01.jpg" width="100%"></a>
-<a data-fancybox="gallery" href="/assets/img/new-atlas-UI-02.jpg"><img src="/assets/img/new-atlas-UI-02.jpg" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/new-atlas-UI-01.webp"><img src="/assets/img/new-atlas-UI-01.webp" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/new-atlas-UI-02.webp"><img src="/assets/img/new-atlas-UI-02.webp" width="100%"></a>
 <p style="text-align:center; color:#999; position:relative; top: -20px">Two possible HUD states, dependent on the current selection</p>
 
 **Other team members:**

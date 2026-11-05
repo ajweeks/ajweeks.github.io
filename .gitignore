@@ -71,3 +71,7 @@ temp/
 
 *.pyc
 
+
+# Python venv for scripts/optimize_images.py
+.venv/
+__pycache__/

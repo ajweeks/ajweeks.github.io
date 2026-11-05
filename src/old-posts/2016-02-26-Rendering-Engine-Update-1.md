@@ -5,7 +5,7 @@ date:   2016-02-26
 tags: post
 ---
 
-<a data-fancybox="gallery" href="/assets/img/rendering-engine-01.png"><img src="/assets/img/rendering-engine-01.png" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/rendering-engine-01.webp"><img src="/assets/img/rendering-engine-01.webp" width="100%"></a>
 
 This semester for our Programming 4 class, we have two semester-long assignments. One is to create a classic DOS-inspired text adventure game, and the other is to create a small, high quality tech demo.
 

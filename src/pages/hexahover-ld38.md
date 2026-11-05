@@ -30,8 +30,8 @@ Other team members:
 
 </div>
 
-<a data-fancybox="gallery" href="/assets/img/hexahover-01.jpg"><img src="/assets/img/hexahover-01.jpg" width="100%"></a>
-<a data-fancybox="gallery" href="/assets/img/hexahover-02.jpg"><img src="/assets/img/hexahover-02.jpg" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/hexahover-01.webp"><img src="/assets/img/hexahover-01.webp" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/hexahover-02.webp"><img src="/assets/img/hexahover-02.webp" width="100%"></a>
 
 <!-- Wrap video in 16:9-forced empty div -->
 <div style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">

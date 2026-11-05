@@ -10,7 +10,7 @@ My responsibilities varied across several projects and included engine maintenan
 
 <div class="project-box">
 <h3>Assassins Creed: Nexus VR (2023)</h3>
-<img src="/assets/img/assassins-creed-nexus-vr.jpg" alt="Assassins Creed: Nexus VR">
+<img src="/assets/img/assassins-creed-nexus-vr.webp" alt="Assassins Creed: Nexus VR">
 
 My primary contribution was integrating the voice-to-facial animation pipeline into the engine, which allowed animations to be generated directly from sound files.
 
@@ -22,7 +22,7 @@ My primary contribution was integrating the voice-to-facial animation pipeline i
 
 <div class="project-box">
 <h3>Detonation Racing (2021)</h3>
-<img src="/assets/img/detonation-racing.jpg" alt="Detonation Racing mobile game">
+<img src="/assets/img/detonation-racing.webp" alt="Detonation Racing mobile game">
 
 My primary contribution was developing a novel real-time global illumination system that scaled from mobile devices to desktops and provided more accurate lighting and shadows.
 
@@ -34,7 +34,7 @@ My primary contribution was developing a novel real-time global illumination sys
 
 <div class="project-box">
 <h3>Forza Street (2019)</h3>
-<img src="/assets/img/forza-street_1920x1080.jpg" alt="Forza Street mobile game">
+<img src="/assets/img/forza-street_1920x1080.webp" alt="Forza Street mobile game">
 
 I contributed across a number of areas, including engine maintenance, optimization, graphics development, and more.
 

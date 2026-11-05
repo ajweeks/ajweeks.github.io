@@ -10,7 +10,7 @@ My responsibilities included developing new graphical features and maintaining o
 
 <div class="project-box">
 <h3>Contraband (unreleased)</h3>
-<img src="/assets/img/contraband.jpg" alt="Contraband">
+<img src="/assets/img/contraband.webp" alt="Contraband">
 
 My primary contribution was maintaining and extending an implmenetation of DDGI, a realtime probe-based raytraced diffuse global illumination system.
 

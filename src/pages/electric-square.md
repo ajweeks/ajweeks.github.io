@@ -36,4 +36,4 @@ I'm currently employed at Electric Square as a game programmer. My responsibilit
 
 <br />
 
-<a data-fancybox="gallery" href="/assets/img/es-logo.jpg"><img src="/assets/img/es-logo.jpg" width="42%" style="display: block; margin: auto"></a>
+<a data-fancybox="gallery" href="/assets/img/es-logo.webp"><img src="/assets/img/es-logo.webp" width="42%" style="display: block; margin: auto"></a>

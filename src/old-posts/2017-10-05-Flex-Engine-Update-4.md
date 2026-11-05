@@ -12,8 +12,8 @@ Other than deciding on a name, I’ve also made quite a bit of real progress on 
 I started off the full-time period by finishing the final bits of deferred shading. I then began tackling PBR. If you haven’t heard of it, it’s basically just an alternative set of techniques used for lighting objects. The typical “beginner” algorithm used for lighting calculations is called Blinn-Phong, and while it works alright, it’s about forty years old and we can do much better.
 
 <div width="100%">
-  <a data-fancybox="gallery" href="/assets/img/flex-engine-10.jpg"><img src="/assets/img/flex-engine-10.jpg" width="49%"></a>
-  <a data-fancybox="gallery" href="/assets/img/flex-engine-11.jpg"><img src="/assets/img/flex-engine-11.jpg" width="49%"></a>
+  <a data-fancybox="gallery" href="/assets/img/flex-engine-10.webp"><img src="/assets/img/flex-engine-10.webp" width="49%"></a>
+  <a data-fancybox="gallery" href="/assets/img/flex-engine-11.webp"><img src="/assets/img/flex-engine-11.webp" width="49%"></a>
   <span class="caption">PBR (left), Blinn-Phong (right)</span>
 </div>
 
@@ -21,7 +21,7 @@ While this comparison is slightly exaggerated since the textures were authored u
 
 After that was implemented in both OpenGL and Vulkan, I moved on to adding support for a feature commonly associated with PBR – Image Based Lighting, or IBL. It is an attempt to take into account the environment’s effect on an object’s final color. It adds a great deal of realism and it really makes PBR shine.
 
-<a data-fancybox="gallery" href="/assets/img/flex-engine-12.jpg"><img src="/assets/img/flex-engine-12.jpg" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/flex-engine-12.webp"><img src="/assets/img/flex-engine-12.webp" width="100%"></a>
 <span class="caption">Progress on IBL (not quite there yet)</span>
 
 Once IBL is fully implemented in both APIs, I will begin working on adding support for reflection probes. The general idea is this: instead of sampling a global cubemap for all objects (like above), individual snapshots of different parts of the world are taken and then used depending on each object’s position. One example of why this is needed is seeing reflections of clouds on objects that are indoors tends to look a bit off. Reflection probes can be placed around the world (some inside, some outside) and objects will use a blend of the nearest cubemap captures to create more realistic reflections. Stay tuned for updates on that!

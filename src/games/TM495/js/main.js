@@ -875,7 +875,21 @@ var Resource = (function () {
     function Resource() {
     }
     Resource.loadAll = function () {
-        Resource.textureLoader = new THREE.TextureLoader();
+        // Only report ALL_LOADED once every texture callback has fired; the game
+        // state reads these textures as soon as the flag is set.
+        var loader = new THREE.TextureLoader();
+        var pending = 0;
+        Resource.textureLoader = {
+            load: function (url, onLoad) {
+                pending++;
+                loader.load(url, function (tex) {
+                    onLoad(tex);
+                    if (--pending === 0) {
+                        Resource.ALL_LOADED = true;
+                    }
+                });
+            }
+        };
         Resource.textureLoader.load("../games/TM495/res/player/player_idle.png", function (tex) {
             Resource.playerIdleTexture = tex;
         });
@@ -925,7 +939,6 @@ var Resource = (function () {
         Resource.textureLoader.load("../games/TM495/res/trunk.png", function (tex) {
             Resource.trunkTexture = tex;
         });
-        Resource.ALL_LOADED = true;
     };
     Resource.ALL_LOADED = false;
     return Resource;

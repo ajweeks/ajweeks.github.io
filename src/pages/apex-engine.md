@@ -22,16 +22,16 @@ Crowchild is the code name for a game I began making using my custom-built "Apex
  - Real-time light editor (position, radius, colour, falloff)
  - Custom keybindings (editable via pause menu)
 
- <a data-fancybox="gallery" href="/assets/img/apex-engine-logo.jpg"><img src="/assets/img/apex-engine-logo.jpg"  width="35.5%"></a>
- <a data-fancybox="gallery" href="/assets/img/apex-engine-speaking.gif"><img src="/assets/img/apex-engine-speaking.gif" width="63.5%"></a>
+ <a data-fancybox="gallery" href="/assets/img/apex-engine-logo.webp"><img src="/assets/img/apex-engine-logo.webp"  width="35.5%"></a>
+ <a data-fancybox="gallery" href="/assets/img/apex-engine-speaking.webp"><img src="/assets/img/apex-engine-speaking.webp" width="63.5%"></a>
 
  <a data-fancybox="gallery" href="/assets/img/crowchild-lighting.mp4"><video preload="auto" autoplay="autoplay" src="/assets/img/crowchild-lighting.mp4" width="100%"></a>
 
 <!-- <video preload="auto" autoplay="autoplay" loop="loop" width="100%">
-<source src="image" src="https://i.imgur.com/YzOGgAv.mp4" type="video/mp4"/>
+<source src="https://i.imgur.com/YzOGgAv.mp4" type="video/mp4"/>
 </video> -->
 
-<a data-fancybox="gallery" href="/assets/img/apex-engine-01.jpg"><img src="/assets/img/apex-engine-01.jpg" width="100%"></a>
-<a data-fancybox="gallery" href="/assets/img/apex-engine-02.jpg"><img src="/assets/img/apex-engine-02.jpg" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/apex-engine-01.webp"><img src="/assets/img/apex-engine-01.webp" width="100%"></a>
+<a data-fancybox="gallery" href="/assets/img/apex-engine-02.webp"><img src="/assets/img/apex-engine-02.webp" width="100%"></a>
 
 You can find project's source on my GitHub here: <a class="underline" href="https://github.com/ajweeks/ApexEngine">github.com/ajweeks/ApexEngine</a><br /><span style="font-size: 12px">(But I don't recommend using it as a guide since it was my first personal engine)</span>

@@ -18,9 +18,9 @@ to use either a coloured background, or an image.
 
 This was just a personal project, which I worked on over the span of several months. Overall I’m pleased with the way it turned out, and other than the horrid state the networking is in,  I feel this game is finished.
 
-<img src="/assets/img/pong_screenshot_full.png" width="293" height="206" />
-<img src="/assets/img/pong_screenshot_2.png" width="293" height="206">
-<img src="/assets/img/pong_screenshot_3.png" width="293" height="206" />
+<img src="/assets/img/pong_screenshot_full.webp" width="293" height="206" />
+<img src="/assets/img/pong_screenshot_2.webp" width="293" height="206">
+<img src="/assets/img/pong_screenshot_3.webp" width="293" height="206" />
 
 All games hosted on this website which were added after this one can be played in your browser, but unfortunately this and all games before this require a download to be played.
 So if you don't trust me enough to download a suspicious jar file, feel free to try any one of my newer online games on [this page](/games)

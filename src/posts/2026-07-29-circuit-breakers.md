@@ -14,7 +14,7 @@ description: "Reproducing the paper 'Improving Alignment and Robustness with Cir
 
 ##### *1 week research mini-sprint*
 
-<img src="/assets/img/circuit-breakers-header.png" width="100%">
+<img src="/assets/img/circuit-breakers-header.webp" width="100%">
 
 Here I describe my reproduction of the Representation Rerouting (RR) defensive LLM fine-tuning technique first introduced in [^circuit-breakers]. I then provide a brief overview of my attempts to understand and illustrate how the technique works on a mechanical level.
 

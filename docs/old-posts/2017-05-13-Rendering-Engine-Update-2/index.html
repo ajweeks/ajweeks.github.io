@@ -48,8 +48,8 @@
 <p>I then found Sascha Willems’ fantastic <a class="underline" href="https://github.com/SaschaWillems/Vulkan">Vulkan examples repository</a>. It contains examples for nearly every rendering engine feature you’d want, all nicely separated by feature. Today I was mainly looking at how he implemented his vertex and command buffers, but I’ll surely be spending quite a bit more time in the future looking at various other parts of the code base.</p>
 <p>There is small issue in my Vulkan renderer currently; everything is flipped horizontally relative to the OpenGL renderer. This is caused by the coordinate system Vulkan uses by default being different from the one OpenGL uses - it shouldn’t be terribly difficult to fix though.</p>
 <div width="100%">
-  <a data-fancybox="gallery" href="/assets/img/rendering-engine-02.png"><img src="/assets/img/rendering-engine-02.png" width="49%"></a>
-  <a data-fancybox="gallery" href="/assets/img/rendering-engine-03.png"><img src="/assets/img/rendering-engine-03.png" width="49%"></a>
+  <a data-fancybox="gallery" href="/assets/img/rendering-engine-02.webp"><img src="/assets/img/rendering-engine-02.webp" width="49%"></a>
+  <a data-fancybox="gallery" href="/assets/img/rendering-engine-03.webp"><img src="/assets/img/rendering-engine-03.webp" width="49%"></a>
   <span class="caption">Vulkan and OpenGL rendering the same scene</span>
 </div>
 <p>The next step is to get Direct3D rendering the same thing as the other two APIs. After that I'd like to start to encapsulate some of the Vulkan objects into helper classes to clean up the code. I can then finally start to add more interesting features like post processing shaders and a basic GUI. With how many other big assignments I have due in the next month that likely won’t be happening anytime soon, but I hope to find time after that.</p>

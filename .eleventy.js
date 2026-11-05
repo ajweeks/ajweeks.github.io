@@ -28,6 +28,8 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("logo.ico");
     eleventyConfig.addPassthroughCopy("utterly-privacy-policy.html");
     eleventyConfig.addPassthroughCopy("src/arena/**");
+    eleventyConfig.addPassthroughCopy("src/SwingBolt/Build");
+    eleventyConfig.addPassthroughCopy("src/SwingBolt/TemplateData");
     
     // Copy all game assets (exclude .html/.md templates, which Eleventy renders
     // via their permalinks — copying them verbatim causes duplicate, broken

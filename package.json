@@ -7,7 +7,8 @@
     "build": "eleventy",
     "check:posts": "python scripts/check_posts.py",
     "check:posts:fast": "python scripts/check_posts.py --skip-links",
-    "check:posts:links": "python scripts/check_posts.py --skip-spelling"
+    "check:posts:links": "python scripts/check_posts.py --skip-spelling",
+    "images": ".venv/bin/python scripts/optimize_images.py"
   },
   "keywords": [],
   "author": "",
