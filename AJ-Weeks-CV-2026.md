@@ -1,78 +1,75 @@
 # AJ Weeks
 
-**Stockholm, Sweden**  
-**Phone:** (+46) 724 06 47 97 • **Email:** [contact@ajweeks.com](mailto:contact@ajweeks.com)
+Stockholm, Sweden | contact@ajweeks.com | (+46) 724 06 47 97
 
----
+Research engineer with eight years of production C++ and graphics experience now working full-time on technical AI safety. Led a research project on indirect prompt injection. Organizer of the Stockholm AI Safety community since 2024. I bring deep GPU and systems experience to evaluation, interpretability and AI security work.
 
-### Summary
-Engineer with eight years of graphics programming, now working full-time on technical AI safety: ARENA alumnus, research team lead in the Heron AI Security Research Fellowship, and organizer of the Stockholm AI Safety community. I bring deep GPU and systems expertise and a high quality bar to interpretability and evaluation work.
+## Work Experience
 
----
+**Electronic Arts / Rendering Engineer**
+Jan 2024–May 2026, Stockholm, Sweden
+Improved the robustness and adaptability of Frostbite's probe-based lighting system, shipped to millions of players in skate. and College Football 25. Built visualization and debugging tools for performance, light probes and ray tracing. Led team AI adoption and ran an ML workshop for 40+ colleagues. C++, Python.
 
-### Work Experience
+**Avalanche Studios Group / Experienced Graphics Programmer**
+Jan 2022–Dec 2023, Stockholm, Sweden
+Improved raytraced global illumination and shadow systems and optimized CPU and GPU workloads. Internal engine (C++), Perforce, git.
 
-#### **Heron AI Security Research Fellowship** | *Research Lead*  
-*Sept 2026 – Present | Online*  
-- Leading a three-month research project on fine-tuning open-weight LLMs to more accurately predict their future adherence to arbitrary policies.
+**Electric Square / Programmer**
+Feb 2018–Dec 2021, Brighton, England
+Generalist programmer on Unity and UE4 titles. Co-developed a scalable dynamic global illumination technique and shipped it in production. Unity, UE4.
 
-#### **Independent AI Safety Research**
-*May 2026 – Sept 2026*
-- Full-time studies of technical AI safety
-- Partcipant in ARENA 8.0.
+## AI Safety Projects
 
-#### **Electronic Arts** | *Rendering Engineer*  
-*Jan 2024 – May 2026 | Stockholm, Sweden*  
-- Maintained and improved surfel-based raytraced global illumination system shipped to millions of players.
-- Technologies: Frostbite engine (C++, HLSL), Perforce, PIX.
+**Research Lead / Heron AI Security Research Fellowship**
+Sept–Nov 2026, Remote
+Led a research team on mitigations for indirect prompt injection. Set the research direction, ran experiments and led paper writing. Paper under review. Python.
 
-#### **Avalanche Studios Group** | *Experienced Graphics Programmer*  
-*Jan 2022 – Dec 2023 | Stockholm, Sweden*  
-- Improved raytraced global illumination and shadow systems; conducted engine optimization of CPU & GPU workloads.
-- Technologies: Apex engine (C++, HLSL), Perforce, PIX.
+**In Other Words, LLM evaluation analysis / ARENA** – [Project summary](https://www.lesswrong.com/posts/SZk2PGk6GXmKfGpGL/in-other-words-the-influence-of-prompt-variation-on)
+June 2026, London
+Five day project measuring the impact of prompt variation on alignment evals.
 
-#### **Electric Square** | *Programmer*  
-*Feb 2018 – Dec 2021 | Brighton, England*  
-- Internship followed by full-time employment as a generalist programmer.
-- Technologies: Unity (C#), Unreal Engine 4 (C++, HLSL, Blueprints), Perforce.
+**NoteBench, LLM fact-checking taste eval / Apart Research** – [Report](https://apartresearch.com/sprints/projects/notebench-llm-factchecking-taste-eval-j4qprw6k1q)
+Nov 2026, Online
+Built a benchmark of LLM taste failures when writing Community Notes, with two teammates for the AI x Epistemics three day sprint. Python.
 
----
+## AI Safety Engagement
 
-### Projects
+**Main Organizer / Stockholm AI Safety** – [Meetup](https://www.meetup.com/stockholm-ai-safety/)
+Jan 2024–Present, Stockholm
+Organizing bi-weekly events; grew the group from 0 to ~16 participants per session.
 
-#### **Machine Learning Workshop** *(2025)*  
-- Created and led a workshop for 40+ colleagues covering theory and application of ML basics (MNIST digit recognition & real-time image denoiser/upscaler).
+**Facilitator – Compute Verification / Lens Academy**
+Sept–Oct 2026, Online
+Facilitated a 5-week cohort on the basics of compute verification.
 
-#### **Realtime Global Illumination Research** *(2019 – 2021)*  
-- Co-author of unpublished research paper describing a novel, scalable, and dynamic global illumination technique.
-- Responsible for implementation in production.
+**ML4Good – Teaching Assistant**
+March 2025, France
+Held lectures on transformer architecture, alignment techniques, and more.
 
-#### **Flex Engine** *(2017 – 2023)*  
-- Custom game engine built from scratch (C++, Vulkan).
-- Features a physically-based renderer supporting advanced features, a physics solver, audio engine, UI renderer, and more ([GitHub](https://github.com/ajweeks/FlexEngine)).
+## Projects
 
----
+**Realtime Global Illumination Research**
+2019–2021
+Co-authored unpublished research on scalable, global illumination technique.
 
-### Education & Training
+**Flex Engine** – [GitHub](https://github.com/ajweeks/FlexEngine)
+2017–2023
+Custom game engine (C++, Vulkan). Physically-based renderer supporting advanced features, a physics solver, audio engine, UI renderer, and much more.
 
-#### **ARENA 8.0 – Participant** | *In-person at LISA*  
-*June 2026 | London, England*  
-- 5-week program covering transformers, interpretability, fine-tuning, RL, and evals.
-- [In Other Words](https://www.lesswrong.com/posts/SZk2PGk6GXmKfGpGL/in-other-words-the-influence-of-prompt-variation-on): 5-day project on the influence of prompt variation on alignment evals.
+## Education
 
-#### **Technical AI Safety Course – Participant** | *BlueDot Impact*  
-*May 2026 | Online*  
-- 6-day course covering training, evals, interpretability, & risk management in daily group discussions.
+**ARENA 8.0 – Participant / London Initiative for Safe AI**
+June 2026, London
+5-week program covering transformers, interpretability, fine-tuning, RL, and evals.
 
-#### **ML4Good – Teaching Assistant** | *AI Safety Bootcamp*  
-*March 2025 | France*  
-- Delivered lectures on transformer architecture, alignment techniques, and more.
+**Technical AI Safety Course – Participant / BlueDot Impact**
+May 2026, Online
+6-day course: training, evals, interp & risk management in daily group discussions.
 
-#### **ML4Good – Participant** | *AI Safety Bootcamp*  
-*June 2024 | France*  
-- 10-day bootcamp covering LLM internals, training methods, AI safety strategy, etc.
+**ML4Good – Participant**
+June 2024, France
+10-day bootcamp covering LLM internals, training methods, AI safety strategy, etc.
 
-#### **BSc in Digital Arts and Entertainment** | *Howest University*  
-*2015 – 2018 | Belgium*  
-- Programming-focused game development.
-- Graduated **Magna Cum Laude**.
+**BSc Digital Arts and Entertainment / Howest University**
+2015–2018, Belgium
+Programming-focused game development BSc. Graduated Magna Cum Laude.
