@@ -8,9 +8,22 @@
       requires adding it here. -#}
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://player.vimeo.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; media-src 'self' https:; frame-src https://www.youtube-nocookie.com https://player.vimeo.com https://sketchfab.com; connect-src 'self' https://vimeo.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>{{ title | default("AJ Weeks") }}</title>
+  <title>{{ title | default(site.title) }}</title>
   <link rel="icon" href="/favicon.ico" sizes="any">
-  <meta name="description" content="{{ description | default("AJ Weeks - Personal Website") }}">
+  <meta name="description" content="{{ description | default(site.description) }}">
+  <link rel="canonical" href="{{ site.url }}{{ page.url }}">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }} — Writings" href="/feed.xml">
+  {#- Link previews (Open Graph / X). #}
+  <meta property="og:site_name" content="{{ site.title }}">
+  <meta property="og:title" content="{{ title | default(site.title) }}">
+  <meta property="og:description" content="{{ description | default(site.description) }}">
+  <meta property="og:url" content="{{ site.url }}{{ page.url }}">
+  <meta property="og:type" content="{% if layout == "post.njk" %}article{% else %}website{% endif %}">
+  {%- if layout == "post.njk" %}
+  <meta property="article:published_time" content="{{ page.date | dateISO }}">
+  {%- endif %}
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@_ajweeks_">
   {#- Preload the latin subsets used above the fold; other subsets load on demand via unicode-range. #}
   <link rel="preload" href="/fonts/source-serif-4-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -30,7 +43,7 @@
         <svg class="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576C388.8 576 451.3 548.8 497.3 504.6C504.6 497.6 506.7 486.7 502.6 477.5C498.5 468.3 488.9 462.6 478.8 463.4C473.9 463.8 469 464 464 464C362.4 464 280 381.6 280 280C280 207.9 321.5 145.4 382.1 115.2C391.2 110.7 396.4 100.9 395.2 90.8C394 80.7 386.6 72.5 376.7 70.3C358.4 66.2 339.4 64 320 64z"/></svg>
       </span>
       <div class="theme-switcher">
-        <input type="checkbox" id="theme-toggle">
+        <input type="checkbox" id="theme-toggle" role="switch">
         <label for="theme-toggle" class="sr-only">Toggle dark theme</label>
         <span></span>
       </div>
@@ -44,7 +57,7 @@
   <footer>
     <div class="footer-nav">
       <a href="/professional-experience/">Professional Experience</a>
-      <a href="/writings">Writings</a>
+      <a href="/writings/">Writings</a>
       <a href="/games/">Games</a>
       
     </div>

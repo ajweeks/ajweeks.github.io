@@ -110,7 +110,10 @@
       e.preventDefault();
       hideBubble();
       const target = getFootnoteItem(ref);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (target) {
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      }
     } else if (!e.target.closest('.footnote-hover-bubble')) {
       hideBubble();
     }

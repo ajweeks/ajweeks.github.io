@@ -67,6 +67,13 @@ function dedupeTranslations(posts) {
 }
 
 module.exports = function (eleventyConfig) {
+    // Site-wide values for templates (canonical URLs, feed, social meta tags).
+    eleventyConfig.addGlobalData("site", {
+        url: "https://ajweeks.com",
+        title: "AJ Weeks",
+        description: "AJ Weeks - Personal Website",
+    });
+
     // Drafts: posts with `draft: true` are rendered by `npm start` but left out
     // of `npm run build` (pages, collections, feed and sitemap).
     eleventyConfig.addPreprocessor("drafts", "*", (data) => {

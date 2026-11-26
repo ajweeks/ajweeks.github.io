@@ -1,0 +1,19 @@
+---
+permalink: /sitemap.xml
+eleventyExcludeFromCollections: true
+---
+{#- Only posts get <lastmod>: other pages have no front-matter date, so theirs
+    would be the CI checkout time and change on every deploy. -#}
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- for page in collections.all %}
+  {%- if page.url and page.url != "/404.html" %}
+  <url>
+    <loc>{{ site.url }}{{ page.url }}</loc>
+    {%- if page.data.tags and "post" in page.data.tags %}
+    <lastmod>{{ page.date | dateISO }}</lastmod>
+    {%- endif %}
+  </url>
+  {%- endif %}
+{%- endfor %}
+</urlset>

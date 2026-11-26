@@ -44,9 +44,10 @@
   --bg-color: #efede6;
   --bg-color-collapse: #f9f8f6;
   --text-color: #1a1a19;
-  --link-color: #518ca5;
-  --link-color-hover: #71acc5;
-  --subdued-link-color: #787878;
+  /* Text colours meet WCAG AA contrast (4.5:1) against --bg-color. */
+  --link-color: #417084;
+  --link-color-hover: #518ca5;
+  --subdued-link-color: #6a6a6a;
   --subdued-link-color-hover: #9f9f9f;
   --footer-link-color: #666;
   --footer-link-color-hover: #4f4f4f;
@@ -91,6 +92,30 @@ body {
   max-width: var(--content-max-width);
   margin: 0 auto;
   padding: calc(var(--space-unit) * 4) calc(var(--space-unit) * 2);
+}
+
+/* Keep content within the viewport on narrow screens: scale media down and
+   let long URLs wrap instead of forcing horizontal scrolling. */
+main {
+  overflow-wrap: break-word;
+}
+
+main img,
+main video {
+  max-width: 100%;
+  height: auto;
+}
+
+main iframe {
+  max-width: 100%;
+}
+
+/* Video embeds with explicit dimensions keep a 16:9 shape as they shrink
+   (embeds sized by an inline style, e.g. inside a positioned wrapper, are unaffected). */
+main iframe[height][src*="youtube"],
+main iframe[height][src*="vimeo"] {
+  height: auto;
+  aspect-ratio: 16 / 9;
 }
 
 header {
@@ -513,17 +538,6 @@ footer {
   color: var(--subdued-link-color);
 }
 
-.section-divider {
-  margin: calc(var(--space-unit) * 6) 0;
-  border: 0;
-  border-top: 1px solid var(--border-color);
-}
-
-.back-link-wrapper {
-  text-align: center;
-  margin-top: calc(var(--space-unit) * 2);
-}
-
 .post-meta {
   color: var(--subdued-link-color);
   font-size: 0.95rem;
@@ -544,9 +558,6 @@ footer {
 
 .post-list li {
   display: block;
-  grid-template-columns: 9.5ch 1fr;
-  column-gap: calc(var(--space-unit) * 2);
-  align-items: baseline;
 }
 
 .post-list li .post-meta {
@@ -558,12 +569,9 @@ footer {
   text-align: left;
 }
 
-/* Sitemap page: render post-list items as a plain list, not a grid. */
+/* Sitemap page: render post-list items as a plain bulleted list. */
 body.sitemap .post-list li {
   display: list-item;
-  grid-template-columns: none;
-  column-gap: normal;
-  align-items: normal;
 }
 
 .post-content p {
@@ -581,17 +589,6 @@ body.sitemap .post-list li {
   border-left: 3px solid var(--accent-soft);
   color: var(--subdued-link-color);
 }
-
-/* 
-.post-content > p:first-of-type::first-letter {
-  float: left;
-  font-family: var(--font-family-ui);
-  font-size: 2.5em;
-  line-height: 0.85;
-  margin-right: 0.08em;
-  color: var(--accent-soft);
-}
-*/
 
 .footnotes-list {
   list-style-type: none;
@@ -721,4 +718,42 @@ details p {
   border-radius: 10px;
   background-color: var(--bg-color-collapse);
   padding: 20px;
+}
+
+.experience-back-divider {
+  margin: 3rem 0;
+  border: 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.cv-note {
+  font-size: 1rem;
+}
+
+.not-found {
+  margin: 10px auto;
+  max-width: 600px;
+  text-align: center;
+}
+
+.not-found h1 {
+  margin: 30px 0;
+  font-size: 4em;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+
+  .gameBlock:hover {
+    transform: none;
+  }
 }

@@ -72,4 +72,4 @@ A huge thank you must be given to the following individuals and organizations fo
  - All authors and contributors to the open-source libraries mentioned above
 
 ## Blog
-Stay (somewhat) up to date about this project on my blog at <a class="underline" href="https://ajweeks.com/blog/">ajweeks.com/blog</a>
+Stay (somewhat) up to date about this project on my blog at <a class="underline" href="/old-writings/">ajweeks.com/old-writings</a>

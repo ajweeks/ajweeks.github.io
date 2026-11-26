@@ -5,7 +5,7 @@ date:   2019-02-04
 tags: input handling, input, gamedev, accessibility
 ---
 
-As I've added more and more game mechanics to <a class="underline" href="https://ajweeks.com/FlexEngine">Flex</a>, I've experimented with different input methods a player can use to interact with the world besides the typical 'Press E to interact' (spinning a valve by <a class="underline" href="https://www.youtube.com/watch?v=_6wftcZg1jg">rotating a joystick</a> is one alternative method). So far I've added support for keyboard, mouse, and XBOX controllers, but I will likely further expand the number of supported devices in the future (midi keyboards anyone?). The code I have been using to handle each input method is quite messy and needed to be cleaned up. This post will cover the process I went through to get where I'm at today with the system.
+As I've added more and more game mechanics to <a class="underline" href="/flex-engine/">Flex</a>, I've experimented with different input methods a player can use to interact with the world besides the typical 'Press E to interact' (spinning a valve by <a class="underline" href="https://www.youtube.com/watch?v=_6wftcZg1jg">rotating a joystick</a> is one alternative method). So far I've added support for keyboard, mouse, and XBOX controllers, but I will likely further expand the number of supported devices in the future (midi keyboards anyone?). The code I have been using to handle each input method is quite messy and needed to be cleaned up. This post will cover the process I went through to get where I'm at today with the system.
 
 To see why I felt this change was necessary, take a look at how I was checking for a jump input:
 
