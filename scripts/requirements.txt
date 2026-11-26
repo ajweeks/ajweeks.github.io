@@ -1,2 +1,6 @@
+# Python tooling for scripts/ (install into .venv: .venv/bin/pip install -r scripts/requirements.txt)
+# optimize_images.py
 Pillow==13.0.0
 imageio-ffmpeg==0.6.0
+# check_posts.py
+pyspellchecker==0.9.1

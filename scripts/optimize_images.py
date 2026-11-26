@@ -8,14 +8,14 @@
 
 Images larger than MAX_DIM on their long side are downscaled. A conversion is
 only kept if it is at least MIN_SAVING smaller than the original; otherwise the
-original is left alone. Converted originals are deleted from assets/img/ and
-from docs/assets/img/, and every reference in the site source is rewritten.
+original is left alone. Converted originals are deleted from assets/img/, and
+every reference in the site source is rewritten.
 
 Safe to re-run: already-converted files are skipped.
 
 Setup (once):
     python3 -m venv .venv
-    .venv/bin/pip install -r scripts/requirements-images.txt
+    .venv/bin/pip install -r scripts/requirements.txt
 Run:
     npm run images            # or: .venv/bin/python scripts/optimize_images.py
     npm run images -- --dry-run
@@ -34,7 +34,6 @@ import imageio_ffmpeg
 
 ROOT = Path(__file__).resolve().parent.parent
 IMG_DIR = ROOT / "assets" / "img"
-DOCS_IMG_DIR = ROOT / "docs" / "assets" / "img"
 
 MAX_DIM = 2560          # px, long side
 MIN_SAVING = 0.10       # keep conversion only if >= 10% smaller
@@ -246,9 +245,6 @@ def main():
         if ext == ".mp4":
             refs.img_to_video(rel_new)
         src.unlink()
-        docs_copy = DOCS_IMG_DIR / rel
-        if docs_copy.exists():
-            docs_copy.unlink()
 
     changed = [] if args.dry_run else refs.save()
     print(f"\n{converted} converted, {kept} kept as-is: "

@@ -25,7 +25,7 @@ You can see my blog posts made throughout the project here: <a class="underline"
 - Pieter Ophalvens *(Programmer)*
 
 <div class="videoWrapper">
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/QFYlNuXnN9k" frameborder="0" allowfullscreen></iframe>
+  <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/QFYlNuXnN9k" frameborder="0" allowfullscreen></iframe>
 </div>
 
 <a data-fancybox="gallery" href="/assets/img/redshift-r5ILceh.webp"><img src="/assets/img/redshift-r5ILceh.webp" width="100%"></a>

@@ -30,7 +30,7 @@ The entire game was written in C++, and used my school's game engine. You can vi
 See it in action:
 
 <div class="videoWrapper">
-<iframe width="724" height="400" src="https://www.youtube.com/embed/9ZdGhZt0MlI" frameborder="0" allowfullscreen></iframe>
+<iframe width="724" height="400" src="https://www.youtube-nocookie.com/embed/9ZdGhZt0MlI" frameborder="0" allowfullscreen></iframe>
 </div>
 
 <a data-fancybox="gallery" href="/assets/img/SMW_01.webp"><img src="/assets/img/SMW_01.webp"  width="49%"></a>

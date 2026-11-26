@@ -15,8 +15,8 @@ Usage:
   python3 scripts/check_posts.py --date-cutoff=2026-03-01
   python3 scripts/check_posts.py --fail-on-warn
 
-Dependencies:
-  pip install pyspellchecker
+Dependencies (pinned in scripts/requirements.txt):
+  .venv/bin/pip install -r scripts/requirements.txt
 """
 
 from __future__ import annotations
@@ -491,7 +491,7 @@ def run_checks(args: argparse.Namespace) -> List[Issue]:
                     root / "scripts/check_posts.py",
                     1,
                     "spelling",
-                    "pyspellchecker is not installed. Run: pip install pyspellchecker",
+                    "pyspellchecker is not installed. Run: .venv/bin/pip install -r scripts/requirements.txt",
                 )
             ]
         spell = SpellChecker(distance=1)

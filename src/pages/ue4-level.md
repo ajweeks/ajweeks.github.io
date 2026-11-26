@@ -15,7 +15,7 @@ This is my first ever level, made in Unreal Engine 4. I spent about 3 months mak
 A modular approach was taken to reduce the amount of time needed to fill out the entire level, as well as instacing of one main material with many parameters.
 
 <div class="videoWrapper">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/c2PWnRBDugg" frameborder="0" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/c2PWnRBDugg" frameborder="0" allowfullscreen></iframe>
 </div>
 
 <img src="/assets/img/LE_final_01.webp" width="100%"><br />

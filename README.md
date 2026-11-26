@@ -6,13 +6,14 @@ My personal website primarily featuring my writings.
 
 - **Static Site Generator**: 11ty
 - **Template Engine**: Nunjucks
+- **Fonts**: self-hosted in `src/fonts/` (woff2, latin + latin-ext subsets, SIL OFL licences alongside)
 
 ## Build Instructions
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- npm or yarn
+- Node.js 18 or newer (required by Eleventy 3)
+- npm
 
 ### Installation
 
@@ -29,7 +30,7 @@ To run the site in development mode with live reload:
 npm run start
 ```
 
-This will start the development server at `http://localhost:8080` (or another available port).
+This starts the development server at `http://localhost:8081`. Edits to the page you are viewing are patched in place (morphdom) rather than fully reloaded, so client scripts in `src/js/` must cope with the DOM changing underneath them.
 
 ### Production Build
 
@@ -39,7 +40,19 @@ To build the site for production:
 npm run build
 ```
 
-This will generate the static site in the `_site` directory.
+This generates the static site in `_site/` (gitignored).
+
+## Deployment
+
+Pushing to `master` runs `.github/workflows/deploy.yml`, which builds the site and deploys `_site/` to GitHub Pages (the repo's Pages source must be set to "GitHub Actions"). Pull requests get the build as a check, without deploying. Only commit source; the build output is never committed.
+
+### Drafts
+
+Add `draft: true` to a post's front matter to keep it out of `npm run build` (the page, the writings lists, the feed and the sitemap). Drafts still render under `npm run start`.
+
+### Old vs. new writings
+
+Posts dated before 2026 (`NEW_WRITINGS_YEAR` in `.eleventy.js`) are listed on `/old-writings/`; newer ones on `/writings/` and in the feed (`collections.writings` / `collections.oldWritings`).
 
 ## RSS Feed
 
@@ -47,7 +60,7 @@ A feed is generated at:
 
 - `/feed.xml`
 
-It is built from `collections.post` (deduped translations), currently including posts from 2026+.
+It is built from `collections.writings` (translation-deduped posts from 2026 on).
 
 After build, verify locally at:
 
@@ -64,10 +77,11 @@ The repo includes a post checker (`scripts/check_posts.py`) for:
 
 ### Prerequisites
 
-Install Python dependency:
+Python 3.11+ (Pillow 13 requires it). The Python tooling (post checks and `npm run images`) is pinned in `scripts/requirements.txt`; install it into `.venv`, which the npm scripts use:
 
 ```bash
-pip install pyspellchecker
+python3 -m venv .venv
+.venv/bin/pip install -r scripts/requirements.txt
 ```
 
 Spelling allowlist is read from:
@@ -109,18 +123,17 @@ npm run check:posts:links
 Only check newer posts:
 
 ```bash
-python scripts/check_posts.py --date-cutoff=2026
-python scripts/check_posts.py --date-cutoff=2026-03-01
+.venv/bin/python scripts/check_posts.py --date-cutoff=2026
+.venv/bin/python scripts/check_posts.py --date-cutoff=2026-03-01
 ```
 
 Debug allowlist loading:
 
 ```bash
-python scripts/check_posts.py --skip-links --verbose
-python scripts/check_posts.py --skip-links --allowlist=scripts/spell_allowlist.txt --verbose
+.venv/bin/python scripts/check_posts.py --skip-links --verbose
+.venv/bin/python scripts/check_posts.py --skip-links --allowlist=scripts/spell_allowlist.txt --verbose
 ```
 
 
 # TODO:
 * Copy scrollbar / interactive ToC from e.g. https://www.apolloresearch.ai/science/we-need-a-science-of-evals
-* Setup feed.xml again

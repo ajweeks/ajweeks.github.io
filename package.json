@@ -1,19 +1,20 @@
 {
-  "name": "test",
+  "name": "ajweeks.com",
   "version": "1.0.0",
-  "main": "index.js",
+  "private": true,
+  "description": "Source for ajweeks.com (Eleventy)",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "eleventy --serve --port 8081",
     "build": "eleventy",
-    "check:posts": "python scripts/check_posts.py",
-    "check:posts:fast": "python scripts/check_posts.py --skip-links",
-    "check:posts:links": "python scripts/check_posts.py --skip-spelling",
+    "check:posts": ".venv/bin/python scripts/check_posts.py",
+    "check:posts:fast": ".venv/bin/python scripts/check_posts.py --skip-links",
+    "check:posts:links": ".venv/bin/python scripts/check_posts.py --skip-spelling",
     "images": ".venv/bin/python scripts/optimize_images.py"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "devDependencies": {
     "@11ty/eleventy": "^3.1.8",
     "luxon": "^3.7.2"

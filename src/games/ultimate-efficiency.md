@@ -18,7 +18,7 @@ In this heart-thumping nuclear power plant manager, ensure you don't lose your p
 <p></p>
 
 <div style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0; margin-bottom: 18px">
-  <iframe style="position: absolute; top: 0; left: 0; width: 97%; height: 97%;" src="https://www.youtube.com/embed/Iem76hPM3qg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <iframe style="position: absolute; top: 0; left: 0; width: 97%; height: 97%;" src="https://www.youtube-nocookie.com/embed/Iem76hPM3qg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
 Made in 48 hours for Global Game Jam 2021 by:

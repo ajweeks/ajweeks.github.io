@@ -6,13 +6,13 @@
   {#- Content Security Policy. Inline <script> and on*="" handlers are blocked, so
       page scripts must live in /js/. Embedding a new third-party iframe/script host
       requires adding it here. -#}
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://player.vimeo.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self' https:; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://sketchfab.com; connect-src 'self' https://vimeo.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://player.vimeo.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; media-src 'self' https:; frame-src https://www.youtube-nocookie.com https://player.vimeo.com https://sketchfab.com; connect-src 'self' https://vimeo.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>{{ title | default("AJ Weeks") }}</title>
   <meta name="description" content="{{ description | default("AJ Weeks - Personal Website") }}">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+  {#- Preload the latin subsets used above the fold; other subsets load on demand via unicode-range. #}
+  <link rel="preload" href="/fonts/source-serif-4-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
 
   <script src="/js/theme-init.js"></script>
   <link rel="stylesheet" href="/css/style.css">
@@ -37,7 +37,7 @@
   </header>
 
   <main>
-    {{ content | safe }}
+    {{ content | lazyMedia | safe }}
   </main>
 
   <footer>

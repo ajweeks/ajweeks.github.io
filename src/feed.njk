@@ -9,12 +9,12 @@ eleventyExcludeFromCollections: true
     <link>https://ajweeks.com/</link>
     <description>New writings from AJ Weeks</description>
     <language>en-us</language>
-    <lastBuildDate>{{ page.date.toUTCString() }}</lastBuildDate>
+    {%- if collections.writings.length %}
+    <lastBuildDate>{{ collections.writings[0].date.toUTCString() }}</lastBuildDate>
+    {%- endif %}
     <atom:link href="https://ajweeks.com/feed.xml" rel="self" type="application/rss+xml" />
 
-    {% for post in collections.post | dedupeTranslations | reverse %}
-      {% set postYear = post.date.getFullYear() %}
-      {% if postYear >= 2026 %}
+    {%- for post in collections.writings %}
     <item>
       <title>{{ post.data.title | escape }}</title>
       <link>https://ajweeks.com{{ post.url }}</link>
@@ -22,7 +22,6 @@ eleventyExcludeFromCollections: true
       <pubDate>{{ post.date.toUTCString() }}</pubDate>
       {% if post.data.description %}<description>{{ post.data.description | escape }}</description>{% endif %}
     </item>
-      {% endif %}
-    {% endfor %}
+    {%- endfor %}
   </channel>
 </rss>

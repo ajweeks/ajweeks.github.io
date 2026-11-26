@@ -22,7 +22,7 @@ Tangent is a single-player racing game I made in about **one week**. It utilizes
 
 
  <div class="videoWrapper">
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/7_SxsQvef8I" frameborder="0" allowfullscreen></iframe>
+  <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/7_SxsQvef8I" frameborder="0" allowfullscreen></iframe>
 </div>
 
 <div>

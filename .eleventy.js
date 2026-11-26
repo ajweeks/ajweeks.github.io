@@ -15,10 +15,74 @@ function markdownItEmDash(md) {
     });
 }
 
+// Render markdown-it-footnote output in its final form at build time, so the
+// page (and feed readers / no-JS visitors) get it without client-side patching:
+//   - ref labels are "1" rather than "[1]"
+//   - the footnote-ref class sits on the <a> (the hoverable/clickable circle), not the <sup>
+//   - list items carry data-footnote-number for the CSS ::before marker
+function markdownItFootnoteStyle(md) {
+    md.renderer.rules.footnote_caption = (tokens, idx) => {
+        const { id, subId } = tokens[idx].meta;
+        return subId > 0 ? `${id + 1}:${subId}` : `${id + 1}`;
+    };
+    md.renderer.rules.footnote_ref = (tokens, idx, options, env, slf) => {
+        const id = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf);
+        const caption = slf.rules.footnote_caption(tokens, idx, options, env, slf);
+        let refid = id;
+        if (tokens[idx].meta.subId > 0) refid += `:${tokens[idx].meta.subId}`;
+        return `<sup><a href="#fn${id}" id="fnref${refid}" class="footnote-ref">${caption}</a></sup>`;
+    };
+    md.renderer.rules.footnote_open = (tokens, idx, options, env, slf) => {
+        let id = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf);
+        if (tokens[idx].meta.subId > 0) id += `:${tokens[idx].meta.subId}`;
+        return `<li id="fn${id}" class="footnote-item" data-footnote-number="${tokens[idx].meta.id + 1}">`;
+    };
+}
+
+// Posts dated before this year are listed on /old-writings/ rather than
+// /writings/ and the feed, and prev/next links don't cross the boundary.
+const NEW_WRITINGS_YEAR = 2026;
+const isNewPost = (post) => post.date.getFullYear() >= NEW_WRITINGS_YEAR;
+
+// Normalise the date shapes Eleventy hands templates (Date, luxon DateTime,
+// ISO string). Front-matter dates are UTC midnight, so format them in UTC to
+// avoid shifting the day in negative-offset time zones.
+function toDateTime(value) {
+    if (DateTime.isDateTime(value)) return value;
+    if (value instanceof Date) return DateTime.fromJSDate(value, { zone: "utc" });
+    return DateTime.fromISO(value, { zone: "utc" });
+}
+
+// Deduplicate posts that are translations of each other.
+// Keeps the first occurrence (in source order) per translationKey.
+function dedupeTranslations(posts) {
+    const seen = new Set();
+    return posts.filter((p) => {
+        const key = p.data && p.data.translationKey;
+        if (!key) return true;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+}
+
 module.exports = function (eleventyConfig) {
+    // Drafts: posts with `draft: true` are rendered by `npm start` but left out
+    // of `npm run build` (pages, collections, feed and sitemap).
+    eleventyConfig.addPreprocessor("drafts", "*", (data) => {
+        if (data.draft && process.env.ELEVENTY_RUN_MODE === "build") return false;
+    });
+
+    // Newest-first, translation-deduped post lists for the writings pages and feed.
+    eleventyConfig.addCollection("writings", (api) =>
+        dedupeTranslations(api.getFilteredByTag("post")).filter(isNewPost).reverse());
+    eleventyConfig.addCollection("oldWritings", (api) =>
+        dedupeTranslations(api.getFilteredByTag("post")).filter((p) => !isNewPost(p)).reverse());
+
     // Passthrough copy for CSS and Images
     eleventyConfig.addPassthroughCopy("src/css");
     eleventyConfig.addPassthroughCopy("src/js");
+    eleventyConfig.addPassthroughCopy("src/fonts");
     eleventyConfig.addPassthroughCopy("src/images");
     eleventyConfig.addPassthroughCopy("assets");
     eleventyConfig.addPassthroughCopy("AJ-Weeks_CV.pdf");
@@ -33,26 +97,25 @@ module.exports = function (eleventyConfig) {
     
     // Copy all game assets (exclude .html/.md templates, which Eleventy renders
     // via their permalinks — copying them verbatim causes duplicate, broken
-    // output, e.g. the mirrors MIME error).
+    // output, e.g. the mirrors MIME error). Source/OS files (.ase, Thumbs.db,
+    // desktop.ini, .url shortcuts) are deliberately not listed.
     const gameAssetExts = [
         "js", "ts", "css", "png", "jpg", "jpeg", "gif", "webp", "svg",
         "wav", "mp3", "mp4", "webm", "ico", "ttf", "otf", "woff", "woff2",
-        "eot", "json", "ase", "db", "txt", "obj", "mtl", "ini", "url",
+        "eot", "json", "txt", "obj", "mtl",
         "glb", "gltf", "bin", "data", "wasm",
     ];
     for (const ext of gameAssetExts) {
         eleventyConfig.addPassthroughCopy(`src/games/**/*.${ext}`);
     }
 
-    // Date filter for display
-    eleventyConfig.addFilter("postDate", (dateObj) => {
-        if (!dateObj) return "";
-        if (DateTime.isDateTime(dateObj)) return dateObj.setLocale('en').toLocaleString(DateTime.DATE_MED);
-        if (dateObj instanceof Date) {
-            return DateTime.fromJSDate(dateObj).setLocale('en').toLocaleString(DateTime.DATE_MED);
-        }
-        return DateTime.fromISO(dateObj).setLocale('en').toLocaleString(DateTime.DATE_MED);
-    });
+    // Date filters: display ("May 22, 2026"), month + year ("May 2026"), and
+    // machine-readable ISO date for <time datetime>.
+    eleventyConfig.addFilter("postDate", (value) =>
+        value ? toDateTime(value).setLocale("en").toLocaleString(DateTime.DATE_MED) : "");
+    eleventyConfig.addFilter("monthYear", (value) =>
+        value ? toDateTime(value).setLocale("en").toFormat("LLLL yyyy") : "");
+    eleventyConfig.addFilter("dateISO", (value) => (value ? toDateTime(value).toISODate() : ""));
 
     // Friendly language name from BCP 47 code (e.g. "en" -> "English")
     const languageNames = {
@@ -71,6 +134,39 @@ module.exports = function (eleventyConfig) {
         const matches = posts.filter(p => p.data && p.data.translationKey === key);
         if (matches.length < 2) return [];
         return matches;
+    });
+
+    // Lazy-load media in page content (applied to {{ content }} in base.njk, so
+    // standalone game pages that may draw <img> elements to a canvas are left
+    // alone). The first <img> is left eager as it's the likely LCP element.
+    // Tags that already set loading/decoding are not changed.
+    eleventyConfig.addFilter("lazyMedia", (html) => {
+        if (typeof html !== "string") return html;
+        let seenImg = false;
+        return html.replace(/<(img|iframe)\b([^>]*)>/gi, (tag, name, attrs) => {
+            const isImg = name.toLowerCase() === "img";
+            if (isImg && !seenImg) {
+                seenImg = true;
+                return tag;
+            }
+            let extra = "";
+            if (!/\sloading\s*=/i.test(attrs)) extra += ' loading="lazy"';
+            if (isImg && !/\sdecoding\s*=/i.test(attrs)) extra += ' decoding="async"';
+            return extra ? `<${name}${extra}${attrs}>` : tag;
+        });
+    });
+
+    // Previous/next post links for a post page. Skips other translations of the
+    // same post, and never links across the old/new writings boundary.
+    eleventyConfig.addFilter("adjacentPosts", (posts, page, translationKey) => {
+        const idx = posts.findIndex((p) => p.url === page.url);
+        if (idx < 0) return {};
+        const notSameTranslation = (p) => !translationKey || p.data.translationKey !== translationKey;
+        const sameEra = (p) => p && isNewPost(p) === isNewPost(posts[idx]) ? p : null;
+        return {
+            previous: sameEra(posts.slice(0, idx).filter(notSameTranslation).pop()),
+            next: sameEra(posts.slice(idx + 1).find(notSameTranslation)),
+        };
     });
 
     // --- Sitemap helpers ---
@@ -129,35 +225,6 @@ module.exports = function (eleventyConfig) {
         result.forEach((page) => { page.sitemapLabel = sitemapLabelFor(page); });
         result.sort((a, b) => a.sitemapLabel.localeCompare(b.sitemapLabel));
         return result;
-    });
-
-    // Deduplicate posts that are translations of each other.
-    // Keeps the first occurrence (in source order) per translationKey.
-    eleventyConfig.addFilter("dedupeTranslations", (posts) => {
-        if (!posts) return posts;
-        const seen = new Set();
-        const result = [];
-        for (const p of posts) {
-            const key = p.data && p.data.translationKey;
-            if (!key) {
-                result.push(p);
-                continue;
-            }
-            if (seen.has(key)) continue;
-            seen.add(key);
-            result.push(p);
-        }
-        return result;
-    });
-
-    // Date filter for machine-readable attribute
-    eleventyConfig.addFilter("dateISO", (dateObj) => {
-        if (!dateObj) return "";
-        if (DateTime.isDateTime(dateObj)) return dateObj.toISODate();
-        if (dateObj instanceof Date) {
-            return DateTime.fromJSDate(dateObj).toISODate();
-        }
-        return DateTime.fromISO(dateObj).toISODate();
     });
 
     // https://github.com/trunkcode/detect-external-link, The MIT License (MIT) Copyright (c) 2023 TrunkCode
@@ -242,13 +309,12 @@ module.exports = function (eleventyConfig) {
 
     const md = markdownIt({ html: true, linkify: true })
         .use(markdownItFootnote)
+        .use(markdownItFootnoteStyle)
         .use(markdownItEmDash);
 
-    // Mark http://example.com and http://test.example.com as internal domain.
+    // Links to these hosts open in the same tab; everything else gets target="_blank".
     md.use(markdownitExternalLink, {
-    'hosts': [
-        'http://ajweeks.com',
-    ]
+        hosts: ["ajweeks.com", "www.ajweeks.com"],
     });
 
     eleventyConfig.setLibrary("md", md);
@@ -256,7 +322,8 @@ module.exports = function (eleventyConfig) {
     return {
         dir: {
             input: "src",
-            output: "docs"
+            // Build output; deployed to GitHub Pages by .github/workflows/deploy.yml (not committed).
+            output: "_site"
         }
     };
 };
