@@ -12,8 +12,7 @@
 
     toggleCheckbox.addEventListener('change', (event) => {
       const newTheme = event.target.checked ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      document.documentElement.style.colorScheme = newTheme;
+      window.setTheme(newTheme);
 
       try {
         localStorage.setItem('theme', newTheme);
@@ -27,7 +26,8 @@
 // --- Footnotes ---
 // Footnote processing (supports legacy [1] + [1]: ... and markdown-it-footnote)
 (() => {
-  const main = document.querySelector('main');
+  // Re-queried on each setup pass in case hot reload replaced it.
+  let main = document.querySelector('main');
   if (!main) return;
 
   const refSelector = [
@@ -66,6 +66,7 @@
     defNodesToRemove.forEach((node) => node.remove());
 
     const footnotesSection = main.querySelector('.footnotes-section');
+    if (!footnotesSection) return;
     footnotesSection.innerHTML = '';
 
     const footnotesTitle = document.createElement('h3');
@@ -104,16 +105,8 @@
     return document.getElementById(decodeURIComponent(href.slice(1)));
   }
 
-  let refs = findRefs();
-  if (!refs.length) {
-    buildLegacyFootnotes();
-    refs = findRefs();
-  }
-  if (!refs.length) return;
-
   const bubble = document.createElement('div');
   bubble.className = 'footnote-hover-bubble';
-  document.body.appendChild(bubble);
 
   let hideTimer = null;
 
@@ -153,6 +146,9 @@
     const item = getFootnoteItem(ref);
     if (!item) return;
 
+    // The dev server's hot reload (morphdom) removes nodes not in the built markup.
+    if (!bubble.isConnected) document.body.appendChild(bubble);
+
     const clone = item.cloneNode(true);
     clone.querySelectorAll('.footnote-backref, .reversefootnote').forEach((el) => el.remove());
 
@@ -165,69 +161,114 @@
     positionBubble(ref);
   }
 
-  refs.forEach((ref, i) => {
-    if (!ref.id) ref.id = `ref-${i + 1}`;
+  // Idempotent: safe to re-run after the DOM is patched (e.g. dev-server hot reload).
+  // Only writes when something differs, so it doesn't retrigger the observer below.
+  function setupFootnotes() {
+    main = document.querySelector('main');
+    if (!main) return;
 
-    // In markdown-it output the <sup> has class="footnote-ref"; move styling to the <a>
-    // so the full circular area is hoverable/clickable.
-    const supWrapper = ref.closest('sup.footnote-ref');
-    if (supWrapper && supWrapper.firstElementChild === ref) {
-      supWrapper.classList.remove('footnote-ref');
+    let refs = findRefs();
+    if (!refs.length) {
+      buildLegacyFootnotes();
+      refs = findRefs();
     }
-    ref.classList.add('footnote-ref');
+    if (!refs.length) return;
 
-    // Normalize markdown-it default "[1]" label to "1".
-    let label = ref.textContent.trim();
-    const labelMatch = label.match(/^\[(.+)\]$/);
-    if (labelMatch) {
-      label = labelMatch[1];
-      ref.textContent = label;
-    }
+    if (!bubble.isConnected) document.body.appendChild(bubble);
 
-    // markdown-it can emit secondary refs like "1:1", "1:2".
-    // For bottom list numbering, keep only the primary index ("1").
-    const primaryLabel = label.split(':')[0];
+    refs.forEach((ref, i) => {
+      if (!ref.id) ref.id = `ref-${i + 1}`;
 
-    const item = getFootnoteItem(ref);
-    if (item) {
-      // Show explicit index marker in bottom list (same style as legacy mode).
-      item.setAttribute('data-footnote-number', primaryLabel);
-    }
-    if (item && !item.querySelector('.footnote-backref, .reversefootnote')) {
-      const back = document.createElement('a');
-      back.href = `#${ref.id}`;
-      back.className = 'footnote-backref';
-      back.textContent = '↩';
-      item.appendChild(document.createTextNode(' '));
-      item.appendChild(back);
-    }
+      // In markdown-it output the <sup> has class="footnote-ref"; move styling to the <a>
+      // so the full circular area is hoverable/clickable.
+      const supWrapper = ref.closest('sup.footnote-ref');
+      if (supWrapper && supWrapper.firstElementChild === ref) {
+        supWrapper.classList.remove('footnote-ref');
+      }
+      if (!ref.classList.contains('footnote-ref')) ref.classList.add('footnote-ref');
 
-    ref.addEventListener('mouseenter', () => {
+      // Normalize markdown-it default "[1]" label to "1".
+      let label = ref.textContent.trim();
+      const labelMatch = label.match(/^\[(.+)\]$/);
+      if (labelMatch) {
+        label = labelMatch[1];
+        ref.textContent = label;
+      }
+
+      // markdown-it can emit secondary refs like "1:1", "1:2".
+      // For bottom list numbering, keep only the primary index ("1").
+      const primaryLabel = label.split(':')[0];
+
+      const item = getFootnoteItem(ref);
+      if (item && item.getAttribute('data-footnote-number') !== primaryLabel) {
+        // Show explicit index marker in bottom list (same style as legacy mode).
+        item.setAttribute('data-footnote-number', primaryLabel);
+      }
+      if (item && !item.querySelector('.footnote-backref, .reversefootnote')) {
+        const back = document.createElement('a');
+        back.href = `#${ref.id}`;
+        back.className = 'footnote-backref';
+        back.textContent = '↩';
+        item.appendChild(document.createTextNode(' '));
+        item.appendChild(back);
+      }
+    });
+  }
+
+  setupFootnotes();
+
+  // Delegated listeners so refs replaced/patched by hot reload keep working.
+  const refFrom = (node) => (node instanceof Element ? node.closest('a.footnote-ref') : null);
+
+  document.addEventListener('mouseover', (e) => {
+    const ref = refFrom(e.target);
+    if (ref && !ref.contains(e.relatedTarget)) {
       cancelHide();
       showBubble(ref);
-    });
-    ref.addEventListener('mouseleave', scheduleHide);
-    ref.addEventListener('focus', () => {
+    }
+  });
+  document.addEventListener('mouseout', (e) => {
+    const ref = refFrom(e.target);
+    if (ref && !ref.contains(e.relatedTarget)) scheduleHide();
+  });
+  document.addEventListener('focusin', (e) => {
+    const ref = refFrom(e.target);
+    if (ref) {
       cancelHide();
       showBubble(ref);
-    });
-    ref.addEventListener('blur', scheduleHide);
-    ref.addEventListener('click', (e) => {
+    }
+  });
+  document.addEventListener('focusout', (e) => {
+    if (refFrom(e.target)) scheduleHide();
+  });
+  document.addEventListener('click', (e) => {
+    const ref = refFrom(e.target);
+    if (ref) {
       e.preventDefault();
       hideBubble();
       const target = getFootnoteItem(ref);
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+      return;
+    }
+    if (!e.target.closest('.footnote-hover-bubble')) hideBubble();
   });
 
   bubble.addEventListener('mouseenter', cancelHide);
   bubble.addEventListener('mouseleave', scheduleHide);
 
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('a.footnote-ref, .footnote-hover-bubble')) hideBubble();
-  });
-
   // Hide on scroll/resize (do not reposition)
   document.addEventListener('scroll', hideBubble, { passive: true });
   window.addEventListener('resize', hideBubble);
+
+  // Re-run setup when the page content is patched in place (dev-server hot reload).
+  let setupQueued = false;
+  new MutationObserver((records) => {
+    if (setupQueued) return;
+    if (records.every((r) => bubble.contains(r.target))) return;
+    setupQueued = true;
+    requestAnimationFrame(() => {
+      setupQueued = false;
+      setupFootnotes();
+    });
+  }).observe(document.body, { childList: true, characterData: true, subtree: true });
 })();
