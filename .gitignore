@@ -25,8 +25,8 @@ yarn-error.log*
 
 # Build output
 _site/
-dist/
-build/
+/dist/
+/build/
 
 # OS generated files
 .DS_Store
@@ -75,3 +75,6 @@ temp/
 # Python venv for scripts/optimize_images.py
 .venv/
 __pycache__/
+
+# Eleventy output from before the switch to deploying via GitHub Actions
+/docs/
