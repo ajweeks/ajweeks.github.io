@@ -90,6 +90,8 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("CNAME");
     eleventyConfig.addPassthroughCopy("robots.txt");
     eleventyConfig.addPassthroughCopy("logo.ico");
+    // Small 16/32/48px icon generated from logo.ico (270KB, kept for old links).
+    eleventyConfig.addPassthroughCopy("favicon.ico");
     eleventyConfig.addPassthroughCopy("utterly-privacy-policy.html");
     eleventyConfig.addPassthroughCopy("src/arena/**");
     eleventyConfig.addPassthroughCopy("src/SwingBolt/Build");

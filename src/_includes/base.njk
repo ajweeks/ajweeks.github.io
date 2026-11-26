@@ -9,6 +9,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://player.vimeo.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; media-src 'self' https:; frame-src https://www.youtube-nocookie.com https://player.vimeo.com https://sketchfab.com; connect-src 'self' https://vimeo.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>{{ title | default("AJ Weeks") }}</title>
+  <link rel="icon" href="/favicon.ico" sizes="any">
   <meta name="description" content="{{ description | default("AJ Weeks - Personal Website") }}">
   {#- Preload the latin subsets used above the fold; other subsets load on demand via unicode-range. #}
   <link rel="preload" href="/fonts/source-serif-4-latin.woff2" as="font" type="font/woff2" crossorigin>
