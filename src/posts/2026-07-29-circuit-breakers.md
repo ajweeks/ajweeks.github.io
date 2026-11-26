@@ -10,6 +10,8 @@ tags:
   - ai
   - interpretability
 description: "Reproducing the paper 'Improving Alignment and Robustness with Circuit Breakers' by Zou et al. (2024)."
+image: /assets/social/circuit-breakers.png
+imageAlt: "Distributions of displacement along the rerouting direction for benign-answered, genuinely harmful, and benign-but-wrongly-refused prompts"
 ---
 
 ##### *1 week research mini-sprint*

@@ -372,6 +372,11 @@ footer {
   mask-image: url("/assets/img/icon-github.svg");
 }
 
+.footer-social-icon-rss {
+  -webkit-mask-image: url("/assets/img/icon-rss.svg");
+  mask-image: url("/assets/img/icon-rss.svg");
+}
+
 .footer-social-icon-lesswrong {
   font-family: 'Source Serif 4', "Apple Garamond", Baskerville, Georgia, serif;
   font-weight: 600;

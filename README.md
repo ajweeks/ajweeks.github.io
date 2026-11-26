@@ -50,6 +50,17 @@ Pushing to `master` runs `.github/workflows/deploy.yml`, which builds the site a
 
 Add `draft: true` to a post's front matter to keep it out of `npm run build` (the page, the writings lists, the feed and the sitemap). Drafts still render under `npm run start`.
 
+### Link preview images
+
+To give a post a large preview card when shared (X, LinkedIn, Slack, Discord, ...), add to its front matter:
+
+```yaml
+image: /assets/social/my-post.png
+imageAlt: "Short description of the image"
+```
+
+Use a 1200×630 PNG or JPG (some sites don't accept WebP for previews). Keep these in `assets/social/`, which `npm run images` doesn't touch (it would convert anything in `assets/img/` to WebP). Pages without `image` get a small text-only card.
+
 ### Old vs. new writings
 
 Posts dated before 2026 (`NEW_WRITINGS_YEAR` in `.eleventy.js`) are listed on `/old-writings/`; newer ones on `/writings/` and in the feed (`collections.writings` / `collections.oldWritings`).
